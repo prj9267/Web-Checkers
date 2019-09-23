@@ -8,7 +8,7 @@ a web micro-framework.
 
 - Parker Johnson
 - Elijah Cooper
-- MEMBER3
+- Yu Qi Wu
 - MEMBER4
 
 
