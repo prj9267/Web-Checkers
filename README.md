@@ -10,6 +10,7 @@ a web micro-framework.
 - Elijah Cooper
 - Yu Qi Wu
 - Mike Cao
+- Jake Snyder
 
 
 ## Prerequisites
