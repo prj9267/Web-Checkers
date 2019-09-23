@@ -7,7 +7,7 @@ a web micro-framework.
 ## Team
 
 - Parker Johnson
-- MEMBER2
+- Elijah Cooper
 - MEMBER3
 - MEMBER4
 
