@@ -27,7 +27,7 @@ public class Space {
         return piece;
     }
 
-    public Piece setPiece(Piece piece) {
+    public void setPiece(Piece piece) {
         this.piece = piece;
     }
 }
