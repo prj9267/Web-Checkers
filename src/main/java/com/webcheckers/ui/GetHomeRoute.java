@@ -19,6 +19,19 @@ import com.webcheckers.util.Message;
  * @author <a href='mailto:bdbvse@rit.edu'>Bryan Basham</a>
  */
 public class GetHomeRoute implements Route {
+  // Values used in the view-model map for rendering the game view.
+  static final String TITLE_ATTR = "title";
+  static final String MESSAGE_ATTR = "message";
+  static final String GAME_ID_ATTR = "gameId";
+  static final String CURRENT_USER_ATTR = "currentUser";
+  static final String VIEW_MODE_ATTR = "viewMode";
+  static final String MODE_OPTION_ATTR = "modeOption";
+  static final String RED_PLAYER_ATTR = "redPlayer";
+  static final String WHITE_PLAYER_ATTR = "whitePlayer";
+  static final String ACTIVE_COLOR_ATTR = "activeColor";
+
+  static final String TITLE = "Welcome!";
+
   private static final Logger LOG = Logger.getLogger(GetHomeRoute.class.getName());
 
   private static final Message WELCOME_MSG = Message.info("Welcome to the world of online Checkers.");
@@ -53,10 +66,10 @@ public class GetHomeRoute implements Route {
     LOG.finer("GetHomeRoute is invoked.");
     //
     Map<String, Object> vm = new HashMap<>();
-    vm.put("title", "Welcome!");
+    vm.put(TITLE_ATTR, TITLE);
 
     // display a user message in the Home page
-    vm.put("message", WELCOME_MSG);
+    vm.put(MESSAGE_ATTR, WELCOME_MSG);
 
     // render the View
     return templateEngine.render(new ModelAndView(vm , "home.ftl"));
