@@ -1,4 +1,4 @@
-package com.webcheckers.appl;
+package com.webcheckers.model;
 
 public class Player {
     private String name;

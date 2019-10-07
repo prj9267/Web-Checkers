@@ -81,12 +81,12 @@ public class WebServer {
    *    If any of the parameters are {@code null}.
    */
   public WebServer(final TemplateEngine templateEngine, final Gson gson) {
-    // validation
-    Objects.requireNonNull(templateEngine, "templateEngine must not be null");
-    Objects.requireNonNull(gson, "gson must not be null");
-    //
-    this.templateEngine = templateEngine;
-    this.gson = gson;
+      // validation
+      Objects.requireNonNull(templateEngine, "templateEngine must not be null");
+      Objects.requireNonNull(gson, "gson must not be null");
+      //
+      this.templateEngine = templateEngine;
+      this.gson = gson;
   }
 
   //
@@ -142,10 +142,11 @@ public class WebServer {
 
     // Shows the Checkers game Home page.
     get(HOME_URL, new GetHomeRoute(templateEngine));
-
+    //todo get Checkers game page.
     get(SIGNIN_URL, new GetSignInRoute(templateEngine));
-
     post(POST_SINGIN_URL, new PostSignInRoute(templateEngine));
+    //get game.
+    get(GAME_URL, new GetGameRoute(templateEngine));
 
     //
     LOG.config("WebServer is initialized.");

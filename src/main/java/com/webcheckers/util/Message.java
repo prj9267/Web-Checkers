@@ -28,7 +28,7 @@ public final class Message {
    * @return a new {@link Message}
    */
   public static Message error(final String message) {
-    return new Message(message, Type.ERROR);
+      return new Message(message, Type.ERROR);
   }
 
   /**
@@ -39,7 +39,7 @@ public final class Message {
    * @return a new {@link Message}
    */
   public static Message info(final String message) {
-    return new Message(message, Type.INFO);
+      return new Message(message, Type.INFO);
   }
 
   //
@@ -50,7 +50,7 @@ public final class Message {
    * The type of {@link Message}; either information or an error.
    */
   public enum Type {
-    INFO, ERROR
+      INFO, ERROR
   }
 
   //
@@ -71,9 +71,9 @@ public final class Message {
    * @param type  the type of message
    */
   private Message(final String message, final Type type) {
-    this.text = message;
-    this.type = type;
-    LOG.finer(this + " created.");
+      this.text = message;
+      this.type = type;
+      LOG.finer(this + " created.");
   }
 
   //
@@ -84,14 +84,14 @@ public final class Message {
    * Get the text of the message.
    */
   public String getText() {
-    return text;
+      return text;
   }
 
   /**
    * Get the type of the message.
    */
   public Type getType() {
-    return type;
+      return type;
   }
 
   /**
@@ -101,7 +101,7 @@ public final class Message {
    * @return true if not an error
    */
   public boolean isSuccessful() {
-    return !type.equals(Type.ERROR);
+      return !type.equals(Type.ERROR);
   }
 
   //
@@ -110,7 +110,7 @@ public final class Message {
 
   @Override
   public String toString() {
-    return "{Msg " + type + " '" + text + "'}";
+      return "{Msg " + type + " '" + text + "'}";
   }
 
 }
