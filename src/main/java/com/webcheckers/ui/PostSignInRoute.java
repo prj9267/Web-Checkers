@@ -9,6 +9,8 @@ import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.logging.Logger;
 
+import com.webcheckers.appl.Player;
+
 import static spark.Spark.halt;
 
 public class PostSignInRoute implements Route {
@@ -35,12 +37,14 @@ public class PostSignInRoute implements Route {
         // TODO
         // right now everything should be true (aka, any username/password
         // combination should be correct.
+        Player player1 = new Player("Player1");
+        Player player2 = new Player("Player2");
         vm.put(GetHomeRoute.TITLE_ATTR, TITLE);
         vm.put(GetHomeRoute.MESSAGE_ATTR, MESSAGE);
-        vm.put("currentUser.name", "Player 1");
+        vm.put(GetHomeRoute.CURRENT_USER_ATTR, player1);
         vm.put(GetHomeRoute.VIEW_MODE_ATTR, "Playing");
-        vm.put(GetHomeRoute.RED_PLAYER_ATTR, "Player 1");
-        vm.put(GetHomeRoute.WHITE_PLAYER_ATTR, "Player 2");
+        vm.put(GetHomeRoute.RED_PLAYER_ATTR, player1);
+        vm.put(GetHomeRoute.WHITE_PLAYER_ATTR, player2);
         vm.put(GetHomeRoute.ACTIVE_COLOR_ATTR, "Red");
         // right now everything just go th
         return templateEngine.render(new ModelAndView(vm , VIEW_NAME));
