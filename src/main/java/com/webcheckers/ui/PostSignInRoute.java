@@ -39,12 +39,17 @@ public class PostSignInRoute implements Route {
         // combination should be correct.
         Player player1 = new Player("Player1");
         Player player2 = new Player("Player2");
+        final Map<Object, String> redPlayer = new HashMap<>();
+        redPlayer.put("name", player1.getName());
+        final Map<Object, String> whitePlayer = new HashMap<>();
+        whitePlayer.put("name", player2.getName());
+
         vm.put(GetHomeRoute.TITLE_ATTR, TITLE);
         vm.put(GetHomeRoute.MESSAGE_ATTR, MESSAGE);
-        vm.put(GetHomeRoute.CURRENT_USER_ATTR, player1);
+        vm.put(GetHomeRoute.CURRENT_USER_ATTR, redPlayer);
         vm.put(GetHomeRoute.VIEW_MODE_ATTR, "Playing");
-        vm.put(GetHomeRoute.RED_PLAYER_ATTR, player1);
-        vm.put(GetHomeRoute.WHITE_PLAYER_ATTR, player2);
+        vm.put(GetHomeRoute.RED_PLAYER_ATTR, redPlayer);
+        vm.put(GetHomeRoute.WHITE_PLAYER_ATTR, whitePlayer);
         vm.put(GetHomeRoute.ACTIVE_COLOR_ATTR, "Red");
         // right now everything just go th
         return templateEngine.render(new ModelAndView(vm , VIEW_NAME));
