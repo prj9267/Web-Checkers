@@ -1,15 +1,12 @@
 package com.webcheckers.ui;
 
-import spark.ModelAndView;
-import spark.Request;
-import spark.Response;
-import spark.TemplateEngine;
+import spark.*;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
-public class GetGameRoute {
+public class GetGameRoute implements Route {
     // Values used in the view-model map for rendering the game view.
     static final String VIEW_NAME = "game.ftl";
     static final String TITLE = "Game!";
@@ -36,7 +33,7 @@ public class GetGameRoute {
      * {@inheritDoc}
      */
     @Override
-    public Object handle(Request request, Response response) {
+    public Object handle(Request request, Response response){
         // no session for now
 
         // build the View-Model

@@ -12,9 +12,6 @@
 
   <h1>Web Checkers | ${title}</h1>
 
-  <!-- Provide a navigation bar -->
-  <#include "nav-bar.ftl" />
-
   <div class="body">
 
     <!-- Provide a message to the user, if supplied. -->
@@ -22,15 +19,13 @@
 
     <form action="./postsignin" method="POST">
     Username: <input type="text" name="username"><br>
-    Password: <input type="text" name="password"><br>
-    Confirm Password: <input type="text" name="password"><br>
+    Password: <input type="text" name="password" method="POST"><br>
     <input type="submit" value="Submit">
     </form>
 
     <!-- TODO: future content on the Sign in:
             username bar,
-            password bar,
-            confirm password bar
+            password bar
     -->
 
   </div>

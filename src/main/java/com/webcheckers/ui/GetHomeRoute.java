@@ -23,11 +23,11 @@ public class GetHomeRoute implements Route {
   static final String TITLE_ATTR = "title";
   static final String MESSAGE_ATTR = "message";
   static final String GAME_ID_ATTR = "gameId";
-  static final String CURRENT_USER_ATTR = "currentUser";
+  static final String CURRENT_USER_ATTR = "currentUser.name";
   static final String VIEW_MODE_ATTR = "viewMode";
   static final String MODE_OPTION_ATTR = "modeOption";
-  static final String RED_PLAYER_ATTR = "redPlayer";
-  static final String WHITE_PLAYER_ATTR = "whitePlayer";
+  static final String RED_PLAYER_ATTR = "redPlayer.name";
+  static final String WHITE_PLAYER_ATTR = "whitePlayer.name";
   static final String ACTIVE_COLOR_ATTR = "activeColor";
 
   static final String TITLE = "Welcome!";

@@ -17,6 +17,7 @@ import static spark.Spark.halt;
 public class GetSignInRoute implements Route{
     private static final Logger LOG = Logger.getLogger(GetHomeRoute.class.getName());
     private static final Message INSTRUCTION_MSG = Message.info("Please enter your username.");
+    private static final String VIEW_NAME = "signin.ftl";
     private final TemplateEngine templateEngine;
 
     /**
@@ -41,10 +42,7 @@ public class GetSignInRoute implements Route{
 
         vm.put("message", INSTRUCTION_MSG);
 
-
-        response.redirect(WebServer.POST_SINGIN_URL);
-        halt();
-        return null;
+        return templateEngine.render(new ModelAndView(vm , VIEW_NAME));
     }
 
 }
