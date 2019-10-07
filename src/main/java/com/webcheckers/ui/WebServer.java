@@ -54,6 +54,7 @@ public class WebServer {
    */
   private static final String HOME_URL = "/";
   private static final String SIGNIN_URL = "/signin";
+  private static final String SIGNUP_URL = "/signup";
   private static final String POST_SINGIN_URL = "/postsignin";
   private static final String GAME_URL = "/game";
   private static final String LOBBY_URL = "/lobby";
@@ -145,9 +146,10 @@ public class WebServer {
     get(HOME_URL, new GetHomeRoute(templateEngine));
     //todo get Checkers game page.
     get(SIGNIN_URL, new GetSignInRoute(templateEngine));
+    get(SIGNUP_URL, new GetSignUpRoute(templateEngine));
     post(POST_SINGIN_URL, new PostSignInRoute(templateEngine));
     //get game.
-    get(LOBBY_URL, new getLobbyRoute(templateEngine));
+    //get(LOBBY_URL, new getLobbyRoute(templateEngine));
     get(GAME_URL, new GetGameRoute(templateEngine));
 
     //

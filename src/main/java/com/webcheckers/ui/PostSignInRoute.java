@@ -54,8 +54,8 @@ public class PostSignInRoute implements Route {
         vm.put(GetHomeRoute.ACTIVE_COLOR_ATTR, "Red");*/
         // right now everything just go th
         String usernames = request.queryParams("username");
-        if(!())
-        response.redirect(String.format());
+        //if(!())
+        response.redirect(CURRENT_PLAYER);
         return templateEngine.render(new ModelAndView(vm , VIEW_NAME));
         /*response.redirect(WebServer.GAME_URL);
         halt();

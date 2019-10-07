@@ -13,7 +13,11 @@
             <h1>Web Checkers | ${title}</h1>
 
             <div class="nav">
-                <a href="./signin">Sign In</a>
+                  Already a User? <a href="./signin">Sign In</a>
+            </div>
+
+            <div class="nav">
+                  Don't Have an Account? <a href="./signup">Sign Up</a>
             </div>
 
             <div class="body">
