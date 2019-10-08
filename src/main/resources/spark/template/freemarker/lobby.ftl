@@ -15,7 +15,10 @@
         </div>
 
 
-        <#if lobby??>
+        <div class="nav">
+            <a href="/game">Game</a>
+        </div>
+        <#--<#if lobby??>
             <div class="body">
                 <p>Choose Your Opponent:</p>
                 <ul>
@@ -26,7 +29,7 @@
                     </#list>
                 </ul>
             </div>
-        </#if>
+        </#if>-->
 
     </div>
 </body>
