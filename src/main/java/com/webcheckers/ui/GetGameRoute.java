@@ -2,6 +2,7 @@ package com.webcheckers.ui;
 
 import com.webcheckers.appl.PlayerServices;
 import com.webcheckers.model.Player;
+import com.webcheckers.util.Message;
 import spark.*;
 
 import java.util.HashMap;
@@ -15,7 +16,7 @@ public class GetGameRoute implements Route {
     private static final String VIEW_NAME = "game.ftl";
     private static final String TITLE_ATTR = "title";
     private static final String TITLE = "Let's play a game...";
-    private static final String MESSAGE = "";
+    private static final Message MESSAGE = Message.info("message");
 
     private static final String CURRENT_USER_ATTR = "currentUser";
     private static final String VIEW_MODE_ATTR = "viewMode";
