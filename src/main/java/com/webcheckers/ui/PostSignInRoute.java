@@ -72,9 +72,14 @@ public class PostSignInRoute implements Route {
             if (isSuccess(username)) {
                 // right now only take care if there is no invalid usernames
                 // there still can have the same name
+
+                //TODO Add the player to the gameCenter here? - Parker
+                //gameCenter.addPlayer(new Player(username));
+
                 vm.put(GetHomeRoute.TITLE_ATTR, SUCESS_TITLE);
                 vm.put(GetHomeRoute.MESSAGE_ATTR, SUCCESS_MESSAGE);
                 vm.put(GetHomeRoute.PLAYERS_ATTR, gameCenter.getPlayers());
+                vm.put("playerName", username);
 
                 return templateEngine.render(new ModelAndView(vm, SUCCESS_VIEW_NAME));
             } else {
@@ -83,7 +88,6 @@ public class PostSignInRoute implements Route {
                     vm.put(GetHomeRoute.MESSAGE_ATTR, Message.error(EMPTY_MESSAGE));
                 else if (containsInvalidCharacter(username))
                     vm.put(GetHomeRoute.MESSAGE_ATTR, Message.error(CONTAIN_MESSAGE));
-
 
                 return templateEngine.render(new ModelAndView(vm, FAILURE_VIEW_NAME));
             }

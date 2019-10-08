@@ -10,6 +10,8 @@
 
         <h1>Web Checkers | ${title}</h1>
 
+        <p> Welcome ${playerName} </p>
+
         <div class="nav">
             <a href="/">Home</a>
         </div>
