@@ -18,15 +18,28 @@
 
             <div class="body">
                 <#-- Provide a message to the user, if supplied. -->
-                              <#include "message.ftl" />
+                <#include "message.ftl" />
+
+                <#if players??>
+                    <div class="body">
+                        <p>Choose Your Opponent:</p>
+                        <ul>
+                            <#list players as player>
+                                <li>${player.name}</li>
+                            </#list>
+                        </ul>
+                    </div>
+                </#if>
             </div>
+
+
 
 
             <#-- -------------------------------------------------------------------Below is comment--------
             Provide a navigation bar
-            <#include "nav-bar.ftl" />-->
+            <#include "nav-bar.ftl" />
 
-            <#--<div class="body">
+            <div class="body">
 
 
 

@@ -25,9 +25,11 @@ public class GetHomeRoute implements Route {
     // Values used in the view-model map for rendering the game view.
     static final String TITLE_ATTR = "title";
     static final String MESSAGE_ATTR = "message";
+    static final String PLAYERS_ATTR = "players";
     static final String GAME_ID_ATTR = "gameId";
 
     private static final String TITLE = "Welcome!";
+    private static final String VIEW_NAME = "home.ftl";
     private static final Logger LOG = Logger.getLogger(GetHomeRoute.class.getName());
     private static final Message WELCOME_MSG = Message.info("Welcome to the world of online Checkers.");
 
@@ -42,7 +44,8 @@ public class GetHomeRoute implements Route {
      * @param templateEngine
      *   the HTML template rendering engine
      */
-    public GetHomeRoute(final GameCenter gameCenter, final TemplateEngine templateEngine) {// validation
+    public GetHomeRoute(final GameCenter gameCenter, final TemplateEngine templateEngine) {
+        // validation
         Objects.requireNonNull(gameCenter, "gameCenter must not be null");
         Objects.requireNonNull(templateEngine, "templateEngine must not be null");
         //
@@ -76,6 +79,6 @@ public class GetHomeRoute implements Route {
         vm.put(MESSAGE_ATTR, WELCOME_MSG);
 
         // render the View
-        return templateEngine.render(new ModelAndView(vm , "home.ftl"));
+        return templateEngine.render(new ModelAndView(vm , VIEW_NAME));
     }
 }
