@@ -1,10 +1,13 @@
 package com.webcheckers.ui;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.logging.Logger;
 
+import com.webcheckers.appl.GameCenter;
+import com.webcheckers.model.Player;
 import spark.ModelAndView;
 import spark.Request;
 import spark.Response;
@@ -23,16 +26,14 @@ public class GetHomeRoute implements Route {
     static final String TITLE_ATTR = "title";
     static final String MESSAGE_ATTR = "message";
     static final String GAME_ID_ATTR = "gameId";
-    static final String CURRENT_USER_ATTR = "currentUser.name";
-    static final String VIEW_MODE_ATTR = "viewMode";
-    static final String MODE_OPTION_ATTR = "modeOption";
-    static final String RED_PLAYER_ATTR = "redPlayer.name";
-    static final String WHITE_PLAYER_ATTR = "whitePlayer.name";
-    static final String ACTIVE_COLOR_ATTR = "activeColor";
 
     private static final String TITLE = "Welcome!";
     private static final Logger LOG = Logger.getLogger(GetHomeRoute.class.getName());
     private static final Message WELCOME_MSG = Message.info("Welcome to the world of online Checkers.");
+
+
+    // Attribute
+    private final GameCenter gameCenter;
     private final TemplateEngine templateEngine;
 
     /**
@@ -41,11 +42,17 @@ public class GetHomeRoute implements Route {
      * @param templateEngine
      *   the HTML template rendering engine
      */
-    public GetHomeRoute(final TemplateEngine templateEngine) {
-        this.templateEngine = Objects.requireNonNull(templateEngine, "templateEngine is required");
+    public GetHomeRoute(final GameCenter gameCenter, final TemplateEngine templateEngine) {// validation
+        Objects.requireNonNull(gameCenter, "gameCenter must not be null");
+        Objects.requireNonNull(templateEngine, "templateEngine must not be null");
+        //
+        this.gameCenter = gameCenter;
+        this.templateEngine = templateEngine;
         //
         LOG.config("GetHomeRoute is initialized.");
     }
+
+
 
     /**
      * Render the WebCheckers Home page.

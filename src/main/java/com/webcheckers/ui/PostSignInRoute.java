@@ -12,11 +12,21 @@ import com.webcheckers.model.Player;
 import static spark.Spark.halt;
 
 public class PostSignInRoute implements Route {
-    private static final String TITLE_ATTR = "title";
-    private static final String CURRENT_PLAYER = "currentplayer";
     private static final Logger LOG = Logger.getLogger(GetHomeRoute.class.getName());
-    private static final String TITLE = "YOU'VE LOGGED IN. CONGRATS.";
-    private static final String VIEW_NAME = "lobby.ftl"; //changed from "game.ftl"
+    private static final String SUCESS_TITLE = "Lobby";
+    private static final String SUCCESS_VIEW_NAME = "lobby.ftl";
+    private static final String SUCCESS_MESSAGE = "You have successfully signin!";
+
+    private static final String FAILURE_TITLE = "Sign In Page";
+    private static final String FAILURE_VIEW_NAME = "signin.ftl";
+    private static final String CONTAIN_MESSAGE = "Your username containing invalid character(s).";
+    private static final String MISS_MESSAGE = "Your username missing at least one alphanumeric character(s).";
+    private static final String EMPTY_MESSAGE = "Your username cannot be empty.";
+
+
+
+
+
     private final TemplateEngine templateEngine;
     private Player currentPlayer;
     /*private static final Message ERROR_MSG = Message.info("Sorry, wrong username/password.");
@@ -27,36 +37,43 @@ public class PostSignInRoute implements Route {
         this.currentPlayer = new Player("Username");
     }
 
+    public Boolean containsInvalidCharcter(String username){
+        String invalidCharacters = "~`!@#$%^&*()-_=+[]{}\\|;:',<.>/?";
+        for (int i = 0; i < invalidCharacters.length(); i++){
+            if (invalidCharacters.indexOf(invalidCharacters.charAt(i)) > 0  )
+                return true;
+        }
+        return false;
+    }
+
+    public Boolean isSuccess(String username){
+        // right now does not contains a list of players
+        if (username == "")
+            return false;
+        else if (containsInvalidCharcter(username))
+            return false;
+        return true;
+    }
+
     @Override
     public Object handle(Request request, Response response){
-        // TODO
-        // no session for now
-
+        String username = request.queryParams("username");
         // start building the View-Model
         final Map<String, Object> vm = new HashMap<>();
-        // TODO
-        // right now everything should be true (aka, any username/password
-        // combination should be correct.
 
-        /*Player player1 = new Player("Player1");
-        Player player2 = new Player("Player2");
-        final Map<Object, String> redPlayer = new HashMap<>();
-        redPlayer.put("name", player1.getName());
-        final Map<Object, String> whitePlayer = new HashMap<>();
-        whitePlayer.put("name", player2.getName());*/
-        /*
-        vm.put(GetHomeRoute.TITLE_ATTR, TITLE);
-        vm.put(GetHomeRoute.MESSAGE_ATTR, MESSAGE);
-        vm.put(GetHomeRoute.CURRENT_USER_ATTR, redPlayer);
-        vm.put(GetHomeRoute.VIEW_MODE_ATTR, "Playing");
-        vm.put(GetHomeRoute.RED_PLAYER_ATTR, redPlayer);
-        vm.put(GetHomeRoute.WHITE_PLAYER_ATTR, whitePlayer);
-        vm.put(GetHomeRoute.ACTIVE_COLOR_ATTR, "Red");*/
+        if (isSuccess(username)){
+            vm.put(GetHomeRoute.TITLE_ATTR, SUCESS_TITLE);
+            vm.put(GetHomeRoute.MESSAGE_ATTR, SUCCESS_MESSAGE);
+
+
+        }
+
+
+
+
         // right now everything just go th
-        String usernames = request.queryParams("username");
         //if(!())
-        response.redirect(CURRENT_PLAYER);
-        return templateEngine.render(new ModelAndView(vm , VIEW_NAME));
+        return templateEngine.render(new ModelAndView(vm , SUCCESS_VIEW_NAME));
         /*response.redirect(WebServer.GAME_URL);
         halt();
         return null;*/

@@ -16,10 +16,6 @@
                   Already a User? <a href="./signin">Sign In</a>
             </div>
 
-            <div class="nav">
-                  Don't Have an Account? <a href="./signup">Sign Up</a>
-            </div>
-
             <div class="body">
                 <#-- Provide a message to the user, if supplied. -->
                               <#include "message.ftl" />

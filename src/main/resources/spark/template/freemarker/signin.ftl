@@ -23,19 +23,8 @@
             <form action="./postsignin" method="POST">
                 <input type="text" name="username" placeholder="Username">
                 <br>
-
-                <!-- TODO: removing since unsure if needed for now and to make things simpler - MIKE
-                Password: <input type="text" name="password" method="POST"><br>
-                ----------------------------------------------------------------------- -->
-
-                <br>
-                <button type="submit">Submit Information</button>
+                <button type="submit">Submit</button>
             </form>
-
-            <!-- TODO: future content on the Sign in:
-                username bar,
-                password bar
-            -->
 
         </div>
     </div>
