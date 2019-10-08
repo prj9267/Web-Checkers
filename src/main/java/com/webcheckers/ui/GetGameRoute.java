@@ -1,11 +1,14 @@
 package com.webcheckers.ui;
 
+import com.webcheckers.appl.PlayerServices;
 import com.webcheckers.model.Player;
 import spark.*;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+
+import static spark.Spark.halt;
 
 public class GetGameRoute implements Route {
     // Values used in the view-model map for rendering the game view.
@@ -42,24 +45,35 @@ public class GetGameRoute implements Route {
         // no session for now
         //todo UNCOMPLETE
         // build the View-Model
-        final Map<String, Object> vm = new HashMap<>();
-        vm.put(TITLE_ATTR, TITLE);
 
-        Player player1 = new Player("Player1");
-        Player player2 = new Player("Player2");
-        final Map<Object, String> redPlayer = new HashMap<>();
-        redPlayer.put("name", player1.getName());
-        final Map<Object, String> whitePlayer = new HashMap<>();
-        whitePlayer.put("name", player2.getName());
+        final Session httpSession = request.session();
+        final PlayerServices playerServices = httpSession.attribute("playerServices");
 
-        vm.put(GetHomeRoute.TITLE_ATTR, TITLE);
-        vm.put(GetHomeRoute.MESSAGE_ATTR, MESSAGE);
-        vm.put(CURRENT_USER_ATTR, redPlayer);
-        vm.put(VIEW_MODE_ATTR, "Playing");
-        vm.put(RED_PLAYER_ATTR, redPlayer);
-        vm.put(WHITE_PLAYER_ATTR, whitePlayer);
-        vm.put(ACTIVE_COLOR_ATTR, "Red");
+        if(playerServices != null) {
+            final Map<String, Object> vm = new HashMap<>();
+            vm.put(TITLE_ATTR, TITLE);
 
-        return templateEngine.render(new ModelAndView(vm, VIEW_NAME));
+            Player player1 = new Player("Player1");
+            Player player2 = new Player("Player2");
+            final Map<Object, String> redPlayer = new HashMap<>();
+            redPlayer.put("name", player1.getName());
+            final Map<Object, String> whitePlayer = new HashMap<>();
+            whitePlayer.put("name", player2.getName());
+
+            vm.put(GetHomeRoute.TITLE_ATTR, TITLE);
+            vm.put(GetHomeRoute.MESSAGE_ATTR, MESSAGE);
+            vm.put(CURRENT_USER_ATTR, redPlayer);
+            vm.put(VIEW_MODE_ATTR, "Playing");
+            vm.put(RED_PLAYER_ATTR, redPlayer);
+            vm.put(WHITE_PLAYER_ATTR, whitePlayer);
+            vm.put(ACTIVE_COLOR_ATTR, "Red");
+
+            return templateEngine.render(new ModelAndView(vm, VIEW_NAME));
+        }
+        else{
+            response.redirect("/");
+            halt();
+            return null;
+        }
     }
 }

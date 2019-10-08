@@ -7,12 +7,9 @@ import java.util.Objects;
 import java.util.logging.Logger;
 
 import com.webcheckers.appl.GameCenter;
+import com.webcheckers.appl.PlayerServices;
 import com.webcheckers.model.Player;
-import spark.ModelAndView;
-import spark.Request;
-import spark.Response;
-import spark.Route;
-import spark.TemplateEngine;
+import spark.*;
 
 import com.webcheckers.util.Message;
 
@@ -72,6 +69,18 @@ public class GetHomeRoute implements Route {
     public Object handle(Request request, Response response) {
         LOG.finer("GetHomeRoute is invoked.");
         //
+        final Session httpSession = request.session();
+
+        if(httpSession.attribute("playerServices") == null) {
+            //get object for specific services for the player
+            final PlayerServices playerService = gameCenter.newPlayerServices();
+            httpSession.attribute("playerServices", playerService);
+
+            httpSession.attribute("timeoutWatchDog", new SessionTimeoutWatchdog(playerService));
+            //Can be not active for 10 min before it times you out.
+            httpSession.maxInactiveInterval(600);
+        }
+
         Map<String, Object> vm = new HashMap<>();
         vm.put(TITLE_ATTR, TITLE);
 
@@ -79,6 +88,6 @@ public class GetHomeRoute implements Route {
         vm.put(MESSAGE_ATTR, WELCOME_MSG);
 
         // render the View
-        return templateEngine.render(new ModelAndView(vm , VIEW_NAME));
+        return templateEngine.render(new ModelAndView(vm, VIEW_NAME));
     }
 }

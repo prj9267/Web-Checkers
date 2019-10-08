@@ -1,6 +1,7 @@
 package com.webcheckers.ui;
 
 import com.webcheckers.appl.GameCenter;
+import com.webcheckers.appl.PlayerServices;
 import com.webcheckers.util.Message;
 import spark.*;
 
@@ -65,25 +66,32 @@ public class PostSignInRoute implements Route {
         String username = request.queryParams("username");
         // start building the View-Model
         final Map<String, Object> vm = new HashMap<>();
+        final Session httpSession = request.session();
 
-        if (isSuccess(username)){
-            // right now only take care if there is no invalid usernames
-            // there still can have the same name
-            vm.put(GetHomeRoute.TITLE_ATTR, SUCESS_TITLE);
-            vm.put(GetHomeRoute.MESSAGE_ATTR, SUCCESS_MESSAGE);
-            vm.put(GetHomeRoute.PLAYERS_ATTR, gameCenter.getPlayers());
-            return templateEngine.render(new ModelAndView(vm, SUCCESS_VIEW_NAME));
+        if(httpSession.attribute("playerServices") != null) {
+            if (isSuccess(username)) {
+                // right now only take care if there is no invalid usernames
+                // there still can have the same name
+                vm.put(GetHomeRoute.TITLE_ATTR, SUCESS_TITLE);
+                vm.put(GetHomeRoute.MESSAGE_ATTR, SUCCESS_MESSAGE);
+                vm.put(GetHomeRoute.PLAYERS_ATTR, gameCenter.getPlayers());
+
+                return templateEngine.render(new ModelAndView(vm, SUCCESS_VIEW_NAME));
+            } else {
+                vm.put(GetHomeRoute.TITLE_ATTR, FAILURE_TITLE);
+                if (username.length() == 0)
+                    vm.put(GetHomeRoute.MESSAGE_ATTR, Message.error(EMPTY_MESSAGE));
+                else if (containsInvalidCharacter(username))
+                    vm.put(GetHomeRoute.MESSAGE_ATTR, Message.error(CONTAIN_MESSAGE));
+
+
+                return templateEngine.render(new ModelAndView(vm, FAILURE_VIEW_NAME));
+            }
         }
-
-        else {
-            vm.put(GetHomeRoute.TITLE_ATTR, FAILURE_TITLE);
-            if (username.length() == 0)
-                vm.put(GetHomeRoute.MESSAGE_ATTR, Message.error(EMPTY_MESSAGE));
-            else if (containsInvalidCharacter(username))
-                vm.put(GetHomeRoute.MESSAGE_ATTR, Message.error(CONTAIN_MESSAGE));
-
-
-            return templateEngine.render(new ModelAndView(vm, FAILURE_VIEW_NAME));
+        else{
+            response.redirect(WebServer.HOME_URL);
+            halt();
+            return null;
         }
     }
 }

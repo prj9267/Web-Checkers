@@ -1,10 +1,13 @@
 package com.webcheckers.appl;
 
+import com.webcheckers.model.Match;
 import com.webcheckers.model.Player;
 
 import java.util.ArrayList;
+import java.util.logging.Logger;
 
 public class GameCenter {
+    private static final Logger LOG = Logger.getLogger(GameCenter.class.getName());
 
     private ArrayList<Player> players = new ArrayList<>();
 
@@ -28,6 +31,13 @@ public class GameCenter {
      */
     public ArrayList<Player> getPlayers(){
         return players;
+    }
+
+    //public Match getMatch() { return new Match()}
+
+    public PlayerServices newPlayerServices(){
+        LOG.fine("New player services instance created.");
+        return new PlayerServices(this);
     }
 
 }

@@ -1,4 +1,4 @@
-package com.example.ui;
+package com.webcheckers.ui;
 
 import java.util.Objects;
 import java.util.logging.Logger;
@@ -6,7 +6,7 @@ import java.util.logging.Logger;
 import javax.servlet.http.HttpSessionBindingEvent;
 import javax.servlet.http.HttpSessionBindingListener;
 
-import com.example.appl.PlayerServices;
+import com.webcheckers.appl.PlayerServices;
 
 /**
  * Whenever an instance of a class that implements {@linkplain HttpSessionBindingListener}

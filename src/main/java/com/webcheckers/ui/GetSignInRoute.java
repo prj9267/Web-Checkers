@@ -1,11 +1,9 @@
 package com.webcheckers.ui;
 
+import com.webcheckers.appl.PlayerServices;
+import com.webcheckers.model.Player;
 import com.webcheckers.util.Message;
-import spark.ModelAndView;
-import spark.Request;
-import spark.Response;
-import spark.Route;
-import spark.TemplateEngine;
+import spark.*;
 
 import java.io.ObjectInputStream;
 import java.util.HashMap;
@@ -37,11 +35,19 @@ public class GetSignInRoute implements Route{
         LOG.finer("GetSignInRoute is invoked.");
 
         //
-        Map<String, Object> vm = new HashMap<>();
-        vm.put(GetHomeRoute.TITLE_ATTR, "Sign In");
-        vm.put("message", INSTRUCTION_MSG);
-
-        return templateEngine.render(new ModelAndView(vm , VIEW_NAME));
+        final Session httpSession = request.session();
+        final PlayerServices playerServices = httpSession.attribute("playerServices");
+        if(playerServices == null){
+            response.redirect(WebServer.HOME_URL);
+            halt();
+            return null;
+        }
+        else {
+            Map<String, Object> vm = new HashMap<>();
+            vm.put(GetHomeRoute.TITLE_ATTR, "Sign In");
+            vm.put("message", INSTRUCTION_MSG);
+            return templateEngine.render(new ModelAndView(vm, VIEW_NAME));
+        }
     }
 
 }
