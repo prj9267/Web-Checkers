@@ -25,7 +25,6 @@ public class GetHomeRoute implements Route {
     static final String PLAYERS_ATTR = "players";
     static final String GAME_ID_ATTR = "gameId";
     static final String NUM_PLAYERS_ATTR = "numPlayers";
-
     private static final String TITLE = "Welcome!";
     private static final String VIEW_NAME = "home.ftl";
     private static final Logger LOG = Logger.getLogger(GetHomeRoute.class.getName());
@@ -75,6 +74,7 @@ public class GetHomeRoute implements Route {
 
         vm.put("loggedIn", 1);
 
+        //If no session is currently active
         if(httpSession.attribute("playerServices") == null) {
             //get object for specific services for the player
             final PlayerServices playerService = gameCenter.newPlayerServices();
@@ -87,18 +87,16 @@ public class GetHomeRoute implements Route {
             vm.put(MESSAGE_ATTR, WELCOME_MSG);
         }
 
+        //If user is currently logged in
         if(httpSession.attribute("currentUsername") != null){
             vm.put("loggedIn", 0);
             vm.put(MESSAGE_ATTR, Message.info("You Have Successfully Logged In!"));
             vm.put("playerName", httpSession.attribute("currentUsername"));
         }
-
         vm.put(TITLE_ATTR, TITLE);
-
         vm.put(PLAYERS_ATTR, gameCenter.getPlayers());
         vm.put(NUM_PLAYERS_ATTR, gameCenter.getPlayers().size());
 
-        // render the View
         return templateEngine.render(new ModelAndView(vm, VIEW_NAME));
     }
 }

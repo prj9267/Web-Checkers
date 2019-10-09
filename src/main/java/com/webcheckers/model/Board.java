@@ -9,6 +9,9 @@ public class Board implements Iterable {
     private static final int NUM_COL = 8;
     private Row[] board = new Row[NUM_ROW];
 
+    /**
+     * Initializes the board representation as an array of Row objects.  Fills in the row objects with Space objects.
+     */
     public Board() {
         Piece piece;
 
@@ -42,6 +45,10 @@ public class Board implements Iterable {
         }
     }
 
+    /**
+     * Getter function for the board object;
+     * @return  - this board
+     */
     public Board getBoard(){ return this; }
 
     /**

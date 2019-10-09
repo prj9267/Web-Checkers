@@ -19,8 +19,6 @@ public class GetGameRoute implements Route {
     private static final String TITLE_ATTR = "title";
     private static final String TITLE = "Let's play a game...";
     private static final Message MESSAGE = Message.info("message");
-    public enum viewMode {PLAY, SPECTATOR, REPLAY};
-
     private static final String CURRENT_USER_ATTR = "currentUser";
     private static final String VIEW_MODE_ATTR = "viewMode";
     private static final String MODE_OPTION_ATTR = "modeOption";
@@ -28,6 +26,7 @@ public class GetGameRoute implements Route {
     private static final String WHITE_PLAYER_ATTR = "whitePlayer";
     private static final String ACTIVE_COLOR_ATTR = "activeColor";
     private static final String BOARD_ATTR = "board";
+    public enum viewMode {PLAY, SPECTATOR, REPLAY};
 
     private final TemplateEngine templateEngine;
 
@@ -47,10 +46,6 @@ public class GetGameRoute implements Route {
      */
     @Override
     public Object handle(Request request, Response response){
-        // no session for now
-        //todo UNCOMPLETE
-        // build the View-Model
-
         final Session httpSession = request.session();
         final PlayerServices playerServices = httpSession.attribute("playerServices");
 
@@ -58,6 +53,7 @@ public class GetGameRoute implements Route {
             final Map<String, Object> vm = new HashMap<>();
             vm.put(TITLE_ATTR, TITLE);
 
+            //Add the players to their respective maps with their names
             Player player1 = new Player("Player1");
             Player player2 = new Player("Player2");
             final Map<Object, String> redPlayer = new HashMap<>();
@@ -65,11 +61,12 @@ public class GetGameRoute implements Route {
             final Map<Object, String> whitePlayer = new HashMap<>();
             whitePlayer.put("name", player2.getName());
 
+            //Retrieve the game board.
             Match match = playerServices.getMatch(player1.getName(), player2.getName());
             Board board = match.getBoard();
 
+            //Pass through objects to the VM to use in the ftl files.
             vm.put(BOARD_ATTR, board);
-
             vm.put(GetHomeRoute.TITLE_ATTR, TITLE);
             vm.put(GetHomeRoute.MESSAGE_ATTR, MESSAGE);
             vm.put(CURRENT_USER_ATTR, redPlayer);

@@ -3,6 +3,7 @@ package com.webcheckers.ui;
 import java.util.ArrayList;
 import java.util.List;
 
+//TODO NOT CURRENTLY IN USE FOR SPRINT 1
 public class PlayersList {
     // name of the current user
     private String username;

@@ -14,8 +14,11 @@ import static spark.Spark.halt;
 
 public class GetSignInRoute implements Route{
     private static final Logger LOG = Logger.getLogger(GetHomeRoute.class.getName());
+
+    //Values to be used in the View-Model
     private static final Message INSTRUCTION_MSG = Message.info("Please enter your username.");
     private static final String VIEW_NAME = "signin.ftl";
+
     private final TemplateEngine templateEngine;
 
     /**
@@ -30,13 +33,23 @@ public class GetSignInRoute implements Route{
         LOG.config("GetSignInRoute is initialized.");
     }
 
+    /**
+     * Render the WebCheckers Sign In page.
+     *
+     * @param request
+     *   the HTTP request
+     * @param response
+     *   the HTTP response
+     *
+     * @return
+     *   the rendered HTML for the Sign In page
+     */
     @Override
     public Object handle(Request request, Response response){
         LOG.finer("GetSignInRoute is invoked.");
-
-        //
         final Session httpSession = request.session();
         final PlayerServices playerServices = httpSession.attribute("playerServices");
+
         if(playerServices == null){
             response.redirect(WebServer.HOME_URL);
             halt();

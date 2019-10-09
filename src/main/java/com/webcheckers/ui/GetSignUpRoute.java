@@ -12,6 +12,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Logger;
 
+//TODO NOT CURRENTLY IN USE FOR SPRINT 1
 public class GetSignUpRoute implements Route {
 
     private static final Logger LOG = Logger.getLogger(GetHomeRoute.class.getName());

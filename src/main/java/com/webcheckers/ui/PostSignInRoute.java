@@ -16,24 +16,28 @@ import static spark.Spark.*;
 
 public class PostSignInRoute implements Route {
     private static final Logger LOG = Logger.getLogger(GetHomeRoute.class.getName());
+
+    //Values to be used in the View-Model
     private static final String SUCESS_TITLE = "Home";
     private static final String SUCCESS_VIEW_NAME = "home.ftl";
     private static final Message SUCCESS_MESSAGE = Message.info("You have successfully signed in!");
-
     private static final String FAILURE_TITLE = "Sign In Page";
     private static final String FAILURE_VIEW_NAME = "signin.ftl";
     private static final String CONTAIN_MESSAGE = "Your username containing invalid character(s).";
     private static final String MISS_MESSAGE = "Your username missing at least one alphanumeric character(s).";
     private static final String EMPTY_MESSAGE = "Your username cannot be empty.";
 
-
-
-
     private final GameCenter gameCenter;
     private final TemplateEngine templateEngine;
     /*private static final Message ERROR_MSG = Message.info("Sorry, wrong username/password.");
     private static final String MESSAGE = "Waiting for player...";*/
 
+    /**
+     * Create the Spark Route (UI controller) to handle all {@code GET /} HTTP requests.
+     *
+     * @param templateEngine
+     *   the HTML template rendering engine
+     */
     public PostSignInRoute(GameCenter gameCenter, TemplateEngine templateEngine){
         // validation
         Objects.requireNonNull(gameCenter, "gameCenter must not be null");
@@ -44,6 +48,11 @@ public class PostSignInRoute implements Route {
         LOG.config("PostSignInRoute is initialized.");
     }
 
+    /**
+     * Checks if a username contains an invalid char
+     * @param username  - the username in question
+     * @return  - false if username contains no invalid chars, true otherwise.
+     */
     public Boolean containsInvalidCharacter(String username){
         String invalidCharacters = "~`!@#$%^&*()-_=+[]{}\\|;:',<.>/?";
         for (int i = 0; i < invalidCharacters.length(); i++){
@@ -53,6 +62,11 @@ public class PostSignInRoute implements Route {
         return false;
     }
 
+    /**
+     * Checks if the username is a valid name to be signed in with.
+     * @param username  - the username in question
+     * @return  - true if valid, false otherwise
+     */
     public Boolean isSuccess(String username){
         // right now does not contains a list of players
         if (username.length() == 0)
@@ -62,6 +76,17 @@ public class PostSignInRoute implements Route {
         return true;
     }
 
+    /**
+     * Render the WebCheckers Home page after signing in.
+     *
+     * @param request
+     *   the HTTP request
+     * @param response
+     *   the HTTP response
+     *
+     * @return
+     *   the rendered HTML for the Home page after being signed in.
+     */
     @Override
     public Object handle(Request request, Response response){
         LOG.finer("PostSignInRoute is invoked.");
@@ -74,10 +99,10 @@ public class PostSignInRoute implements Route {
             if (isSuccess(username)) {
                 gameCenter.addPlayer(new Player(username));
 
+                //Pass through objects to the VM for use in ftl files.
                 vm.put(GetHomeRoute.TITLE_ATTR, SUCESS_TITLE);
                 vm.put(GetHomeRoute.MESSAGE_ATTR, SUCCESS_MESSAGE);
                 vm.put(GetHomeRoute.PLAYERS_ATTR, gameCenter.getPlayers());
-
                 vm.put("playerName", username);
                 httpSession.attribute("currentUsername", username);
                 vm.put("loggedIn", 0);

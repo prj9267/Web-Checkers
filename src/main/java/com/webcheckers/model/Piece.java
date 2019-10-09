@@ -21,18 +21,34 @@ public class Piece {
         this.color = color;
     }
 
+    /**
+     * Set the piece type to a specified status.
+     * @param status    - the new piece type
+     */
     public void setType(Type status) {
         this.type = status;
     }
 
+    /**
+     * Getter function for the piece type.
+     * @return  - the piece type
+     */
     public Type getType(){
         return type;
     }
 
+    /**
+     * Getter function for the piece color
+     * @return  - the piece color.
+     */
     public Color getColor() {
         return color;
     }
 
+    /**
+     * Setter function for the piece color
+     * @param color - the color to be set.
+     */
     public void setColor(Color color) {
         this.color = color;
     }
