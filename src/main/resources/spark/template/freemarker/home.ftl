@@ -9,26 +9,37 @@
 
 <body>
       <div class="page">
+          <h1>Web Checkers | ${title}</h1>
 
-            <h1>Web Checkers | ${title}</h1>
+          <#if loggedIn == 1>
+               <div class="nav">
+                     Already a User? <a href="./signin">Sign In</a>
+               </div>
 
-            <div class="nav">
-                  Already a User? <a href="./signin">Sign In</a>
-            </div>
+               <div class="body">
+                   <#-- Provide a message to the user, if supplied. -->
+                   <#include "message.ftl" />
+                   <#if numPlayers??>
+                       <div class="body">
+                           <p>Number of Users Logged In:</p>
+                           <ul>
+                               ${numPlayers}
+                           </ul>
+                       </div>
+                   </#if>
+               </div>
+          <#else>
+              <p> Hello ${playerName}! </p>
+              <div class="body">
+                  <#include "message.ftl" />
+                  <#if players??>
+                        <p>Currently Signed in Players:</p>
+                        <#list players as player>
+                        <p> <a href="/game">${player.name}</a>
+                        </#list>
+                  </#if>
+          </#if>
 
-            <div class="body">
-                <#-- Provide a message to the user, if supplied. -->
-                <#include "message.ftl" />
-
-                <#if players??>
-                    <div class="body">
-                        <p>Number of Users Logged In:</p>
-                        <ul>
-                            ${players}
-                        </ul>
-                    </div>
-                </#if>
-            </div>
 
 
 
