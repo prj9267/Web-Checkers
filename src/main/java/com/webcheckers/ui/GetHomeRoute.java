@@ -24,6 +24,7 @@ public class GetHomeRoute implements Route {
     static final String MESSAGE_ATTR = "message";
     static final String PLAYERS_ATTR = "players";
     static final String GAME_ID_ATTR = "gameId";
+    static final String NUM_PLAYERS_ATTR = "numPlayers";
 
     private static final String TITLE = "Welcome!";
     private static final String VIEW_NAME = "home.ftl";
@@ -70,6 +71,9 @@ public class GetHomeRoute implements Route {
         LOG.finer("GetHomeRoute is invoked.");
         //
         final Session httpSession = request.session();
+        Map<String, Object> vm = new HashMap<>();
+
+        vm.put("loggedIn", 1);
 
         if(httpSession.attribute("playerServices") == null) {
             //get object for specific services for the player
@@ -79,15 +83,20 @@ public class GetHomeRoute implements Route {
             httpSession.attribute("timeoutWatchDog", new SessionTimeoutWatchdog(playerService));
             //Can be not active for 10 min before it times you out.
             httpSession.maxInactiveInterval(600);
+
+            vm.put(MESSAGE_ATTR, WELCOME_MSG);
         }
 
-        Map<String, Object> vm = new HashMap<>();
+        if(httpSession.attribute("currentUsername") != null){
+            vm.put("loggedIn", 0);
+            vm.put(MESSAGE_ATTR, Message.info("You Have Successfully Logged In!"));
+            vm.put("playerName", httpSession.attribute("currentUsername"));
+        }
+
         vm.put(TITLE_ATTR, TITLE);
 
-        // display a user message in the Home page
-        vm.put(MESSAGE_ATTR, WELCOME_MSG);
-
-        vm.put(PLAYERS_ATTR, gameCenter.getPlayers().size());
+        vm.put(PLAYERS_ATTR, gameCenter.getPlayers());
+        vm.put(NUM_PLAYERS_ATTR, gameCenter.getPlayers().size());
 
         // render the View
         return templateEngine.render(new ModelAndView(vm, VIEW_NAME));
