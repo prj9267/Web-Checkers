@@ -19,6 +19,7 @@ public class GetGameRoute implements Route {
     private static final String TITLE_ATTR = "title";
     private static final String TITLE = "Let's play a game...";
     private static final Message MESSAGE = Message.info("message");
+    public enum viewMode {PLAY, SPECTATOR, REPLAY};
 
     private static final String CURRENT_USER_ATTR = "currentUser";
     private static final String VIEW_MODE_ATTR = "viewMode";
@@ -67,12 +68,12 @@ public class GetGameRoute implements Route {
             Match match = playerServices.getMatch(player1.getName(), player2.getName());
             Board board = match.getBoard();
 
-            vm.put(BOARD_ATTR, board.getBoard());
+            vm.put(BOARD_ATTR, board);
 
             vm.put(GetHomeRoute.TITLE_ATTR, TITLE);
             vm.put(GetHomeRoute.MESSAGE_ATTR, MESSAGE);
             vm.put(CURRENT_USER_ATTR, redPlayer);
-            vm.put(VIEW_MODE_ATTR, "Playing");
+            vm.put(VIEW_MODE_ATTR, viewMode.PLAY);
             vm.put(RED_PLAYER_ATTR, redPlayer);
             vm.put(WHITE_PLAYER_ATTR, whitePlayer);
             vm.put(ACTIVE_COLOR_ATTR, "Red");
