@@ -1,7 +1,7 @@
 package com.webcheckers.model;
 
 public class Space {
-    private int cellIdx;
+    public int cellIdx;
     private int cellIdy;
     private boolean isValid;
     private Piece piece;

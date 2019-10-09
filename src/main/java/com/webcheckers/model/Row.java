@@ -7,7 +7,7 @@ import java.util.Iterator;
 public class Row implements Iterable {
     private final static int NUM_COL = 8;
     private Space[] col;
-    private int index;
+    public int index;
 
     public Row(int index){
         col = new Space[NUM_COL];

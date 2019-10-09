@@ -12,53 +12,31 @@ public class Board implements Iterable {
     public Board() {
         Piece piece;
 
-        /*for (int i = 0; i < 8; i++) {
-
-            Row row = new Row(i);
-            board.add(row);
-
-            for (int j = 0; j < 8; j++) {
-                if (((i % 2) == 0) && ((j % 2) == 0) && (i < 3)) {
-                    piece = new Piece(Piece.Status.NORMAL, Piece.Color.RED);
-                } else if (((i % 2) == 1) && ((j % 2) == 1) && (i < 3)) {
-                    piece = new Piece(Piece.Status.NORMAL, Piece.Color.RED);
-
-                } else if (((i % 2) == 0) && ((j % 2) == 0) && (i > 4)) {
-                    piece = new Piece(Piece.Status.NORMAL, Piece.Color.WHITE);
-
-                } else if (((i % 2) == 1) && ((j % 2) == 1) && (i > 4)) {
-                    piece = new Piece(Piece.Status.NORMAL, Piece.Color.WHITE);
-
-                } else {
-                    piece = null;
-                }
-                space = new Space(j, i, true, piece);
-                row.getRow().add(i, space);
-            }
-        }*/
-
         for(int i = 0; i < NUM_ROW; i++) {
             board[i] = new Row(i);
             Row row = board[i];
             Space[] col = row.getCol();
 
             for(int j = 0; j < NUM_COL; j++) {
-                if (((i % 2) == 0) && ((j % 2) == 0) && (i < 3)) {
+                if (((i % 2) == 0) && ((j % 2) == 0) && (i < 4)) {
                     piece = new Piece(Piece.Type.NORMAL, Piece.Color.RED);
                 }
-                else if (((i % 2) == 1) && ((j % 2) == 1) && (i < 3)) {
+                else if (((i % 2) == 1) && ((j % 2) == 1) && (i < 4)) {
                     piece = new Piece(Piece.Type.NORMAL, Piece.Color.RED);
                 }
-                else if (((i % 2) == 0) && ((j % 2) == 0) && (i > 4)) {
+                else if (((i % 2) == 0) && ((j % 2) == 0) && (i > 3)) {
                     piece = new Piece(Piece.Type.NORMAL, Piece.Color.WHITE);
                 }
-                else if (((i % 2) == 1) && ((j % 2) == 1) && (i > 4)) {
+                else if (((i % 2) == 1) && ((j % 2) == 1) && (i > 3)) {
                     piece = new Piece(Piece.Type.NORMAL, Piece.Color.WHITE);
                 }
                 else{
                     piece = null;
                 }
-                col[j] = new Space(j, i, true, piece);
+                if (piece != null)
+                    col[j] = new Space(j, i, true, piece);
+                else
+                    col[j] = new Space(j, i, false, null);
 
             }
         }
