@@ -27,36 +27,36 @@ public class Match {
      * Getter function for the board.
      * @return  - the board object
      */
-    private Board getBoard(){ return board; }
+    public Board getBoard(){ return board; }
 
     /**
      * Getter function for the red player.
      * @return  - the red player object
      */
-    private Player getRedPlayer(){ return redPlayer; }
+    public Player getRedPlayer(){ return redPlayer; }
 
     /**
      * Getter function for the white player.
      * @return  - the white player
      */
-    private Player getWhitePlayer(){ return whitePlayer; }
+    public Player getWhitePlayer(){ return whitePlayer; }
 
     /**
      * Getter function for current player's turn.
      * @return  - the player whose turn it is.
      */
-    private Player getPlayerTurn(){ return playerTurn; }
+    public Player getPlayerTurn(){ return playerTurn; }
 
     /**
      * Getter function for the winner of the match.
      * @return  - the winner of the match.
      */
-    private Player getWinner(){ return winner; }
+    public Player getWinner(){ return winner; }
 
     /**
      * End the current players turn and switch to the other player.
      */
-    private void endTurn(){
+    public void endTurn(){
         if(playerTurn == whitePlayer){
             playerTurn = redPlayer;
         }

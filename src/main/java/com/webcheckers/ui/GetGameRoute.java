@@ -1,6 +1,8 @@
 package com.webcheckers.ui;
 
 import com.webcheckers.appl.PlayerServices;
+import com.webcheckers.model.Board;
+import com.webcheckers.model.Match;
 import com.webcheckers.model.Player;
 import com.webcheckers.util.Message;
 import spark.*;
@@ -24,6 +26,7 @@ public class GetGameRoute implements Route {
     private static final String RED_PLAYER_ATTR = "redPlayer";
     private static final String WHITE_PLAYER_ATTR = "whitePlayer";
     private static final String ACTIVE_COLOR_ATTR = "activeColor";
+    private static final String BOARD_ATTR = "board";
 
     private final TemplateEngine templateEngine;
 
@@ -60,6 +63,11 @@ public class GetGameRoute implements Route {
             redPlayer.put("name", player1.getName());
             final Map<Object, String> whitePlayer = new HashMap<>();
             whitePlayer.put("name", player2.getName());
+
+            Match match = playerServices.getMatch(player1.getName(), player2.getName());
+            Board board = match.getBoard();
+
+            vm.put(BOARD_ATTR, board.getBoard());
 
             vm.put(GetHomeRoute.TITLE_ATTR, TITLE);
             vm.put(GetHomeRoute.MESSAGE_ATTR, MESSAGE);

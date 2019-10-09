@@ -2,11 +2,13 @@ package com.webcheckers.model;
 
 public class Space {
     private int cellIdx;
+    private int cellIdy;
     private boolean isValid;
     private Piece piece;
 
-    public Space(int cellIdx, boolean isValid, Piece piece) {
+    public Space(int cellIdx, int cellIdy, boolean isValid, Piece piece) {
         this.cellIdx = cellIdx;
+        this.cellIdy = cellIdy;
         this.isValid = isValid;
         this.piece = piece;
     }
