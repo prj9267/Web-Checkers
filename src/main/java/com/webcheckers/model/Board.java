@@ -44,21 +44,22 @@ public class Board implements Iterable {
 
             for(int j = 0; j < NUM_COL; j++) {
                 if (((i % 2) == 0) && ((j % 2) == 0) && (i < 3)) {
-                    piece = new Piece(Piece.Status.NORMAL, Piece.Color.RED);
+                    piece = new Piece(Piece.Type.NORMAL, Piece.Color.RED);
                 }
                 else if (((i % 2) == 1) && ((j % 2) == 1) && (i < 3)) {
-                    piece = new Piece(Piece.Status.NORMAL, Piece.Color.RED);
+                    piece = new Piece(Piece.Type.NORMAL, Piece.Color.RED);
                 }
                 else if (((i % 2) == 0) && ((j % 2) == 0) && (i > 4)) {
-                    piece = new Piece(Piece.Status.NORMAL, Piece.Color.WHITE);
+                    piece = new Piece(Piece.Type.NORMAL, Piece.Color.WHITE);
                 }
                 else if (((i % 2) == 1) && ((j % 2) == 1) && (i > 4)) {
-                    piece = new Piece(Piece.Status.NORMAL, Piece.Color.WHITE);
+                    piece = new Piece(Piece.Type.NORMAL, Piece.Color.WHITE);
                 }
                 else{
                     piece = null;
                 }
                 col[j] = new Space(j, i, true, piece);
+
             }
         }
     }
