@@ -15,7 +15,7 @@ public class PlayerServices {
 
     public void endSession(){ match = null; }
 
-    public Match getGameCenter(String player1, String player2){
+    public Match getMatch(String player1, String player2){
         return gameCenter.getMatch(player1, player2);
     }
 }
