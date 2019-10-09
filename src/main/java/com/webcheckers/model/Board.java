@@ -1,17 +1,16 @@
 package com.webcheckers.model;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Iterator;
 
-public class Board {
+public class Board implements Iterable {
     private static final int NUM_ROW = 8;
     private static final int NUM_COL = 8;
-    private Row[] spaces = new Row[NUM_ROW];
+    private Row[] board = new Row[NUM_ROW];
 
     public Board() {
-        Space space;
         Piece piece;
-        for (int i = 0; i < NUM_ROW; i++)
-            spaces[i] = new Row[i];
 
         /*for (int i = 0; i < 8; i++) {
 
@@ -39,31 +38,32 @@ public class Board {
         }*/
 
         for(int i = 0; i < NUM_ROW; i++) {
+            board[i] = new Row(i);
+            Row row = board[i];
+            Space[] col = row.getCol();
+
             for(int j = 0; j < NUM_COL; j++) {
                 if (((i % 2) == 0) && ((j % 2) == 0) && (i < 3)) {
                     piece = new Piece(Piece.Status.NORMAL, Piece.Color.RED);
-                    spaces[i][j] = new Space(j, i, true, piece);
                 }
                 else if (((i % 2) == 1) && ((j % 2) == 1) && (i < 3)) {
                     piece = new Piece(Piece.Status.NORMAL, Piece.Color.RED);
-                    spaces[i][j] = new Space(j, i, true, piece);
                 }
                 else if (((i % 2) == 0) && ((j % 2) == 0) && (i > 4)) {
                     piece = new Piece(Piece.Status.NORMAL, Piece.Color.WHITE);
-                    spaces[i][j] = new Space(j, i, true, piece);
                 }
                 else if (((i % 2) == 1) && ((j % 2) == 1) && (i > 4)) {
                     piece = new Piece(Piece.Status.NORMAL, Piece.Color.WHITE);
-                    spaces[i][j] = new Space(j, i, true, piece);
                 }
                 else{
-                    spaces[i][j] = new Space(j, i, true, null);
+                    piece = null;
                 }
+                col[j] = new Space(j, i, true, piece);
             }
         }
     }
 
-    public Space[][] getBoard(){ return spaces; }
+    public Board getBoard(){ return this; }
 
     /**
      * checks if the move is within the checkers board
@@ -71,6 +71,11 @@ public class Board {
      * @return true if within board
      */
     public boolean isValid(int row, int col) {
-        return (row < ROW && row >= 0 && col < COL && col >= 0);
+        return (row < NUM_ROW && row >= 0 && col < NUM_COL && col >= 0);
+    }
+
+    @Override
+    public Iterator iterator(){
+        return Arrays.asList(board).iterator();
     }
 }

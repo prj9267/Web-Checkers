@@ -67,7 +67,7 @@ public class GetGameRoute implements Route {
             Match match = playerServices.getMatch(player1.getName(), player2.getName());
             Board board = match.getBoard();
 
-            vm.put(BOARD_ATTR, board.getBoard());
+            vm.put(BOARD_ATTR, board);
 
             vm.put(GetHomeRoute.TITLE_ATTR, TITLE);
             vm.put(GetHomeRoute.MESSAGE_ATTR, MESSAGE);

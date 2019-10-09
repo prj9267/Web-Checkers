@@ -1,18 +1,25 @@
 package com.webcheckers.model;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Iterator;
 
-public class Row {
-    private static final int NUM_COL = 8;
+public class Row implements Iterable {
+    private final static int NUM_COL = 8;
     private Space[] col;
     private int index;
 
     public Row(int index){
-        this.col = new Space[NUM_COL];
+        col = new Space[NUM_COL];
         this.index = index;
     }
 
     public int getIndex(){ return index; }
 
-    public Space[] getRow(){ return col; }
+    public Space[] getCol(){ return col; }
+
+    @Override
+    public Iterator iterator(){
+        return Arrays.asList(col).iterator();
+    }
 }
