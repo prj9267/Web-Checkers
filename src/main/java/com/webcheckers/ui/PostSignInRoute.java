@@ -74,7 +74,7 @@ public class PostSignInRoute implements Route {
                 // there still can have the same name
 
                 //TODO Add the player to the gameCenter here? - Parker
-                //gameCenter.addPlayer(new Player(username));
+                gameCenter.addPlayer(new Player(username));
 
                 vm.put(GetHomeRoute.TITLE_ATTR, SUCESS_TITLE);
                 vm.put(GetHomeRoute.MESSAGE_ATTR, SUCCESS_MESSAGE);

@@ -22,11 +22,9 @@
 
                 <#if players??>
                     <div class="body">
-                        <p>Choose Your Opponent:</p>
+                        <p>Number of Users Logged In:</p>
                         <ul>
-                            <#list players as player>
-                                <li>${player.name}</li>
-                            </#list>
+                            ${players}
                         </ul>
                     </div>
                 </#if>
@@ -47,11 +45,11 @@
                   to start games,
                   spectating active games,
                   or replay archived games
-                  -->
 
-                  <a href="./game">GAME</a>
 
-            </div>-- --------------------------------------------------------------------Above is comment-- -->
+                  <a href="./game">GAME</a>-->
+
+            </div>
 
       </div>
 </body>

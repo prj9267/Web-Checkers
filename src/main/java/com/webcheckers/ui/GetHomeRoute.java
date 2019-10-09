@@ -87,6 +87,8 @@ public class GetHomeRoute implements Route {
         // display a user message in the Home page
         vm.put(MESSAGE_ATTR, WELCOME_MSG);
 
+        vm.put(PLAYERS_ATTR, gameCenter.getPlayers().size());
+
         // render the View
         return templateEngine.render(new ModelAndView(vm, VIEW_NAME));
     }
