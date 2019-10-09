@@ -10,6 +10,7 @@ public class GameCenter {
     private static final Logger LOG = Logger.getLogger(GameCenter.class.getName());
 
     private ArrayList<Player> players = new ArrayList<>();
+    private ArrayList<Match> gameList = new ArrayList<>();
 
     public GameCenter(ArrayList<Player> players) {
         this.players =players;
@@ -33,8 +34,15 @@ public class GameCenter {
         return players;
     }
 
-    //public Match getMatch() { return new Match()}
+    public Match getMatch(String player1, String player2) {
+        Match match = new Match(player1, player2);
+        gameList.add(match);
+        return match;
+    }
 
+    public void endMatch(Match match){
+        gameList.remove(match);
+    }
     public PlayerServices newPlayerServices(){
         LOG.fine("New player services instance created.");
         return new PlayerServices(this);

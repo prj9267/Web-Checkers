@@ -13,11 +13,9 @@ public class PlayerServices {
         this.gameCenter = gameCenter;
     }
 
-    /*public synchronized Match currentMatch(){
-        if(match == null){
-            match = gameCenter.
-        }
-    }*/
-
     public void endSession(){ match = null; }
+
+    public Match getGameCenter(String player1, String player2){
+        return gameCenter.getMatch(player1, player2);
+    }
 }
