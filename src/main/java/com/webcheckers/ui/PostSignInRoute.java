@@ -12,14 +12,13 @@ import java.util.logging.Logger;
 
 import com.webcheckers.model.Player;
 
-import static spark.Spark.halt;
-import static spark.Spark.redirect;
+import static spark.Spark.*;
 
 public class PostSignInRoute implements Route {
     private static final Logger LOG = Logger.getLogger(GetHomeRoute.class.getName());
-    private static final String SUCESS_TITLE = "Lobby";
-    private static final String SUCCESS_VIEW_NAME = "lobby.ftl";
-    private static final String SUCCESS_MESSAGE = "You have successfully signin!";
+    private static final String SUCESS_TITLE = "Home";
+    private static final String SUCCESS_VIEW_NAME = "home.ftl";
+    private static final Message SUCCESS_MESSAGE = Message.info("You have successfully signed in!");
 
     private static final String FAILURE_TITLE = "Sign In Page";
     private static final String FAILURE_VIEW_NAME = "signin.ftl";
@@ -41,6 +40,8 @@ public class PostSignInRoute implements Route {
         Objects.requireNonNull(templateEngine, "templateEngine must not be null");
         this.templateEngine = templateEngine;
         this.gameCenter = gameCenter;
+
+        LOG.config("PostSignInRoute is initialized.");
     }
 
     public Boolean containsInvalidCharacter(String username){
@@ -63,6 +64,7 @@ public class PostSignInRoute implements Route {
 
     @Override
     public Object handle(Request request, Response response){
+        LOG.finer("PostSignInRoute is invoked.");
         String username = request.queryParams("username");
         // start building the View-Model
         final Map<String, Object> vm = new HashMap<>();
@@ -70,18 +72,20 @@ public class PostSignInRoute implements Route {
 
         if(httpSession.attribute("playerServices") != null) {
             if (isSuccess(username)) {
-                // right now only take care if there is no invalid usernames
-                // there still can have the same name
-
-                //TODO Add the player to the gameCenter here? - Parker
                 gameCenter.addPlayer(new Player(username));
 
                 vm.put(GetHomeRoute.TITLE_ATTR, SUCESS_TITLE);
                 vm.put(GetHomeRoute.MESSAGE_ATTR, SUCCESS_MESSAGE);
                 vm.put(GetHomeRoute.PLAYERS_ATTR, gameCenter.getPlayers());
-                vm.put("playerName", username);
 
-                return templateEngine.render(new ModelAndView(vm, SUCCESS_VIEW_NAME));
+                vm.put("playerName", username);
+                httpSession.attribute("currentUsername", username);
+                vm.put("loggedIn", 0);
+
+                response.redirect(WebServer.HOME_URL);
+                halt();
+                return null;
+                //return templateEngine.render(new ModelAndView(vm, SUCCESS_VIEW_NAME));
             } else {
                 vm.put(GetHomeRoute.TITLE_ATTR, FAILURE_TITLE);
                 if (username.length() == 0)
@@ -89,7 +93,10 @@ public class PostSignInRoute implements Route {
                 else if (containsInvalidCharacter(username))
                     vm.put(GetHomeRoute.MESSAGE_ATTR, Message.error(CONTAIN_MESSAGE));
 
-                return templateEngine.render(new ModelAndView(vm, FAILURE_VIEW_NAME));
+                response.redirect(WebServer.SIGNIN_URL);
+                halt();
+                return null;
+                //return templateEngine.render(new ModelAndView(vm, FAILURE_VIEW_NAME));
             }
         }
         else{

@@ -20,18 +20,14 @@
         <div class="nav">
             <a href="/game">Game</a>
         </div>
-        <#--<#if lobby??>
+        <#if players??>
             <div class="body">
-                <p>Choose Your Opponent:</p>
-                <ul>
-                    <#list lobby as player>
-                        <a href="/Game?opponentName=${player}&username=${username}">
-                            <li>${player}</li>
-                        </a>
-                    </#list>
-                </ul>
+                <p>Currently Signed in Players:</p>
+                <#list players as player>
+                    <p> <a href="/game">${player.name}</a>
+                </#list>
             </div>
-        </#if>-->
+        </#if>
 
     </div>
 </body>
