@@ -3,15 +3,15 @@ package com.webcheckers.model;
 import java.util.ArrayList;
 
 public class Board {
-    private static final int ROW = 8;
-    private static final int COL = 8;
-    private Space[][] spaces;
-    private ArrayList<Row> board = new ArrayList<>();
+    private static final int NUM_ROW = 8;
+    private static final int NUM_COL = 8;
+    private Row[] spaces = new Row[NUM_ROW];
 
     public Board() {
         Space space;
         Piece piece;
-        spaces = new Space[ROW][COL];
+        for (int i = 0; i < NUM_ROW; i++)
+            spaces[i] = new Row[i];
 
         /*for (int i = 0; i < 8; i++) {
 
@@ -38,8 +38,8 @@ public class Board {
             }
         }*/
 
-        for(int i = 0; i < ROW; i++) {
-            for(int j = 0; j < COL; j++) {
+        for(int i = 0; i < NUM_ROW; i++) {
+            for(int j = 0; j < NUM_COL; j++) {
                 if (((i % 2) == 0) && ((j % 2) == 0) && (i < 3)) {
                     piece = new Piece(Piece.Status.NORMAL, Piece.Color.RED);
                     spaces[i][j] = new Space(j, i, true, piece);
