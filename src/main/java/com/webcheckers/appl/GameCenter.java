@@ -10,14 +10,14 @@ public class GameCenter {
     private static final Logger LOG = Logger.getLogger(GameCenter.class.getName());
 
     //Attributes
-    private ArrayList<Player> players = new ArrayList<>();
+    private ArrayList<String> players = new ArrayList<>();
     private ArrayList<Match> gameList = new ArrayList<>();
 
     /**
      * Constructor for GameCenter Object
      * @param players   - the list of players signed into the web app.
      */
-    public GameCenter(ArrayList<Player> players) {
+    public GameCenter(ArrayList<String> players) {
         this.players = players;
     }
 
@@ -26,7 +26,7 @@ public class GameCenter {
      * @param player
      * @return the list of players
      */
-    public ArrayList<Player> addPlayer(Player player){
+    public ArrayList<String> addPlayer(String player){
         players.add(player);
         return players;
     }
@@ -35,8 +35,10 @@ public class GameCenter {
      * Get the list of the players
      * @return the list of players
      */
-    public ArrayList<Player> getPlayers(){
-        return players;
+    public ArrayList<String> getPlayers(){
+        ArrayList<String> ret = new ArrayList<>();
+        ret.addAll(players);
+        return ret;
     }
 
     /**

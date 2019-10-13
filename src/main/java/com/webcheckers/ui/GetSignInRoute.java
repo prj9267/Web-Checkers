@@ -58,7 +58,7 @@ public class GetSignInRoute implements Route{
         else {
             Map<String, Object> vm = new HashMap<>();
             vm.put(GetHomeRoute.TITLE_ATTR, "Sign In");
-            vm.put("message", INSTRUCTION_MSG);
+            vm.put(GetHomeRoute.MESSAGE_ATTR, INSTRUCTION_MSG);
             return templateEngine.render(new ModelAndView(vm, VIEW_NAME));
         }
     }

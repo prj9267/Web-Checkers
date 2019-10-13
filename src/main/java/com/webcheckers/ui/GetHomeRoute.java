@@ -29,6 +29,7 @@ public class GetHomeRoute implements Route {
     private static final String VIEW_NAME = "home.ftl";
     private static final Logger LOG = Logger.getLogger(GetHomeRoute.class.getName());
     private static final Message WELCOME_MSG = Message.info("Welcome to the world of online Checkers.");
+    private static final Message SIGNIN_MSG = Message.info("You Have Successfully Logged In!");
 
 
     // Attribute
@@ -88,13 +89,15 @@ public class GetHomeRoute implements Route {
         }
 
         //If user is currently logged in
+        ArrayList<String> players = gameCenter.getPlayers();
         if(httpSession.attribute("currentUsername") != null){
             vm.put("loggedIn", 0);
-            vm.put(MESSAGE_ATTR, Message.info("You Have Successfully Logged In!"));
+            vm.put(MESSAGE_ATTR, SIGNIN_MSG);
             vm.put("playerName", httpSession.attribute("currentUsername"));
+            players.remove(httpSession.attribute("currentUsername").toString());
         }
         vm.put(TITLE_ATTR, TITLE);
-        vm.put(PLAYERS_ATTR, gameCenter.getPlayers());
+        vm.put(PLAYERS_ATTR, players);
         vm.put(NUM_PLAYERS_ATTR, gameCenter.getPlayers().size());
 
         return templateEngine.render(new ModelAndView(vm, VIEW_NAME));

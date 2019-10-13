@@ -35,7 +35,7 @@
                   <#if players??>
                         <p>Currently Signed in Players:</p>
                         <#list players as player>
-                        <p> <a href="/game">${player.name}</a>
+                        <p> <a href="/game">${player}</a>
                         </#list>
                   </#if>
           </#if>
