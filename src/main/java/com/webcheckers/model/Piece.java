@@ -16,6 +16,11 @@ public class Piece {
      */
     public enum Color {RED, WHITE}
 
+    /**
+     * Constructor for piece
+     * @param status    - KING OR NORMAL
+     * @param color     - RED OR WHITE
+     */
     public Piece(Type status, Color color) {
         this.type = status;
         this.color = color;
