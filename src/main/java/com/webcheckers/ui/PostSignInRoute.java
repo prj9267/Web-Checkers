@@ -19,18 +19,17 @@ public class PostSignInRoute implements Route {
 
     //Values to be used in the View-Model
     private static final String SUCESS_TITLE = "Home";
-    private static final String SUCCESS_VIEW_NAME = "home.ftl";
-    private static final Message SUCCESS_MESSAGE = Message.info("You have successfully signed in!");
     private static final String FAILURE_TITLE = "Sign In Page";
+    private static final String SUCCESS_VIEW_NAME = "home.ftl";
     private static final String FAILURE_VIEW_NAME = "signin.ftl";
-    private static final String CONTAIN_MESSAGE = "Your username containing invalid character(s).";
-    private static final String MISS_MESSAGE = "Your username missing at least one alphanumeric character(s).";
-    private static final String EMPTY_MESSAGE = "Your username cannot be empty.";
+    private static final Message SUCCESS_MESSAGE = Message.info("You have successfully signed in!");
+    private static final String TAKEN_MESSAGE = "Your username was taken, enter a new username that only contains" +
+            " alphanumeric characters and spaces (do not start with a space).";
+    private static final String INVALID_MESSAGE = "Your username is invalid, enter a new username that only contains" +
+            " alphanumeric characters and spaces (do not start with a space).";
 
-    private final GameCenter gameCenter;
     private final TemplateEngine templateEngine;
-    /*private static final Message ERROR_MSG = Message.info("Sorry, wrong username/password.");
-    private static final String MESSAGE = "Waiting for player...";*/
+    private final PlayerServices playerServices;
 
     /**
      * Create the Spark Route (UI controller) to handle all {@code GET /} HTTP requests.
@@ -38,28 +37,14 @@ public class PostSignInRoute implements Route {
      * @param templateEngine
      *   the HTML template rendering engine
      */
-    public PostSignInRoute(GameCenter gameCenter, TemplateEngine templateEngine){
-        // validation
-        Objects.requireNonNull(gameCenter, "gameCenter must not be null");
+    public PostSignInRoute(PlayerServices playerServices, TemplateEngine templateEngine){
+        Objects.requireNonNull(playerServices, "gameCenter must not be null");
         Objects.requireNonNull(templateEngine, "templateEngine must not be null");
+
         this.templateEngine = templateEngine;
-        this.gameCenter = gameCenter;
+        this.playerServices = playerServices;
 
         LOG.config("PostSignInRoute is initialized.");
-    }
-
-    /**
-     * Checks if a username contains an invalid char
-     * @param username  - the username in question
-     * @return  - false if username contains no invalid chars, true otherwise.
-     */
-    public Boolean containsInvalidCharacter(String username){
-        String invalidCharacters = "~`!@#$%^&*()-_=+[]{}\\|;:',<.>/?";
-        for (int i = 0; i < invalidCharacters.length(); i++){
-            if (username.indexOf(invalidCharacters.charAt(i)) > 0  )
-                return true;
-        }
-        return false;
     }
 
     /**
@@ -67,14 +52,14 @@ public class PostSignInRoute implements Route {
      * @param username  - the username in question
      * @return  - true if valid, false otherwise
      */
-    public Boolean isSuccess(String username){
+    /*public Boolean isSuccess(String username){
         // right now does not contains a list of players
         if (username.length() == 0)
             return false;
         else if (containsInvalidCharacter(username))
             return false;
         return true;
-    }
+    }*/
 
     /**
      * Render the WebCheckers Home page after signing in.
@@ -95,7 +80,24 @@ public class PostSignInRoute implements Route {
         final Map<String, Object> vm = new HashMap<>();
         final Session httpSession = request.session();
 
-        if(httpSession.attribute("playerServices") != null) {
+        if(httpSession.attribute("name") != null) {
+            response.redirect(WebServer.HOME_URL);
+            return null;
+        }
+
+        if (!playerServices.isValid(username)) {
+            vm.put(GetHomeRoute.MESSAGE_ATTR, INVALID_MESSAGE);
+            return templateEngine.render(new ModelAndView(vm, FAILURE_VIEW_NAME));
+        } else if (playerServices.isTaken(username)) {
+            vm.put(GetHomeRoute.MESSAGE_ATTR, TAKEN_MESSAGE);
+            return templateEngine.render(new ModelAndView(vm, FAILURE_VIEW_NAME));
+        } else {
+            httpSession.attribute("name", username);
+            response.redirect(WebServer.HOME_URL);
+            return null;
+        }
+        /*if(httpSession.attribute("name") != null) {
+            response.redirect(WebServer.HOME_URL)
             if (isSuccess(username)) {
                 gameCenter.addPlayer(new Player(username));
 
@@ -128,6 +130,6 @@ public class PostSignInRoute implements Route {
             response.redirect(WebServer.HOME_URL);
             halt();
             return null;
-        }
+        }*/
     }
 }

@@ -50,12 +50,11 @@ public class GetSignInRoute implements Route{
         final Session httpSession = request.session();
         final PlayerServices playerServices = httpSession.attribute("playerServices");
 
-        if(playerServices == null){
+        if(playerServices == null || httpSession.attribute("name") != null) {
             response.redirect(WebServer.HOME_URL);
             halt();
             return null;
-        }
-        else {
+        } else {
             Map<String, Object> vm = new HashMap<>();
             vm.put(GetHomeRoute.TITLE_ATTR, "Sign In");
             vm.put("message", INSTRUCTION_MSG);

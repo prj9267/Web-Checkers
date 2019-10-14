@@ -62,9 +62,31 @@ public class GameCenter {
         return inMatch.containsKey(player);
     }
 
+    /**
+     * Gets a match that a player is in
+     * @param player            - the player
+     * @return                  - the match
+     */
+    public synchronized Match getMatch(Player player) {
+        return inMatch.get(player);
+    }
+
+    /**
+     * Removes a player from a game
+     * @param player            - the player to remove
+     * @return                  - true if the player has been removed
+     */
+    public synchronized boolean removePlayer(Player player) {
+        if(!isInMatch(player))
+            return false;
+        inMatch.remove(player);
+        return true;
+    }
+
     public PlayerServices newPlayerServices(){
         LOG.fine("New player services instance created.");
         return new PlayerServices(this);
     }
+
 
 }
