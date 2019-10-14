@@ -33,6 +33,7 @@ public class GetHomeRoute implements Route {
 
     // Attribute
     private final GameCenter gameCenter;
+    private final PlayerServices playerServices;
     private final TemplateEngine templateEngine;
 
     /**
@@ -47,6 +48,7 @@ public class GetHomeRoute implements Route {
         Objects.requireNonNull(templateEngine, "templateEngine must not be null");
         //
         this.gameCenter = gameCenter;
+        this.playerServices = new PlayerServices();
         this.templateEngine = templateEngine;
         //
         LOG.config("GetHomeRoute is initialized.");
@@ -71,7 +73,6 @@ public class GetHomeRoute implements Route {
         //
         final Session httpSession = request.session();
         Map<String, Object> vm = new HashMap<>();
-
         vm.put("loggedIn", 1);
 
         //If no session is currently active
@@ -88,13 +89,14 @@ public class GetHomeRoute implements Route {
         }
 
         //If user is currently logged in
-        if(httpSession.attribute("currentUsername") != null){
+        String username = httpSession.attribute("name");
+        if(username != null) {
             vm.put("loggedIn", 0);
             vm.put(MESSAGE_ATTR, Message.info("You Have Successfully Logged In!"));
             vm.put("playerName", httpSession.attribute("currentUsername"));
         }
         vm.put(TITLE_ATTR, TITLE);
-        vm.put(PLAYERS_ATTR, gameCenter.getPlayers());
+        vm.put(PLAYERS_ATTR, gameCenter.());
         vm.put(NUM_PLAYERS_ATTR, gameCenter.getPlayers().size());
 
         return templateEngine.render(new ModelAndView(vm, VIEW_NAME));

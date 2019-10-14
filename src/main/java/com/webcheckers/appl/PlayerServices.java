@@ -3,6 +3,7 @@ package com.webcheckers.appl;
 import com.webcheckers.model.Match;
 import com.webcheckers.model.Player;
 
+import java.util.HashMap;
 import java.util.Map;
 
 
@@ -12,15 +13,13 @@ public class PlayerServices {
     private Match match;
     //playerList holding the names of players
     private static Map<String, Player> playerList;
-    private final GameCenter gameCenter;
 
     /**
      * Constructor for PlayerServices Object
-     * @param gameCenter    - the about to be running gameCenter
      */
-    public PlayerServices(GameCenter gameCenter){
+    public PlayerServices(){
         match = null;
-        this.gameCenter = gameCenter;
+        playerList = new HashMap<>();
     }
 
     /**
@@ -80,6 +79,11 @@ public class PlayerServices {
         return false;
     }
 
+    /**
+     * Get the player
+     * @param username  - the username of the player
+     * @return          - the player
+     */
     public Player getPlayer(String username) {
         return playerList.get(username);
     }
