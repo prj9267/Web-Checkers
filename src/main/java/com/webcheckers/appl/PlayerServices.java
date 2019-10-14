@@ -36,9 +36,9 @@ public class PlayerServices {
      * @param player2   - the opponent
      * @return          - the created match
      */
-    public Match getMatch(String player1, String player2){
+    /*public Match getMatch(String player1, String player2){
         return gameCenter.getMatch(player1, player2);
-    }
+    }*/
 
     /**
      * Checks if the username is taken.
@@ -78,5 +78,13 @@ public class PlayerServices {
             return true;
         }
         return false;
+    }
+
+    public Player getPlayer(String username) {
+        return playerList.get(username);
+    }
+
+    public int numPlayers() {
+        return playerList.size();
     }
 }

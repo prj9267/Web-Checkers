@@ -1,23 +1,22 @@
 package com.webcheckers.model;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Iterator;
+
+import java.util.*;
 
 public class Row implements Iterable {
 
     //Attributes
     private final static int NUM_COL = 8;
-    private Space[] col;
+    private List<Space> spaces;
     public int index;
 
     /**
      * Row constructor, sets the index value of the row, and the column to a new array of Space objects
      * @param index - the index value of the row.
      */
-    public Row(int index){
-        col = new Space[NUM_COL];
+    public Row(int index, List<Space> spaces) {
         this.index = index;
+        this.spaces = spaces;
     }
 
     /**
@@ -30,7 +29,7 @@ public class Row implements Iterable {
      * Column getter function
      * @return  - the array of space objects representing the column.
      */
-    public Space[] getCol(){ return col; }
+    /*public Space[] getCol(){ return col; }*/
 
     /**
      * Overridden iteratable function to be able to iterate over a Row object.
@@ -38,6 +37,6 @@ public class Row implements Iterable {
      */
     @Override
     public Iterator iterator(){
-        return Arrays.asList(col).iterator();
+        return spaces.iterator();
     }
 }

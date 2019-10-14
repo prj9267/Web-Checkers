@@ -1,62 +1,65 @@
 package com.webcheckers.appl;
 
+import com.webcheckers.model.Board;
 import com.webcheckers.model.Match;
+import com.webcheckers.model.Piece;
 import com.webcheckers.model.Player;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.logging.Logger;
 
 public class GameCenter {
     private static final Logger LOG = Logger.getLogger(GameCenter.class.getName());
 
     //Attributes
-    private ArrayList<Player> players = new ArrayList<>();
-    private ArrayList<Match> gameList = new ArrayList<>();
+    private PlayerServices playerServices;
+    private Map<Player, Match> inMatch;
+    //private ArrayList<Match> gameList = new ArrayList<>();
 
     /**
      * Constructor for GameCenter Object
-     * @param players   - the list of players signed into the web app.
+     * @param playerServices   - the lobby of players
      */
-    public GameCenter(ArrayList<Player> players) {
-        this.players = players;
+    public GameCenter(PlayerServices playerServices) {
+        this.inMatch = new HashMap<>();
+        this.playerServices = playerServices;
     }
 
     /**
-     * Add a player to the list of players
-     * @param player
-     * @return the list of players
+     * adds a match if players are fighting legitimate players
+     * @param redPlayerName     - name of the red player
+     * @param whitePlayerName   - name of the white player
+     * @return                  - true if match has been added
      */
-    public ArrayList<Player> addPlayer(Player player){
-        players.add(player);
-        return players;
+    public synchronized boolean addMatch(String redPlayerName, String whitePlayerName) {
+        Player redPlayer = playerServices.getPlayer(redPlayerName);
+        Player whitePlayer = playerServices.getPlayer(whitePlayerName);
+        if(redPlayer.equals(whitePlayer) || inMatch.containsKey(redPlayer) || inMatch.containsKey(whitePlayer))
+            return false;
+        Match match = new Match(redPlayer, whitePlayer);
+        inMatch.put(redPlayer, match);
+        inMatch.put(whitePlayer, match);
+        return true;
     }
 
     /**
-     * Get the list of the players
-     * @return the list of players
+     * Checks if the provided player is the current player
+     * @param player            - the player to check
+     * @return                  - true if the player is the current player
      */
-    public ArrayList<Player> getPlayers(){
-        return players;
+    public boolean isCurrent(Player player) {
+        return inMatch.get(player).getCurrentPlayer().equals(player);
     }
 
     /**
-     * Create a new match
-     * @param player1   - the user
-     * @param player2   - their opponent
-     * @return          - the newly created match object
+     * Checks if the provided player is in a match
+     * @param player            - the player to check
+     * @return                  - true if the player is in a match
      */
-    public Match getMatch(String player1, String player2) {
-        Match match = new Match(player1, player2);
-        gameList.add(match);
-        return match;
-    }
-
-    /**
-     * Removes the match from the current gameList.
-     * @param match - the match to be removed.
-     */
-    public void endMatch(Match match){
-        gameList.remove(match);
+    public boolean isInMatch(Player player) {
+        return inMatch.containsKey(player);
     }
 
     public PlayerServices newPlayerServices(){

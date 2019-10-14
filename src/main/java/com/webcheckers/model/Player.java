@@ -4,7 +4,6 @@ public class Player {
 
     //Attributes
     private String name;
-    private String password;
 
     /**
      * Player constructor
@@ -23,12 +22,6 @@ public class Player {
     }
 
     /**
-     * Password Getter function
-     * @return  - the player's password
-     */
-    public String getPassword(){ return password; }
-
-    /**
      * Overridden equals function to determine if players are equal.
      * @param o - the object to be compared to
      * @return  - true if they are equal, false otherwise.
@@ -36,9 +29,7 @@ public class Player {
     @Override
     public boolean equals(Object o){
         if(o instanceof Player){
-            if(((Player) o).name == name && ((Player) o).password == password){
-                return true;
-            }
+            return((Player)o).getName().equals((this.getName()));
         }
         return false;
     }

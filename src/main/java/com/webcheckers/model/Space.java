@@ -4,22 +4,38 @@ public class Space {
 
     //Attributes
     public int cellIdx;
-    private int cellIdy;
+    //private int cellIdy;
     private boolean isValid;
     private Piece piece;
 
     /**
      * Space Constructor, sets the x-location, y-location, validity boolean and whether or not there is a piece located on it.
      * @param cellIdx   - x-location of the space
-     * @param cellIdy   - y-location of the space
-     * @param isValid   - whether or not the space is valid
+     * //@param cellIdy   - y-location of the space
+     * @param isValid   - whether or not the space is open to move to
      * @param piece     - the current piece on the space, null if none.
      */
-    public Space(int cellIdx, int cellIdy, boolean isValid, Piece piece) {
+    public Space(int cellIdx, boolean isValid, Piece piece) {
         this.cellIdx = cellIdx;
-        this.cellIdy = cellIdy;
+        //this.cellIdy = cellIdy;
         this.isValid = isValid;
         this.piece = piece;
+    }
+
+    public Space(int cellIdx) {
+        this.cellIdx = cellIdx;
+        this.isValid = false;
+        this.piece = null;
+    }
+
+    public Space(Space space) {
+        this.cellIdx = space.getCellIdx();
+        this.isValid = space.isValid();
+        if(space.getPiece() != null) {
+            piece = space.getPiece();
+        } else {
+            piece = null;
+        }
     }
 
     /**
