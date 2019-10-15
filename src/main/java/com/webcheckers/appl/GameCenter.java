@@ -41,6 +41,10 @@ public class GameCenter {
         return ret;
     }
 
+    public void removePlayer(String player){
+        players.remove(player);
+    }
+
     /**
      * Create a new match
      * @param player1   - the user

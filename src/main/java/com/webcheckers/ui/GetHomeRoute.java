@@ -73,13 +73,16 @@ public class GetHomeRoute implements Route {
         final Session httpSession = request.session();
         Map<String, Object> vm = new HashMap<>();
 
-        vm.put("loggedIn", 1);
+        vm.put(TITLE_ATTR, TITLE);
 
         //If no session is currently active
         if(httpSession.attribute("playerServices") == null) {
             //get object for specific services for the player
             final PlayerServices playerService = gameCenter.newPlayerServices();
             httpSession.attribute("playerServices", playerService);
+
+            // didn't log in
+            vm.put(NUM_PLAYERS_ATTR, gameCenter.getPlayers().size());
 
             httpSession.attribute("timeoutWatchDog", new SessionTimeoutWatchdog(playerService));
             //Can be not active for 10 min before it times you out.
@@ -90,15 +93,12 @@ public class GetHomeRoute implements Route {
 
         //If user is currently logged in
         ArrayList<String> players = gameCenter.getPlayers();
-        if(httpSession.attribute("currentUsername") != null){
-            vm.put("loggedIn", 0);
+        if(httpSession.attribute("currentPlayer") != null){
             vm.put(MESSAGE_ATTR, SIGNIN_MSG);
-            vm.put("playerName", httpSession.attribute("currentUsername"));
-            players.remove(httpSession.attribute("currentUsername").toString());
+            vm.put("currentPlayer", httpSession.attribute("currentPlayer"));
+            players.remove(httpSession.attribute("currentPlayer").toString());
+            vm.put(PLAYERS_ATTR, players);
         }
-        vm.put(TITLE_ATTR, TITLE);
-        vm.put(PLAYERS_ATTR, players);
-        vm.put(NUM_PLAYERS_ATTR, gameCenter.getPlayers().size());
 
         return templateEngine.render(new ModelAndView(vm, VIEW_NAME));
     }
