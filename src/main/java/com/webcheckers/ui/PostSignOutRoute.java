@@ -43,12 +43,9 @@ public class PostSignOutRoute implements Route {
         final Session httpSession = request.session();
 
         if(httpSession.attribute("playerServices") != null){
-
-        } else{
             gameCenter.removePlayer(username);
             httpSession.removeAttribute("playerServices");
             httpSession.removeAttribute("currentPlayer");
-
         }
         response.redirect(WebServer.HOME_URL);
         halt();

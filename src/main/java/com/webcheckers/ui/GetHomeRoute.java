@@ -29,7 +29,7 @@ public class GetHomeRoute implements Route {
     private static final String VIEW_NAME = "home.ftl";
     private static final Logger LOG = Logger.getLogger(GetHomeRoute.class.getName());
     private static final Message WELCOME_MSG = Message.info("Welcome to the world of online Checkers.");
-    private static final Message SIGNIN_MSG = Message.info("You Have Successfully Logged In!");
+    private static final Message SIGNIN_MSG = Message.info("You Have Successfully Sign In!");
 
 
     // Attribute
@@ -81,7 +81,7 @@ public class GetHomeRoute implements Route {
             final PlayerServices playerService = gameCenter.newPlayerServices();
             httpSession.attribute("playerServices", playerService);
 
-            // didn't log in
+            // only show the number of players online if you are not signin
             vm.put(NUM_PLAYERS_ATTR, gameCenter.getPlayers().size());
 
             httpSession.attribute("timeoutWatchDog", new SessionTimeoutWatchdog(playerService));
