@@ -103,10 +103,8 @@ public class PostSignInRoute implements Route {
             if (stat_code == 0) {
                 gameCenter.addPlayer(username);
 
-                //vm.put("playerName", username);
                 httpSession.attribute("currentPlayer", username);
                 httpSession.removeAttribute("numPlayers");
-                //vm.put("loggedIn", 0);
 
                 response.redirect(WebServer.HOME_URL);
                 halt();

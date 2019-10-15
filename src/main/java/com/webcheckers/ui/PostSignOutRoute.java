@@ -5,6 +5,7 @@ import com.webcheckers.appl.PlayerServices;
 import spark.*;
 
 import java.awt.*;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -37,13 +38,16 @@ public class PostSignOutRoute implements Route {
     @Override
     public Object handle(Request request, Response response){
         LOG.finer("PostSignOutRoute is invoked.");
-        String username = request.queryParams("currentPlayer");
         // start building the View-Model
         final Map<String, Object> vm = new HashMap<>();
         final Session httpSession = request.session();
+        String username = httpSession.attribute("currentPlayer");
 
         if(httpSession.attribute("playerServices") != null){
+            // remove the player from game center
             gameCenter.removePlayer(username);
+
+            // aka as clearing the session
             httpSession.removeAttribute("playerServices");
             httpSession.removeAttribute("currentPlayer");
         }

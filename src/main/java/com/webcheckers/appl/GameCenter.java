@@ -41,8 +41,8 @@ public class GameCenter {
         return ret;
     }
 
-    public void removePlayer(String player){
-        players.remove(player);
+    public boolean removePlayer(String player){
+        return players.remove(player);
     }
 
     /**
