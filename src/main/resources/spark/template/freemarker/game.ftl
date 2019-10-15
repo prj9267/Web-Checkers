@@ -54,10 +54,10 @@
 
                         </div>
 
-                        <div class="game-board">
-                                <table id="game-board">
+                        <div class="game-boardView">
+                                <table id="game-boardView">
                             <tbody>
-                                    <#list board.iterator() as row>
+                                    <#list boardView.iterator() as row>
                                         <tr data-row="${row.index}">
                                         <#list row.iterator() as space>
                                             <td data-cell="${space.cellIdx}"

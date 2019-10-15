@@ -84,15 +84,19 @@ public class PostSignInRoute implements Route {
             response.redirect(WebServer.HOME_URL);
             return null;
         }
-
+        vm.put("title", "TITLE");
         if (!playerServices.isValid(username)) {
-            vm.put(GetHomeRoute.MESSAGE_ATTR, INVALID_MESSAGE);
+            vm.put("username", username);
+            vm.put(GetHomeRoute.MESSAGE_ATTR, new Message(INVALID_MESSAGE, Message.Type.ERROR));
             return templateEngine.render(new ModelAndView(vm, FAILURE_VIEW_NAME));
-        } else if (playerServices.isTaken(username)) {
-            vm.put(GetHomeRoute.MESSAGE_ATTR, TAKEN_MESSAGE);
+        } else if (!playerServices.isTaken(username)) {
+            vm.put("username", username);
+            vm.put(GetHomeRoute.MESSAGE_ATTR, new Message(TAKEN_MESSAGE, Message.Type.ERROR));
             return templateEngine.render(new ModelAndView(vm, FAILURE_VIEW_NAME));
         } else {
-            httpSession.attribute("name", username);
+            httpSession.attribute("username", username);
+            Player currentPlayer = new Player(username);
+            playerServices.addPlayer(currentPlayer);
             response.redirect(WebServer.HOME_URL);
             return null;
         }

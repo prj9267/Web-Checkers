@@ -18,7 +18,13 @@
             </div>
 
             <!-- Provide a message to the user, if supplied. -->
-                        <#include "message.ftl" />
+            <#if message??>
+                 <#include "message.ftl" />
+            </#if>
+
+            <#if username??>
+                 <p>Previously entered username: ${username}</p>
+            </#if>
 
             <form action="./postsignin" method="POST">
                 <input type="text" name="username" placeholder="Username">

@@ -1,15 +1,16 @@
 package com.webcheckers.model;
 
+import java.util.Map;
 import java.util.logging.Logger;
 
 public class Match {
     private static final Logger LOG = Logger.getLogger(Match.class.getName());
-
-
-    private Board board = new Board();
+    // to be implemented maybe here since game.ftl
+    //private Map<String, Object> modeOptionAsJSON = null;
+    private BoardView boardView = new BoardView();
     private Player redPlayer;
     private Player whitePlayer;
-    private Piece.Color currrentPlayerColor;
+    private Piece.Color activeColor;
     private Player winner = null;
 
     /**
@@ -20,15 +21,15 @@ public class Match {
     public Match(Player redPlayer, Player whitePlayer){
         this.redPlayer = redPlayer;
         this.whitePlayer = whitePlayer;
-        currrentPlayerColor = Piece.Color.RED;
+        activeColor = Piece.Color.RED;
     }
 
     /**
-     * Getter function for the board.
-     * @return  - the board object
+     * Getter function for the boardView.
+     * @return  - the boardView object
      */
-    public Board getBoard() {
-        return board;
+    public BoardView getBoardView() {
+        return boardView;
     }
 
     /**
@@ -47,8 +48,8 @@ public class Match {
         return whitePlayer;
     }
 
-    public Piece.Color getCurrrentPlayerColor() {
-        return currrentPlayerColor;
+    public Piece.Color getActiveColor() {
+        return activeColor;
     }
 
     /**
@@ -56,7 +57,7 @@ public class Match {
      * @return  - the player whose turn it is.
      */
     public Player getCurrentPlayer() {
-        if(currrentPlayerColor.equals(Piece.Color.RED))
+        if(activeColor.equals(Piece.Color.RED))
             return redPlayer;
         return whitePlayer;
     }

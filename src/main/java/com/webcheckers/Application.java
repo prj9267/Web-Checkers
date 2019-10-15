@@ -8,6 +8,7 @@ import java.util.logging.Logger;
 
 import com.google.gson.Gson;
 import com.webcheckers.appl.GameCenter;
+import com.webcheckers.appl.PlayerServices;
 import com.webcheckers.model.Player;
 import com.webcheckers.ui.WebServer;
 
@@ -98,10 +99,11 @@ public final class Application {
           // response to Ajax requests.
           final Gson gson = new Gson();
 
-          final GameCenter gameCenter = new GameCenter(new ArrayList<Player>());
-
+          //final GameCenter gameCenter = new GameCenter(new ArrayList<Player>());
+          final PlayerServices playerServices = new PlayerServices();
+          final GameCenter gameCenter = new GameCenter();
           // inject the game center and freemarker engine into web server
-          final WebServer webServer = new WebServer(gameCenter, templateEngine, gson);
+          final WebServer webServer = new WebServer(playerServices, gameCenter, templateEngine, gson);
 
           // inject web server into application
           final Application app = new Application(webServer);

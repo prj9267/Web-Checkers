@@ -25,11 +25,12 @@ public class GetHomeRoute implements Route {
     static final String PLAYERS_ATTR = "players";
     static final String GAME_ID_ATTR = "gameId";
     static final String NUM_PLAYERS_ATTR = "numPlayers";
+
     private static final String TITLE = "Welcome!";
     private static final String VIEW_NAME = "home.ftl";
-    private static final Logger LOG = Logger.getLogger(GetHomeRoute.class.getName());
     private static final Message WELCOME_MSG = Message.info("Welcome to the world of online Checkers.");
 
+    private static final Logger LOG = Logger.getLogger(GetHomeRoute.class.getName());
 
     // Attribute
     private final GameCenter gameCenter;
@@ -42,19 +43,17 @@ public class GetHomeRoute implements Route {
      * @param templateEngine
      *   the HTML template rendering engine
      */
-    public GetHomeRoute(final GameCenter gameCenter, final TemplateEngine templateEngine) {
+    public GetHomeRoute(final PlayerServices playerServices, final GameCenter gameCenter, final TemplateEngine templateEngine) {
         // validation
         Objects.requireNonNull(gameCenter, "gameCenter must not be null");
         Objects.requireNonNull(templateEngine, "templateEngine must not be null");
         //
         this.gameCenter = gameCenter;
-        this.playerServices = new PlayerServices();
         this.templateEngine = templateEngine;
+        this.playerServices = playerServices;
         //
         LOG.config("GetHomeRoute is initialized.");
     }
-
-
 
     /**
      * Render the WebCheckers Home page.
@@ -73,15 +72,14 @@ public class GetHomeRoute implements Route {
         //
         final Session httpSession = request.session();
         Map<String, Object> vm = new HashMap<>();
-        vm.put("loggedIn", 1);
+        boolean signedIn = false;
 
         //If no session is currently active
         if(httpSession.attribute("playerServices") == null) {
             //get object for specific services for the player
-            final PlayerServices playerService = gameCenter.newPlayerServices();
-            httpSession.attribute("playerServices", playerService);
+            httpSession.attribute("playerServices", playerServices);
 
-            httpSession.attribute("timeoutWatchDog", new SessionTimeoutWatchdog(playerService));
+            httpSession.attribute("timeoutWatchDog", new SessionTimeoutWatchdog(playerServices));
             //Can be not active for 10 min before it times you out.
             httpSession.maxInactiveInterval(600);
 
@@ -89,15 +87,19 @@ public class GetHomeRoute implements Route {
         }
 
         //If user is currently logged in
-        String username = httpSession.attribute("name");
-        if(username != null) {
-            vm.put("loggedIn", 0);
-            vm.put(MESSAGE_ATTR, Message.info("You Have Successfully Logged In!"));
-            vm.put("playerName", httpSession.attribute("currentUsername"));
+        String username = httpSession.attribute("username");
+        Player player = playerServices.getPlayer(username);
+        if(username != null && player != null && username.equals(player.getName())) {
+            signedIn = true;
         }
+
+        vm.put("signedIn", signedIn);
+        vm.put("username", username);
         vm.put(TITLE_ATTR, TITLE);
-        vm.put(PLAYERS_ATTR, gameCenter.());
-        vm.put(NUM_PLAYERS_ATTR, gameCenter.getPlayers().size());
+        vm.put(MESSAGE_ATTR, Message.info("You Have Successfully Logged In!"));
+        vm.put(PLAYERS_ATTR, playerServices.getPlayer(username));
+        vm.put(NUM_PLAYERS_ATTR, playerServices.numPlayers());
+        vm.put("players", playerServices.getPlayerList());
 
         return templateEngine.render(new ModelAndView(vm, VIEW_NAME));
     }

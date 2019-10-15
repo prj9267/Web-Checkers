@@ -1,11 +1,8 @@
 package com.webcheckers.appl;
 
-import com.webcheckers.model.Board;
 import com.webcheckers.model.Match;
-import com.webcheckers.model.Piece;
 import com.webcheckers.model.Player;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Logger;
@@ -20,22 +17,20 @@ public class GameCenter {
 
     /**
      * Constructor for GameCenter Object
-     * @param playerServices   - the lobby of players
      */
-    public GameCenter(PlayerServices playerServices) {
+    public GameCenter() {
         this.inMatch = new HashMap<>();
-        this.playerServices = playerServices;
     }
 
     /**
      * adds a match if players are fighting legitimate players
-     * @param redPlayerName     - name of the red player
-     * @param whitePlayerName   - name of the white player
+     * @param redPlayer         - the red player
+     * @param whitePlayer       - the white player
      * @return                  - true if match has been added
      */
-    public synchronized boolean addMatch(String redPlayerName, String whitePlayerName) {
-        Player redPlayer = playerServices.getPlayer(redPlayerName);
-        Player whitePlayer = playerServices.getPlayer(whitePlayerName);
+    public synchronized boolean addMatch(Player redPlayer, Player whitePlayer) {
+        String redPlayerName = redPlayer.getName();
+        String whitePlayerName = whitePlayer.getName();
         if(redPlayer.equals(whitePlayer) || inMatch.containsKey(redPlayer) || inMatch.containsKey(whitePlayer))
             return false;
         Match match = new Match(redPlayer, whitePlayer);
@@ -82,11 +77,4 @@ public class GameCenter {
         inMatch.remove(player);
         return true;
     }
-
-    public PlayerServices newPlayerServices(){
-        LOG.fine("New player services instance created.");
-        return new PlayerServices(this);
-    }
-
-
 }

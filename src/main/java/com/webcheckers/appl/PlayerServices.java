@@ -3,6 +3,8 @@ package com.webcheckers.appl;
 import com.webcheckers.model.Match;
 import com.webcheckers.model.Player;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -10,23 +12,22 @@ import java.util.Map;
 public class PlayerServices {
 
     //Attributes
-    private Match match;
+    //private Match match;
     //playerList holding the names of players
-    private static Map<String, Player> playerList;
+    private ArrayList<Player> playerList;
 
     /**
      * Constructor for PlayerServices Object
      */
     public PlayerServices(){
-        match = null;
-        playerList = new HashMap<>();
+        playerList = new ArrayList<>();
     }
 
     /**
      * End the current match;
      */
     public void endSession() {
-        match = null;
+        //match = null;
     }
 
     /**
@@ -39,13 +40,22 @@ public class PlayerServices {
         return gameCenter.getMatch(player1, player2);
     }*/
 
+    public void addPlayer(Player player) {
+        playerList.add(player);
+    }
+
     /**
      * Checks if the username is taken.
      * @param username  - the user
      * @return          - true if not taken and false if taken
      */
     public boolean isTaken(String username) {
-        return !playerList.containsKey(username);
+        for(Player player: playerList) {
+            if(player.getName() == username) {
+                return false;
+            }
+        }
+        return true;
     }
 
     /**
@@ -67,28 +77,29 @@ public class PlayerServices {
     }
 
     /**
-     * Adds the username and creates a new Player if the username is valid.
-     * @param username  - the user
-     * @return          - true if the player has been added and false if not
-     */
-    public synchronized boolean confirmation(String username) {
-        if(isValid(username)) {
-            playerList.put(username, new Player(username));
-            return true;
-        }
-        return false;
-    }
-
-    /**
      * Get the player
      * @param username  - the username of the player
      * @return          - the player
      */
     public Player getPlayer(String username) {
-        return playerList.get(username);
+        for (Player player : playerList) {
+            if (player.getName().equals(username)) {
+                return player;
+            }
+        }
+        return null;
     }
 
+    /**
+     * Gets the number of players
+     * @return          - number int of players
+     */
     public int numPlayers() {
         return playerList.size();
     }
+
+    public ArrayList<Player> getPlayerList() {
+        return playerList;
+    }
+
 }
