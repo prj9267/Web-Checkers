@@ -84,13 +84,9 @@ public class GetHomeRoute implements Route {
             httpSession.attribute("playerServices", playerServices);
 
             httpSession.attribute("timeoutWatchDog", new SessionTimeoutWatchdog(playerServices));
-            // only show the number of players online if you are not signin
-            vm.put(NUM_PLAYERS_ATTR, playerServices.getPlayerList().size());
 
             //Can be not active for 10 min before it times you out.
             httpSession.maxInactiveInterval(600);
-
-            vm.put(MESSAGE_ATTR, WELCOME_MSG);
         }
 
         //If user is currently logged in
@@ -98,7 +94,8 @@ public class GetHomeRoute implements Route {
         if(httpSession.attribute("currentPlayer") != null){
             Player player = playerServices.getPlayer(httpSession.attribute("currentPlayer"));
             // redirect the challenged player to the game
-            if (player.getStatus()==Player.Status.challenged){
+            if (player.getStatus() == Player.Status.challenged ||
+                player.getStatus() == Player.Status.ingame){
                 response.redirect(WebServer.GAME_URL);
                 halt();
                 return null;
@@ -108,6 +105,10 @@ public class GetHomeRoute implements Route {
             vm.put("currentPlayer", httpSession.attribute("currentPlayer"));
             players.remove(player);
             vm.put(PLAYERS_ATTR, players);
+        } else {
+            // only show the number of players online if you are not signin
+            vm.put(NUM_PLAYERS_ATTR, playerServices.getPlayerList().size());
+            vm.put(MESSAGE_ATTR, WELCOME_MSG);
         }
 
         return templateEngine.render(new ModelAndView(vm, VIEW_NAME));
