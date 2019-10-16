@@ -13,7 +13,13 @@ public class BoardView implements Iterable {
      */
     public BoardView(Piece.Color currentPlayerColor) {
         Piece piece;
+        Piece.Color opponentPlayerColor;
         activeColor = currentPlayerColor;
+        if (currentPlayerColor == Piece.Color.RED)
+            opponentPlayerColor = Piece.Color.WHITE;
+        else
+            opponentPlayerColor = Piece.Color.RED;
+
 
         for(int i = 0; i < NUM_ROW; i++) {
             rows[i] = new Row(i);
@@ -23,41 +29,21 @@ public class BoardView implements Iterable {
                 Space space = new Space(j);
                 space.changeValid(false);
                 piece = null;
-                if(currentPlayerColor == Piece.Color.RED) {
-                    if (((i % 2) == 0) && ((j % 2) == 0)) {
-                        if (i < 4) {
-                            piece = new Piece(Piece.Type.NORMAL, Piece.Color.RED);
-                        } else if (i > 3) {
-                            piece = new Piece(Piece.Type.NORMAL, Piece.Color.WHITE);
-                        } else {
-                            space.changeValid(true);
-                        }
-                    } else if (((i % 2) == 1) && ((j % 2) == 1)) {
-                        if (i < 4) {
-                            piece = new Piece(Piece.Type.NORMAL, Piece.Color.RED);
-                        } else if (i > 3) {
-                            piece = new Piece(Piece.Type.NORMAL, Piece.Color.WHITE);
-                        } else {
-                            space.changeValid(true);
-                        }
+                if (((i % 2) == 0) && ((j % 2) == 1)) {
+                    if (i < 3) {
+                        piece = new Piece(Piece.Type.SINGLE, currentPlayerColor);
+                    } else if (i > 4) {
+                        piece = new Piece(Piece.Type.SINGLE, opponentPlayerColor);
+                    } else {
+                        space.changeValid(true);
                     }
-                } else {
-                    if (((i % 2) == 0) && ((j % 2) == 0)) {
-                        if (i < 4) {
-                            piece = new Piece(Piece.Type.NORMAL, Piece.Color.WHITE);
-                        } else if (i > 3) {
-                            piece = new Piece(Piece.Type.NORMAL, Piece.Color.RED);
-                        } else {
-                            space.changeValid(true);
-                        }
-                    } else if (((i % 2) == 1) && ((j % 2) == 1)) {
-                        if (i < 4) {
-                            piece = new Piece(Piece.Type.NORMAL, Piece.Color.WHITE);
-                        } else if (i > 3) {
-                            piece = new Piece(Piece.Type.NORMAL, Piece.Color.RED);
-                        } else {
-                            space.changeValid(true);
-                        }
+                } else if (((i % 2) == 1) && ((j % 2) == 0)) {
+                    if (i < 3) {
+                        piece = new Piece(Piece.Type.SINGLE, currentPlayerColor);
+                    } else if (i > 4) {
+                        piece = new Piece(Piece.Type.SINGLE, opponentPlayerColor);
+                    } else {
+                        space.changeValid(true);
                     }
                 }
                 space.setPiece(piece);

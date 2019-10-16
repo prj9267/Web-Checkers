@@ -22,6 +22,7 @@ public class GetGameRoute implements Route {
     private static final String TITLE = "Game";
     private static final Message MESSAGE = Message.info("message");
     private static final String CURRENT_USER_ATTR = "currentUser";
+    private static final String CURRENT_PLAYER_ATTR = "currentPlayer";
     private static final String VIEW_MODE_ATTR = "viewMode";
     private static final String MODE_OPTION_ATTR = "modeOption";
     private static final String RED_PLAYER_ATTR = "redPlayer";
@@ -88,8 +89,8 @@ public class GetGameRoute implements Route {
             vm.put(WHITE_PLAYER_ATTR, whitePlayer);
 
             //Match match = gameCenter.getMatch(currentPlayer);
-            BoardView whiteBoardView = new BoardView(Piece.Color.WHITE).getBoardView().getWhiteBoard();
-            BoardView redBoardView = new BoardView(Piece.Color.RED).getBoardView().getRedBoard();
+            BoardView whiteBoardView = currentMatch.getWhiteBoardView();
+            BoardView redBoardView = currentMatch.getRedBoardView();
 
             if(currentPlayerName.equals(redPlayer.getName())) {
                 vm.put(BOARD_ATTR, redBoardView);
@@ -98,6 +99,9 @@ public class GetGameRoute implements Route {
                 vm.put(BOARD_ATTR, whiteBoardView);
                 vm.put(CURRENT_USER_ATTR, whitePlayer);
             }
+
+            // for the nav-bar to display the signout option
+            vm.put(CURRENT_PLAYER_ATTR, currentPlayerName);
 
 
 

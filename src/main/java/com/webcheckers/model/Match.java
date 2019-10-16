@@ -7,7 +7,8 @@ public class Match {
     private static final Logger LOG = Logger.getLogger(Match.class.getName());
     // to be implemented maybe here since game.ftl
     //private Map<String, Object> modeOptionAsJSON = null;
-    private BoardView boardView = new BoardView(Piece.Color.RED);
+    private BoardView redBoardView = new BoardView(Piece.Color.RED);
+    private BoardView whiteBoardView = new BoardView(Piece.Color.WHITE);
     private Player redPlayer;
     private Player whitePlayer;
     private Piece.Color activeColor;
@@ -22,14 +23,6 @@ public class Match {
         this.redPlayer = redPlayer;
         this.whitePlayer = whitePlayer;
         activeColor = Piece.Color.RED;
-    }
-
-    /**
-     * Getter function for the boardView.
-     * @return  - the boardView object
-     */
-    public BoardView getBoardView() {
-        return boardView;
     }
 
     /**
@@ -48,6 +41,10 @@ public class Match {
         return whitePlayer;
     }
 
+    /**
+     * Getter function for the current active color
+     * @return
+     */
     public Piece.Color getActiveColor() {
         return activeColor;
     }
@@ -61,6 +58,18 @@ public class Match {
             return redPlayer;
         return whitePlayer;
     }
+
+    /**
+     * Getter function for red player's board view
+     * @return red board view
+     */
+    public BoardView getRedBoardView(){ return redBoardView; }
+
+    /**
+     * Getter function for white player's board view
+     * @return white board view
+     */
+    public BoardView getWhiteBoardView(){ return whiteBoardView; }
 
     /**
      * Getter function for the winner of the match.

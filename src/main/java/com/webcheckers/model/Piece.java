@@ -9,7 +9,7 @@ public class Piece {
      * normal - can only go forward
      * king - can go backward and diagonally
      */
-    public enum Type {NORMAL, KING}
+    public enum Type {SINGLE, KING}
 
     /**
      * COLOR of the piece
