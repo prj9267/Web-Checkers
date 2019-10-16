@@ -5,22 +5,19 @@ import java.util.*;
 public class BoardView implements Iterable {
     private static final int NUM_ROW = 8;
     private static final int NUM_COL = 8;
-    private Piece.Color activeColor = Piece.Color.RED;
-    private Space spaces[][];
-    //private Row[] board = new Row[NUM_ROW];
+    private Piece.Color activeColor;
+    private Row[] rows = new Row[NUM_ROW];
 
     /**
      * Initializes the board representation as an array of Row objects.  Fills in the row objects with Space objects.
      */
     public BoardView(Piece.Color currentPlayerColor) {
         Piece piece;
-        activeColor = Piece.Color.RED;
-        spaces = new Space[NUM_ROW][NUM_COL];
+        activeColor = currentPlayerColor;
 
         for(int i = 0; i < NUM_ROW; i++) {
-            //board[i] = new Row(i);
-            //Row row = board[i];
-            //Space[] col = row.getCol();
+            rows[i] = new Row(i);
+            Row row = rows[i];
 
             for(int j = 0; j < NUM_COL; j++) {
                 Space space = new Space(j);
@@ -63,14 +60,10 @@ public class BoardView implements Iterable {
                         }
                     }
                 }
-                /*if (piece != null)
-                    col[j] = new Space(j, i, true, piece);
-                else
-                    col[j] = new Space(j, i, false, null);
-                */
                 space.setPiece(piece);
-                spaces[i][j] = space;
+                row.setCol(j, space);
             }
+            rows[i] = row;
         }
     }
 
@@ -101,11 +94,12 @@ public class BoardView implements Iterable {
 
     @Override
     public Iterator iterator() {
-        LinkedList<Row> rows = new LinkedList<Row>();
+        return Arrays.asList(rows).iterator();
+        /*LinkedList<Row> rows = new LinkedList<Row>();
         for(int numOfRow = 0; numOfRow < NUM_ROW; numOfRow++) {
             Row row = new Row(numOfRow, Arrays.asList(spaces[numOfRow]));
             rows.add(row);
         }
-        return rows.iterator();
+        return rows.iterator();*/
     }
 }

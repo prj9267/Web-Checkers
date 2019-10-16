@@ -7,16 +7,16 @@ public class Row implements Iterable {
 
     //Attributes
     private final static int NUM_COL = 8;
-    private List<Space> spaces;
+    private Space[] cols;
     public int index;
 
     /**
      * Row constructor, sets the index value of the row, and the column to a new array of Space objects
      * @param index - the index value of the row.
      */
-    public Row(int index, List<Space> spaces) {
+    public Row(int index) {
         this.index = index;
-        this.spaces = spaces;
+        this.cols = new Space[NUM_COL];
     }
 
     /**
@@ -31,7 +31,24 @@ public class Row implements Iterable {
      * Column getter function
      * @return  - the array of space objects representing the column.
      */
-    /*public Space[] getCol(){ return col; }*/
+    public Space[] getCol(){ return cols; }
+
+    /**
+     * Set one of the column
+     * @param j       - the column index
+     * @param space   - space for that column
+     */
+    public void setCol(int j, Space space){
+        cols[j] = space;
+    }
+
+    /**
+     * Set all of the columns
+     * @param cols the array of columns
+     */
+    public void setCols(Space[] cols){
+        this.cols = cols;
+    }
 
     /**
      * Overridden iteratable function to be able to iterate over a Row object.
@@ -39,6 +56,6 @@ public class Row implements Iterable {
      */
     @Override
     public Iterator iterator(){
-        return spaces.iterator();
+        return Arrays.asList(cols).iterator();
     }
 }

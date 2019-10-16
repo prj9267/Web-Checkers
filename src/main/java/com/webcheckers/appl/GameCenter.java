@@ -31,8 +31,6 @@ public class GameCenter {
      * @return                  - true if match has been added
      */
     public synchronized boolean addMatch(Player redPlayer, Player whitePlayer) {
-        System.out.println("red player: " + redPlayer.getName());
-        System.out.println("white player: " + whitePlayer.getName());
         String redPlayerName = redPlayer.getName();
         String whitePlayerName = whitePlayer.getName();
         if(redPlayer.equals(whitePlayer) || inMatch.containsKey(redPlayer) || inMatch.containsKey(whitePlayer))
