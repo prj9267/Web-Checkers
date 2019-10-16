@@ -31,17 +31,17 @@ public class BoardView implements Iterable {
                 piece = null;
                 if (((i % 2) == 0) && ((j % 2) == 1)) {
                     if (i < 3) {
-                        piece = new Piece(Piece.Type.SINGLE, currentPlayerColor);
-                    } else if (i > 4) {
                         piece = new Piece(Piece.Type.SINGLE, opponentPlayerColor);
+                    } else if (i > 4) {
+                        piece = new Piece(Piece.Type.SINGLE, currentPlayerColor);
                     } else {
                         space.changeValid(true);
                     }
                 } else if (((i % 2) == 1) && ((j % 2) == 0)) {
                     if (i < 3) {
-                        piece = new Piece(Piece.Type.SINGLE, currentPlayerColor);
-                    } else if (i > 4) {
                         piece = new Piece(Piece.Type.SINGLE, opponentPlayerColor);
+                    } else if (i > 4) {
+                        piece = new Piece(Piece.Type.SINGLE, currentPlayerColor);
                     } else {
                         space.changeValid(true);
                     }
