@@ -40,11 +40,15 @@ public class GetGameRoute implements Route {
      * @param templateEngine
      *    The {@link TemplateEngine} used for rendering page HTML.
      */
-    public GetGameRoute(final PlayerServices playerServices, final TemplateEngine templateEngine, final GameCenter gameCenter){
+    public GetGameRoute(final PlayerServices playerServices,
+                        final GameCenter gameCenter,
+                        final TemplateEngine templateEngine){
+        Objects.requireNonNull(playerServices, "playerServices must not be null");
+        Objects.requireNonNull(gameCenter, "gameCenter must not be null");
         Objects.requireNonNull(templateEngine, "templateEngine must not be null");
-        this.templateEngine = templateEngine;
-        this.gameCenter = gameCenter;
         this.playerServices = playerServices;
+        this.gameCenter = gameCenter;
+        this.templateEngine = templateEngine;
     }
 
     /**
@@ -58,18 +62,34 @@ public class GetGameRoute implements Route {
         if(playerServices != null) {
             final Map<String, Object> vm = new HashMap<>();
             vm.put(TITLE_ATTR, TITLE);
-            String currentPlayerName = httpSession.attribute("username");
+            String currentPlayerName = httpSession.attribute("currentPlayer");
             Player currentPlayer = playerServices.getPlayer(currentPlayerName);
-            String opponentName = gameCenter.getOpponent(currentPlayerName);
+
+            vm.put(CURRENT_USER_ATTR, currentPlayer);
+
+            Player redPlayer;
+            Player whitePlayer;
+            Match currentMatch;
+
+            // if the button is just triggered, initialize everything
+            if (request.queryParams("button") != null) {
+                String opponentName = request.queryParams("button");
+                redPlayer = currentPlayer;
+                whitePlayer = playerServices.getPlayer(opponentName);
+                gameCenter.addMatch(redPlayer, whitePlayer);
+                currentMatch = gameCenter.getMatch(redPlayer);
+            } else { // else get the information from the match
+                currentMatch = gameCenter.getMatch(currentPlayer);
+                redPlayer = currentMatch.getRedPlayer();
+                whitePlayer = currentMatch.getWhitePlayer();
+            }
+
+            vm.put(RED_PLAYER_ATTR, redPlayer);
+            vm.put(WHITE_PLAYER_ATTR, whitePlayer);
 
             //Match match = gameCenter.getMatch(currentPlayer);
             BoardView whiteBoardView = new BoardView(Piece.Color.WHITE).getBoardView().getWhiteBoard();
             BoardView redBoardView = new BoardView(Piece.Color.RED).getBoardView().getRedBoard();
-
-            Match currentMatch = gameCenter.getMatch(currentPlayer);
-            Player redPlayer = new Player("red");
-            //Player redPlayer = currentMatch.getRedPlayer();
-            Player whitePlayer = currentMatch.getWhitePlayer();
 
             if(currentPlayerName.equals(redPlayer.getName())) {
                 vm.put(BOARD_ATTR, redBoardView);
@@ -82,7 +102,11 @@ public class GetGameRoute implements Route {
 
 
             vm.put(ACTIVE_COLOR_ATTR, currentMatch.getActiveColor());
-            vm.put(VIEW_MODE_ATTR, viewMode.PLAY);
+            // right now there is only the option to play
+            viewMode currentViewMode = viewMode.PLAY;
+            vm.put(VIEW_MODE_ATTR, currentViewMode);
+            /*if (currentPlayer.isInGame())
+                currentViewMode = viewMode.PLAY;*/
 
             //Add the players to their respective maps with their names
             //Player player1 = new Player("Player1");

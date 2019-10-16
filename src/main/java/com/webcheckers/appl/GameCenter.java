@@ -3,6 +3,7 @@ package com.webcheckers.appl;
 import com.webcheckers.model.Match;
 import com.webcheckers.model.Player;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Logger;
@@ -13,7 +14,7 @@ public class GameCenter {
     //Attributes
     private PlayerServices playerServices;
     private Map<Player, Match> inMatch;
-    //private ArrayList<Match> gameList = new ArrayList<>();
+    private ArrayList<Match> gameList = new ArrayList<>();
 
     /**
      * Constructor for GameCenter Object
@@ -30,6 +31,8 @@ public class GameCenter {
      * @return                  - true if match has been added
      */
     public synchronized boolean addMatch(Player redPlayer, Player whitePlayer) {
+        System.out.println("red player: " + redPlayer.getName());
+        System.out.println("white player: " + whitePlayer.getName());
         String redPlayerName = redPlayer.getName();
         String whitePlayerName = whitePlayer.getName();
         if(redPlayer.equals(whitePlayer) || inMatch.containsKey(redPlayer) || inMatch.containsKey(whitePlayer))
@@ -37,6 +40,8 @@ public class GameCenter {
         Match match = new Match(redPlayer, whitePlayer);
         inMatch.put(redPlayer, match);
         inMatch.put(whitePlayer, match);
+        redPlayer.changeStatus(Player.Status.ingame);
+        whitePlayer.changeStatus(Player.Status.challenged);
         return true;
     }
 

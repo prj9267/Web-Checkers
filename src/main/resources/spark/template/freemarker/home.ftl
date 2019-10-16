@@ -31,9 +31,11 @@
                 <div class="body">
                     <#if players??>
                         <p>Currently Signed in Players:</p>
-                        <#list players as player>
-                            <p> <a href="/game">${player.name}</a>
-                        </#list>
+                        <form action="./game">
+                            <#list players as player>
+                                <button type="submit" name=button value=${player.name}> ${player.name} </button>
+                            </#list>
+                        </form>
                     </#if>
                 </div>
             </#if>

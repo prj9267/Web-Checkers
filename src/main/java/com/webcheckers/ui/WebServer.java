@@ -153,10 +153,9 @@ public class WebServer {
     //todo get Checkers game page.
     get(SIGNIN_URL, new GetSignInRoute(templateEngine));
     post(POST_SINGIN_URL, new PostSignInRoute(playerServices, templateEngine));
-    post(POST_SINGIN_URL, new PostSignInRoute(playerServices, templateEngine));
     post(POST_SIGNOUT_URL, new PostSignOutRoute(playerServices, templateEngine));
     //get game.
-    get(GAME_URL, new GetGameRoute(playerServices, templateEngine, gameCenter));
+    get(GAME_URL, new GetGameRoute(playerServices, gameCenter, templateEngine));
 
     //
     LOG.config("WebServer is initialized.");

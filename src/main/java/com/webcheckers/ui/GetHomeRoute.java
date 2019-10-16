@@ -13,6 +13,8 @@ import spark.*;
 
 import com.webcheckers.util.Message;
 
+import static spark.Spark.halt;
+
 /**
  * The UI Controller to GET the Home page.
  *
@@ -94,7 +96,14 @@ public class GetHomeRoute implements Route {
         //If user is currently logged in
         ArrayList<Player> players = playerServices.getPlayerList();
         if(httpSession.attribute("currentPlayer") != null){
-            Player player = new Player(httpSession.attribute("currentPlayer"));
+            Player player = playerServices.getPlayer(httpSession.attribute("currentPlayer"));
+            // redirect the challenged player to the game
+            if (player.getStatus()==Player.Status.challenged){
+                response.redirect(WebServer.GAME_URL);
+                halt();
+                return null;
+            }
+
             vm.put(MESSAGE_ATTR, SIGNIN_MSG);
             vm.put("currentPlayer", httpSession.attribute("currentPlayer"));
             players.remove(player);

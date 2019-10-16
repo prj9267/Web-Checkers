@@ -41,6 +41,16 @@ public class Player {
         return status;
     }
 
+    /**
+     * Check if the player is playing a game or not
+     * @return true if  the player is playing a game, else false
+     */
+    public boolean isInGame(){
+        if (status == Status.ingame || status == Status.challenged)
+            return true;
+        return false;
+    }
+
     public void changeStatus(Status status) {
         this.status = status;
     }
