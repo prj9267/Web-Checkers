@@ -36,40 +36,29 @@ public class PlayerServices {
         return gameCenter.getMatch(player1, player2);
     }*/
 
+    /**
+     * Add a new player to the player list
+     * @param player
+     */
     public void addPlayer(Player player) {
         playerList.add(player);
     }
 
     /**
+     * Remove an existing player
+     * @param player
+     */
+    public void removePlayer(Player player){
+        playerList.remove(player);
+    }
+
+    /**
      * Checks if the username is taken.
-     * @param username  - the user
+     * @param player  - the user
      * @return          - true if not taken and false if taken
      */
-    public boolean isAvailable(String username) {
-        for(Player player: playerList) {
-            if(player.getName() == username) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    /**
-     * Checks if the registered name contains only alphanumeric characters.
-     * @param username  - the user
-     * @return          - true if name is valid and false if not
-     */
-    public boolean isAlphanumeric(String username) {
-        return username.matches("[a-zA-Z_0-9]+([a-zA-Z_0-9]|\\s)*$");
-    }
-
-    /**
-     * Checks if the username is valid
-     * @param username  - the user
-     * @return          - true if valid and false if invalid
-     */
-    public boolean isValid(String username) {
-        return isAlphanumeric(username) && isAvailable(username);
+    public boolean isAvailable(Player player) {
+        return playerList.contains(player);
     }
 
     /**
@@ -94,8 +83,14 @@ public class PlayerServices {
         return playerList.size();
     }
 
+    /**
+     * Gets a copy of players online
+     * @return a clean copy of player list online
+     */
     public ArrayList<Player> getPlayerList() {
-        return playerList;
+        ArrayList<Player> ret = new ArrayList<>();
+        ret.addAll(playerList);
+        return ret;
     }
 
 }

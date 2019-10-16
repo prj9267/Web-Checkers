@@ -58,7 +58,7 @@ public class WebServer {
   public static final String SIGNIN_URL = "/signin";
   public static final String POST_SINGIN_URL = "/postsignin";
   public static final String GAME_URL = "/game";
-  //public static final String SIGNUP_URL = "/signup";
+  public static final String POST_SIGNOUT_URL = "/signout";
 
   //
   // Attributes
@@ -153,6 +153,8 @@ public class WebServer {
     //todo get Checkers game page.
     get(SIGNIN_URL, new GetSignInRoute(templateEngine));
     post(POST_SINGIN_URL, new PostSignInRoute(playerServices, templateEngine));
+    post(POST_SINGIN_URL, new PostSignInRoute(playerServices, templateEngine));
+    post(POST_SIGNOUT_URL, new PostSignOutRoute(playerServices, templateEngine));
     //get game.
     get(GAME_URL, new GetGameRoute(playerServices, templateEngine, gameCenter));
 

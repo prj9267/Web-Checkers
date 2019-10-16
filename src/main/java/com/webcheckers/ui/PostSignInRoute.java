@@ -4,6 +4,7 @@ import com.webcheckers.appl.PlayerServices;
 import com.webcheckers.util.Message;
 import spark.*;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -11,19 +12,20 @@ import java.util.logging.Logger;
 
 import com.webcheckers.model.Player;
 
+import static spark.Spark.halt;
+
 public class PostSignInRoute implements Route {
     private static final Logger LOG = Logger.getLogger(GetHomeRoute.class.getName());
 
     //Values to be used in the View-Model
-    private static final String SUCESS_TITLE = "Home";
-    private static final String FAILURE_TITLE = "Sign In Page";
-    private static final String SUCCESS_VIEW_NAME = "home.ftl";
-    private static final String FAILURE_VIEW_NAME = "signin.ftl";
+    private static final String TITLE = "Sign In";
+    private static final String ERROR_FTL = "signin.ftl";
     private static final Message SUCCESS_MESSAGE = Message.info("You have successfully signed in!");
-    private static final String TAKEN_MESSAGE = "Your username was taken, enter a new username that only contains" +
-            " alphanumeric characters and spaces (do not start with a space).";
-    private static final String INVALID_MESSAGE = "Your username is invalid, enter a new username that only contains" +
-            " alphanumeric characters and spaces (do not start with a space).";
+    private static final Message TAKEN_MESSAGE = Message.error("Your username was taken, enter a new username that only contains" +
+            " alphanumeric characters and spaces.");
+    private static final Message CONTAIN_MESSAGE = Message.error("Your username is invalid, enter a new username that only contains" +
+            " alphanumeric characters and spaces.");
+    private static final Message EMPTY_MESSAGE = Message.error("Your username cannot be empty.");
 
     private final TemplateEngine templateEngine;
     private final PlayerServices playerServices;
@@ -47,16 +49,23 @@ public class PostSignInRoute implements Route {
     /**
      * Checks if the username is a valid name to be signed in with.
      * @param username  - the username in question
-     * @return  - true if valid, false otherwise
+     * @return - 0 if it is valid
+     *          1 if the username is empty
+     *          2 if the username contains invalid characters
+     *          3 if the username is already taken
      */
-    /*public Boolean isSuccess(String username){
+
+    public int verifyUsername(String username){
         // right now does not contains a list of players
+        Player player = new Player(username);
         if (username.length() == 0)
-            return false;
-        else if (containsInvalidCharacter(username))
-            return false;
-        return true;
-    }*/
+            return 1;
+        else if (player.containsInvalidCharacter())
+            return 2;
+        else if (this.playerServices.getPlayerList().contains(player))
+            return 3;
+        return 0;
+    }
 
     /**
      * Render the WebCheckers Home page after signing in.
@@ -76,61 +85,35 @@ public class PostSignInRoute implements Route {
         // start building the View-Model
         final Map<String, Object> vm = new HashMap<>();
         final Session httpSession = request.session();
+        int stat_code = verifyUsername(username);
+        Player player = new Player(username);
 
-        if(httpSession.attribute("name") != null) {
-            response.redirect(WebServer.HOME_URL);
-            return null;
-        }
-        vm.put("title", "TITLE");
-        if (!playerServices.isValid(username)) {
-            vm.put("username", username);
-            vm.put(GetHomeRoute.MESSAGE_ATTR, new Message(INVALID_MESSAGE, Message.Type.ERROR));
-            return templateEngine.render(new ModelAndView(vm, FAILURE_VIEW_NAME));
-        } else if (!playerServices.isAvailable(username)) {
-            vm.put("username", username);
-            vm.put(GetHomeRoute.MESSAGE_ATTR, new Message(TAKEN_MESSAGE, Message.Type.ERROR));
-            return templateEngine.render(new ModelAndView(vm, FAILURE_VIEW_NAME));
-        } else {
-            httpSession.attribute("username", username);
-            Player currentPlayer = new Player(username);
-            playerServices.addPlayer(currentPlayer);
-            response.redirect(WebServer.HOME_URL);
-            return null;
-        }
-        /*if(httpSession.attribute("name") != null) {
-            response.redirect(WebServer.HOME_URL)
-            if (isSuccess(username)) {
-                gameCenter.addPlayer(new Player(username));
+        if(httpSession.attribute("playerServices") != null) {
+            if (stat_code == 0) {
+                playerServices.addPlayer(player);
 
-                //Pass through objects to the VM for use in ftl files.
-                vm.put(GetHomeRoute.TITLE_ATTR, SUCESS_TITLE);
-                vm.put(GetHomeRoute.MESSAGE_ATTR, SUCCESS_MESSAGE);
-                vm.put(GetHomeRoute.PLAYERS_ATTR, gameCenter.getPlayers());
-                vm.put("playerName", username);
-                httpSession.attribute("currentUsername", username);
-                vm.put("loggedIn", 0);
+                httpSession.attribute("currentPlayer", username);
+                httpSession.removeAttribute("numPlayers");
 
                 response.redirect(WebServer.HOME_URL);
                 halt();
                 return null;
-                //return templateEngine.render(new ModelAndView(vm, SUCCESS_VIEW_NAME));
             } else {
-                vm.put(GetHomeRoute.TITLE_ATTR, FAILURE_TITLE);
-                if (username.length() == 0)
-                    vm.put(GetHomeRoute.MESSAGE_ATTR, Message.error(EMPTY_MESSAGE));
-                else if (containsInvalidCharacter(username))
-                    vm.put(GetHomeRoute.MESSAGE_ATTR, Message.error(CONTAIN_MESSAGE));
+                vm.put(GetHomeRoute.TITLE_ATTR, TITLE);
+                if (stat_code == 1)
+                    vm.put(GetHomeRoute.MESSAGE_ATTR, EMPTY_MESSAGE);
+                else if (stat_code == 2)
+                    vm.put(GetHomeRoute.MESSAGE_ATTR, CONTAIN_MESSAGE);
+                else if (stat_code == 3)
+                    vm.put(GetHomeRoute.MESSAGE_ATTR, TAKEN_MESSAGE);
 
-                response.redirect(WebServer.SIGNIN_URL);
-                halt();
-                return null;
-                //return templateEngine.render(new ModelAndView(vm, FAILURE_VIEW_NAME));
+                return templateEngine.render(new ModelAndView(vm, ERROR_FTL));
             }
         }
         else{
             response.redirect(WebServer.HOME_URL);
             halt();
             return null;
-        }*/
+        }
     }
 }

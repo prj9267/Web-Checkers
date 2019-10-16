@@ -29,6 +29,7 @@ public class GetHomeRoute implements Route {
     private static final String TITLE = "Welcome!";
     private static final String VIEW_NAME = "home.ftl";
     private static final Message WELCOME_MSG = Message.info("Welcome to the world of online Checkers.");
+    private static final Message SIGNIN_MSG = Message.info("You Have Successfully Sign In!");
 
     private static final Logger LOG = Logger.getLogger(GetHomeRoute.class.getName());
 
@@ -72,7 +73,8 @@ public class GetHomeRoute implements Route {
         //
         final Session httpSession = request.session();
         Map<String, Object> vm = new HashMap<>();
-        boolean signedIn = false;
+
+        vm.put(TITLE_ATTR, TITLE);
 
         //If no session is currently active
         if(httpSession.attribute("playerServices") == null) {
@@ -80,6 +82,9 @@ public class GetHomeRoute implements Route {
             httpSession.attribute("playerServices", playerServices);
 
             httpSession.attribute("timeoutWatchDog", new SessionTimeoutWatchdog(playerServices));
+            // only show the number of players online if you are not signin
+            vm.put(NUM_PLAYERS_ATTR, playerServices.getPlayerList().size());
+
             //Can be not active for 10 min before it times you out.
             httpSession.maxInactiveInterval(600);
 
@@ -87,19 +92,14 @@ public class GetHomeRoute implements Route {
         }
 
         //If user is currently logged in
-        String username = httpSession.attribute("username");
-        Player player = playerServices.getPlayer(username);
-        if(username != null && player != null && username.equals(player.getName())) {
-            signedIn = true;
+        ArrayList<Player> players = playerServices.getPlayerList();
+        if(httpSession.attribute("currentPlayer") != null){
+            Player player = new Player(httpSession.attribute("currentPlayer"));
+            vm.put(MESSAGE_ATTR, SIGNIN_MSG);
+            vm.put("currentPlayer", httpSession.attribute("currentPlayer"));
+            players.remove(player);
+            vm.put(PLAYERS_ATTR, players);
         }
-
-        vm.put("signedIn", signedIn);
-        vm.put("username", username);
-        vm.put(TITLE_ATTR, TITLE);
-        vm.put(MESSAGE_ATTR, Message.info("You Have Successfully Logged In!"));
-        vm.put(PLAYERS_ATTR, playerServices.getPlayer(username));
-        vm.put(NUM_PLAYERS_ATTR, playerServices.numPlayers());
-        vm.put("players", playerServices.getPlayerList());
 
         return templateEngine.render(new ModelAndView(vm, VIEW_NAME));
     }
