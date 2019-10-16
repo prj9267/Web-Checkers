@@ -80,6 +80,6 @@ public class TemplateEngineTester {
     assertAll("View assertions",
         () -> { assertNotNull(viewName, "the View name exists"); },
         () -> { assertEquals(expectedName, viewName, "the View name matches"); }
-        );
+       );
   }
 }

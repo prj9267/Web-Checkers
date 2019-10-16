@@ -12,7 +12,7 @@ public class BoardView implements Iterable {
     /**
      * Initializes the board representation as an array of Row objects.  Fills in the row objects with Space objects.
      */
-    public BoardView() {
+    public BoardView(Piece.Color currentPlayerColor) {
         Piece piece;
         activeColor = Piece.Color.RED;
         spaces = new Space[NUM_ROW][NUM_COL];
@@ -26,22 +26,41 @@ public class BoardView implements Iterable {
                 Space space = new Space(j);
                 space.changeValid(false);
                 piece = null;
-                if (((i % 2) == 0) && ((j % 2) == 0)) {
-                    if (i < 4) {
-                        piece = new Piece(Piece.Type.NORMAL, Piece.Color.RED);
-                    } else if (i > 3) {
-                        piece = new Piece(Piece.Type.NORMAL, Piece.Color.WHITE);
-                    } else {
-                        space.changeValid(true);
+                if(currentPlayerColor == Piece.Color.RED) {
+                    if (((i % 2) == 0) && ((j % 2) == 0)) {
+                        if (i < 4) {
+                            piece = new Piece(Piece.Type.NORMAL, Piece.Color.RED);
+                        } else if (i > 3) {
+                            piece = new Piece(Piece.Type.NORMAL, Piece.Color.WHITE);
+                        } else {
+                            space.changeValid(true);
+                        }
+                    } else if (((i % 2) == 1) && ((j % 2) == 1)) {
+                        if (i < 4) {
+                            piece = new Piece(Piece.Type.NORMAL, Piece.Color.RED);
+                        } else if (i > 3) {
+                            piece = new Piece(Piece.Type.NORMAL, Piece.Color.WHITE);
+                        } else {
+                            space.changeValid(true);
+                        }
                     }
-                }
-                else if (((i % 2) == 1) && ((j % 2) == 1)) {
-                    if (i < 4) {
-                        piece = new Piece(Piece.Type.NORMAL, Piece.Color.RED);
-                    } else if (i > 3) {
-                        piece = piece = new Piece(Piece.Type.NORMAL, Piece.Color.WHITE);
-                    } else {
-                        space.changeValid(true);
+                } else {
+                    if (((i % 2) == 0) && ((j % 2) == 0)) {
+                        if (i < 4) {
+                            piece = new Piece(Piece.Type.NORMAL, Piece.Color.WHITE);
+                        } else if (i > 3) {
+                            piece = new Piece(Piece.Type.NORMAL, Piece.Color.RED);
+                        } else {
+                            space.changeValid(true);
+                        }
+                    } else if (((i % 2) == 1) && ((j % 2) == 1)) {
+                        if (i < 4) {
+                            piece = new Piece(Piece.Type.NORMAL, Piece.Color.WHITE);
+                        } else if (i > 3) {
+                            piece = new Piece(Piece.Type.NORMAL, Piece.Color.RED);
+                        } else {
+                            space.changeValid(true);
+                        }
                     }
                 }
                 /*if (piece != null)
@@ -55,11 +74,19 @@ public class BoardView implements Iterable {
         }
     }
 
+    public BoardView getWhiteBoard() {
+        return new BoardView(Piece.Color.WHITE);
+    }
+
+    public BoardView getRedBoard() {
+        return new BoardView(Piece.Color.RED);
+    }
+
     /**
      * Getter function for the board object;
      * @return  - this board
      */
-    public BoardView getBoard() {
+    public BoardView getBoardView() {
         return this;
     }
 

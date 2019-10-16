@@ -168,7 +168,7 @@ define(function(require){
     const yes = window.confirm('Are you sure you want to resign?');
     if (!yes) {
       // if not, the return
-      this.displayMessage( {type: 'INFO', text: 'Resignation cancelled.'} );
+      this.displayMessage({type: 'INFO', text: 'Resignation cancelled.'});
       return;
     }
     

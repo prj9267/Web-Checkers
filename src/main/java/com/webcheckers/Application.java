@@ -101,7 +101,7 @@ public final class Application {
 
           //final GameCenter gameCenter = new GameCenter(new ArrayList<Player>());
           final PlayerServices playerServices = new PlayerServices();
-          final GameCenter gameCenter = new GameCenter();
+          final GameCenter gameCenter = new GameCenter(playerServices);
           // inject the game center and freemarker engine into web server
           final WebServer webServer = new WebServer(playerServices, gameCenter, templateEngine, gson);
 

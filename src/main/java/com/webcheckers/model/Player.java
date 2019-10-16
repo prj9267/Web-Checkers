@@ -4,13 +4,16 @@ public class Player {
 
     //Attributes
     private String name;
+    public enum Status {waiting, challenged, ingame}
+    public Status status;
 
     /**
      * Player constructor
      * @param name  - sets name to the string provided
      */
-    public Player(String name){
+    public Player(String name) {
         this.name = name;
+        status = Status.waiting;
     }
 
     /**
@@ -19,6 +22,14 @@ public class Player {
      */
     public String getName(){
         return name;
+    }
+
+    public Status getStatus() {
+        return status;
+    }
+
+    public void changeStatus(Status status) {
+        this.status = status;
     }
 
     /**

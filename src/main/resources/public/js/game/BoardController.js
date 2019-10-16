@@ -50,11 +50,11 @@ define(function(require){
     // UI Controls
 
     this.enableAllMyPieces = function enableAllMyPieces() {
-      _pieces.forEach( this.enablePiece );
+      _pieces.forEach(this.enablePiece);
     };
 
     this.disableAllMyPieces = function disableAllMyPieces() {
-      _pieces.forEach( this.disablePiece );
+      _pieces.forEach(this.disablePiece);
     };
 
     /**

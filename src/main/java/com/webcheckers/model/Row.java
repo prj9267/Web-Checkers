@@ -23,7 +23,9 @@ public class Row implements Iterable {
      * Index getter function.
      * @return  - the rows index
      */
-    public int getIndex(){ return index; }
+    public int getIndex() {
+        return index;
+    }
 
     /**
      * Column getter function

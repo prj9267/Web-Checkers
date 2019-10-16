@@ -24,22 +24,24 @@
           <div class="body">
                <#if numPlayers??>
                    <div class="body">
-                       <p>Number of Other Users Logged In:</p>
-                       <ul>
-                           <p>${numPlayers}</p>
-                       </ul>
+                       <p>Number of Other Users Logged In: #{numPlayers}</p>
                    </div>
                </#if>
                <#if players??>
-                   <p>There are players to challenge.</p>
                    <p>Currently Signed in Players:</p>
                        <#list players as player>
-                           <input name="opponent">
-                               <a href="/game">${player.getName()}</a>
-                           </input>
+                           <#if signedIn>
+                               <#if player.getName() != username>
+                                   <ul name="opponent">
+                                       <a href="/game">${player.getName()}</a>
+                                   </ul>
+                               </#if>
+                           <#else>
+                               <ul name="opponent">
+                                   <a href="/game">${player.getName()}</a>
+                               </ul>
+                           </#if>
                         </#list>
-               <#else>
-                   <p>There are no players to challenge.</p>
                </#if>
           </div>
 

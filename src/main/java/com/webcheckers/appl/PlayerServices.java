@@ -1,12 +1,8 @@
 package com.webcheckers.appl;
 
-import com.webcheckers.model.Match;
 import com.webcheckers.model.Player;
 
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
 
 
 public class PlayerServices {
@@ -49,7 +45,7 @@ public class PlayerServices {
      * @param username  - the user
      * @return          - true if not taken and false if taken
      */
-    public boolean isTaken(String username) {
+    public boolean isAvailable(String username) {
         for(Player player: playerList) {
             if(player.getName() == username) {
                 return false;
@@ -73,7 +69,7 @@ public class PlayerServices {
      * @return          - true if valid and false if invalid
      */
     public boolean isValid(String username) {
-        return isAlphanumeric(username) && isTaken(username);
+        return isAlphanumeric(username) && isAvailable(username);
     }
 
     /**

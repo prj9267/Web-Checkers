@@ -1,6 +1,5 @@
 package com.webcheckers.ui;
 
-import com.webcheckers.appl.GameCenter;
 import com.webcheckers.appl.PlayerServices;
 import com.webcheckers.util.Message;
 import spark.*;
@@ -11,8 +10,6 @@ import java.util.Objects;
 import java.util.logging.Logger;
 
 import com.webcheckers.model.Player;
-
-import static spark.Spark.*;
 
 public class PostSignInRoute implements Route {
     private static final Logger LOG = Logger.getLogger(GetHomeRoute.class.getName());
@@ -89,7 +86,7 @@ public class PostSignInRoute implements Route {
             vm.put("username", username);
             vm.put(GetHomeRoute.MESSAGE_ATTR, new Message(INVALID_MESSAGE, Message.Type.ERROR));
             return templateEngine.render(new ModelAndView(vm, FAILURE_VIEW_NAME));
-        } else if (!playerServices.isTaken(username)) {
+        } else if (!playerServices.isAvailable(username)) {
             vm.put("username", username);
             vm.put(GetHomeRoute.MESSAGE_ATTR, new Message(TAKEN_MESSAGE, Message.Type.ERROR));
             return templateEngine.render(new ModelAndView(vm, FAILURE_VIEW_NAME));

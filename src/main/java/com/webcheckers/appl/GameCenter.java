@@ -18,8 +18,9 @@ public class GameCenter {
     /**
      * Constructor for GameCenter Object
      */
-    public GameCenter() {
+    public GameCenter(PlayerServices playerServices) {
         this.inMatch = new HashMap<>();
+        this.playerServices = playerServices;
     }
 
     /**
@@ -38,6 +39,28 @@ public class GameCenter {
         inMatch.put(whitePlayer, match);
         return true;
     }
+
+    /**
+     * gets the opponent
+     * @param username the player's opponent
+     * @return the opponent's name
+     */
+    public synchronized String getOpponent(String username) {
+        Match game = getMatch(playerServices.getPlayer(username));
+        if (game != null) {
+            Player redPlayer = game.getRedPlayer();
+            if (redPlayer != null && !redPlayer.getName().equals(username)) {
+                return redPlayer.getName();
+            }
+            Player whitePlayer = game.getWhitePlayer();
+            if (whitePlayer != null && !whitePlayer.getName().equals(username)) {
+                return whitePlayer.getName();
+            }
+        }
+
+        return null;
+    }
+
 
     /**
      * Checks if the provided player is the current player

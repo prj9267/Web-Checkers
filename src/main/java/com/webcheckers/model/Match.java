@@ -7,7 +7,7 @@ public class Match {
     private static final Logger LOG = Logger.getLogger(Match.class.getName());
     // to be implemented maybe here since game.ftl
     //private Map<String, Object> modeOptionAsJSON = null;
-    private BoardView boardView = new BoardView();
+    private BoardView boardView = new BoardView(Piece.Color.RED);
     private Player redPlayer;
     private Player whitePlayer;
     private Piece.Color activeColor;
