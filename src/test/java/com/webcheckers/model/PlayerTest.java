@@ -7,10 +7,12 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @Tag("Model-tier")
 public class PlayerTest {
-    private static final String INVALID_USERNAME = "#goJackson *";
+    private String name = "User";
+    private Player player = new Player(name);
 
     @Test
-    public void checkInvalidUsername() {
-        
+    public void checkEquality() {
+        Player player2 = new Player(name);
+        assertTrue(player.equals(player2), "Players are not equal");
     }
 }
