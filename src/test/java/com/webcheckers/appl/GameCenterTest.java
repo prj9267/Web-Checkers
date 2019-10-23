@@ -20,16 +20,17 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @Tag("Application-tier")
 public class GameCenterTest {
-    private PlayerServices playerSrv;
+//    private PlayerServices playerSrv;
     private GameCenter CuT;
     private HashMap<Player, Match> inMatch = new HashMap<>();
     private ArrayList<Match> gameList = new ArrayList<>();
     private Player playerOne = new Player("One");
     private Player playerTwo = new Player("Two");
+    private PlayerServices playerSrv = new PlayerServices();
 
     @BeforeEach
     public void setup() {
-        playerSrv = mock(PlayerServices.class);
+//        playerSrv = mock(PlayerServices.class);
         CuT = new GameCenter(playerSrv);
     }
 
@@ -38,15 +39,18 @@ public class GameCenterTest {
         assertTrue(CuT.addMatch(playerOne, playerTwo), "Did not add match properly");
     }
 
-//    @Test
-//    void checkOppenentGotten() {
-//        CuT.addMatch(playerOne, playerTwo);
-//        playerSrv.addPlayer(playerOne);
-//        playerSrv.addPlayer(playerTwo);
-//
-//        assertEquals("One".hashCode(), CuT.getOpponent("Two").hashCode(), "Two's oppenent is not One");
-//
-//    }
+    @Test
+    void checkOpponentGotten() {
+        assertSame(null, CuT.getOpponent("Two"), "Game is not null");
+
+        CuT.addMatch(playerOne, playerTwo);
+        playerSrv.addPlayer(playerOne);
+        playerSrv.addPlayer(playerTwo);
+
+        assertEquals("Two", CuT.getOpponent("One"), "One's opponent is not Two");
+        assertEquals("One", CuT.getOpponent("Two"), "Two's opponent is not One");
+
+    }
 
     @Test
     void checkIsInMatch() {
@@ -60,17 +64,17 @@ public class GameCenterTest {
         assertTrue(CuT.isCurrent(playerOne), "Player is not the current Player");
     }
 
-//    @Test
-//    void checkGetMatch() {
-//        Match match = new Match(playerOne, playerTwo);
-//        inMatch.put(playerOne, match);
-//        inMatch.put(playerTwo, match);
-//        playerOne.changeStatus(Player.Status.ingame);
-//        playerTwo.changeStatus(Player.Status.challenged);
-//
-//        CuT.addMatch(playerOne, playerTwo);
-//        assertTrue(, CuT.getMatch(playerOne), "Player is not in current match");
-//    }
+    @Test
+    void checkGetMatch() {
+        Match match = new Match(playerOne, playerTwo);
+        inMatch.put(playerOne, match);
+        inMatch.put(playerTwo, match);
+        playerSrv.addPlayer(playerOne);
+        playerSrv.addPlayer(playerTwo);
+
+        CuT.addMatch(playerOne, playerTwo);
+        assertEquals(match, CuT.getMatch(playerOne), "Player is not in current match");
+    }
 
     @Test
     void checkRemovePlayer() {
