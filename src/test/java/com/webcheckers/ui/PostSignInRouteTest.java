@@ -106,7 +106,6 @@ public class PostSignInRouteTest {
         testHelper.assertViewModelAttribute(GetHomeRoute.MESSAGE_ATTR, GetHomeRoute.SIGNIN_MSG);
         testHelper.assertViewModelAttribute(GetHomeRoute.CURRENT_USERNAME_KEY, username);
 
-        playerServices.addPlayer(new Player(username));
         ArrayList<Player> players = playerServices.getPlayerList();
         testHelper.assertViewModelAttribute(GetHomeRoute.PLAYERS_ATTR, players);
         //   * test view name
