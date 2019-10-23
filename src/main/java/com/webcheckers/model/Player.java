@@ -32,13 +32,13 @@ public class Player {
 
     /**
      * CHecks if a username contains an invalid char
-     * @return  - false if username contains no invalid chars, true otherwise.
+     * @return  - false if username contains invalid chars, true otherwise.
      */
     public Boolean containsInvalidCharacter() {
         String invalidRegex = "^[a-zA-Z0-9]+$";
-        if(name.contains(invalidRegex))
-            return true;
-        return false;
+        if(name.matches(invalidRegex))
+            return false;
+        return true;
     }
 
         /**
