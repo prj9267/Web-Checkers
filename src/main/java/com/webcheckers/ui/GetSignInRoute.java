@@ -16,8 +16,9 @@ public class GetSignInRoute implements Route{
     private static final Logger LOG = Logger.getLogger(GetHomeRoute.class.getName());
 
     //Values to be used in the View-Model
-    private static final Message INSTRUCTION_MSG = Message.info("Please enter your username.");
-    private static final String VIEW_NAME = "signin.ftl";
+    public static final String TITLE = "Sign In";
+    public static final Message INSTRUCTION_MSG = Message.info("Please enter your username.");
+    public static final String VIEW_NAME = "signin.ftl";
 
     private final TemplateEngine templateEngine;
 
@@ -56,7 +57,7 @@ public class GetSignInRoute implements Route{
             return null;
         } else {
             Map<String, Object> vm = new HashMap<>();
-            vm.put(GetHomeRoute.TITLE_ATTR, "Sign In");
+            vm.put(GetHomeRoute.TITLE_ATTR, TITLE);
             vm.put(GetHomeRoute.MESSAGE_ATTR, INSTRUCTION_MSG);
             return templateEngine.render(new ModelAndView(vm, VIEW_NAME));
         }

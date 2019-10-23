@@ -29,9 +29,12 @@ public class GetHomeRoute implements Route {
     static final String NUM_PLAYERS_ATTR = "numPlayers";
 
     private static final String TITLE = "Welcome!";
-    private static final String VIEW_NAME = "home.ftl";
+    public static final String VIEW_NAME = "home.ftl";
     private static final Message WELCOME_MSG = Message.info("Welcome to the world of online Checkers.");
     private static final Message SIGNIN_MSG = Message.info("You Have Successfully Sign In!");
+
+    public static final String PLAYERSERVICES_KEY = "playerServices";
+    public static final String TIMEOUT_SESSION_KEY = "timeoutWatchDog";
 
     private static final Logger LOG = Logger.getLogger(GetHomeRoute.class.getName());
 
@@ -79,11 +82,11 @@ public class GetHomeRoute implements Route {
         vm.put(TITLE_ATTR, TITLE);
 
         //If no session is currently active
-        if(httpSession.attribute("playerServices") == null) {
+        if(httpSession.attribute(PLAYERSERVICES_KEY) == null) {
             //get object for specific services for the player
-            httpSession.attribute("playerServices", playerServices);
+            httpSession.attribute(PLAYERSERVICES_KEY, playerServices);
 
-            httpSession.attribute("timeoutWatchDog", new SessionTimeoutWatchdog(playerServices));
+            httpSession.attribute(TIMEOUT_SESSION_KEY, new SessionTimeoutWatchdog(playerServices));
 
             //Can be not active for 10 min before it times you out.
             httpSession.maxInactiveInterval(600);
