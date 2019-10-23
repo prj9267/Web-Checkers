@@ -21,27 +21,28 @@ public class Player {
      * Checks if a username contains an invalid char
      * @return  - false if username contains no invalid chars, true otherwise.
      */
-    public Boolean containsInvalidCharacter(){
+    /*public Boolean containsInvalidCharacter(){
         String invalidCharacters = "~`!@#$%^&*()-_=+[]{}\\|;:',<.>/?\"";
         for (int i = 0; i < invalidCharacters.length(); i++) {
             if (name.indexOf(invalidCharacters.charAt(i)) >= 0)
                 return true;
         }
         return false;
-    }
+    }*/
 
     /**
      * CHecks if a username contains an invalid char
      * @return  - false if username contains no invalid chars, true otherwise.
      */
-    /*public Boolean containsInvalidCharacter() {
+    public Boolean containsInvalidCharacter() {
         String invalidRegex = "^[a-zA-Z0-9]+$";
-        if(name.contains(invalidRegex))
-            return true;
-        return false;
-    }*/
 
-        /**
+        if(name.matches(invalidRegex))
+            return false;
+        return true;
+    }
+
+    /**
      * Name getter function
      * @return  - the name
      */

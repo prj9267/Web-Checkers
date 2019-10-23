@@ -84,9 +84,9 @@ public class PostSignInRouteTest {
         // that captures the ModelAndView data passed to the template engine
         final TemplateEngineTester testHelper = new TemplateEngineTester();
 
-        String username = "valid username";
+        String username = "validusername";
 
-        when(request.queryParams("username")).thenReturn("valid username");
+        when(request.queryParams("username")).thenReturn(username);
         when(request.session().attribute(GetHomeRoute.PLAYERSERVICES_KEY)).thenReturn(playerServices);
         when(engine.render(any(ModelAndView.class))).thenAnswer(testHelper.makeAnswer());
 
