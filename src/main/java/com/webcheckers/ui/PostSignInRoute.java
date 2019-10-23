@@ -86,7 +86,9 @@ public class PostSignInRoute implements Route {
         final Map<String, Object> vm = new HashMap<>();
         final Session httpSession = request.session();
         int statCode;
-        if (httpSession.attribute("statCode") == null) {
+        System.out.println(username);
+        if (httpSession.attribute("statCode") == null ||
+                username != null) {
             statCode = verifyUsername(username);
             httpSession.attribute("statCode", statCode);
         }
@@ -115,7 +117,6 @@ public class PostSignInRoute implements Route {
                 else if (statCode == 3)
                     vm.put(GetHomeRoute.MESSAGE_ATTR, TAKEN_MESSAGE);
 
-                httpSession.removeAttribute("statCode");
                 return templateEngine.render(new ModelAndView(vm, ERROR_FTL));
             }
         }
