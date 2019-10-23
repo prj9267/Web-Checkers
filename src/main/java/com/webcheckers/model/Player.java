@@ -22,8 +22,8 @@ public class Player {
      */
     public Boolean containsInvalidCharacter(){
         String invalidCharacters = "~`!@#$%^&*()-_=+[]{}\\|;:',<.>/?\"";
-        for (int i = 0; i < invalidCharacters.length(); i++){
-            if (name.indexOf(invalidCharacters.charAt(i)) >= 0  )
+        for (int i = 0; i < invalidCharacters.length(); i++) {
+            if (name.indexOf(invalidCharacters.charAt(i)) >= 0)
                 return true;
         }
         return false;

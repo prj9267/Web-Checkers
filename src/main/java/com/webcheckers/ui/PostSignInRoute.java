@@ -115,6 +115,7 @@ public class PostSignInRoute implements Route {
                 else if (statCode == 3)
                     vm.put(GetHomeRoute.MESSAGE_ATTR, TAKEN_MESSAGE);
 
+                httpSession.removeAttribute("statCode");
                 return templateEngine.render(new ModelAndView(vm, ERROR_FTL));
             }
         }
