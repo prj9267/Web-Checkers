@@ -71,7 +71,9 @@ public class PostSignInRouteTest {
     }
 
     /**
-     * Test that CuT shows the Home view when the session is brand new.
+     * Test that CuT shows the Home view when the username is valid
+     * and the Home should contains a list of players without the
+     * current player.
      */
     @Test
     public void valid_username() {
