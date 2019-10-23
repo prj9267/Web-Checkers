@@ -47,6 +47,7 @@ public class GetHomeRouteTest {
 
         playerServices = mock(PlayerServices.class);
         gameCenter = new GameCenter(playerServices);
+        player = mock(Player.class);
 
         CuT = new GetHomeRoute(playerServices, gameCenter, engine);
     }
@@ -72,8 +73,7 @@ public class GetHomeRouteTest {
         testHelper.assertViewModelIsaMap();
         //   * model contains all necessary View-Model data
         testHelper.assertViewModelAttribute(GetHomeRoute.TITLE_ATTR, GetHomeRoute.TITLE);
-        testHelper.assertViewModelAttribute(GetHomeRoute.CURRENT_PLAYER_ATTR, Boolean.TRUE);
-        testHelper.assertViewModelAttribute(GetHomeRoute.NUM_PLAYERS_ATTR, 1);
+        testHelper.assertViewModelAttribute(GetHomeRoute.NUM_PLAYERS_ATTR, 0);
         //   * test view name
         testHelper.assertViewName(GetHomeRoute.VIEW_NAME);
         //   * verify that a player service object and the session timeout watchdog are stored
