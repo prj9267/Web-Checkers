@@ -3,8 +3,6 @@ package com.webcheckers.model;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
-import java.util.MissingFormatArgumentException;
-
 import static org.junit.jupiter.api.Assertions.*;
 
 @Tag("Model-tier")
@@ -21,7 +19,7 @@ public class PlayerTest {
 
     @Test
     public void checkSelf() {
-        assertTrue(player.equals(player));
+        assertTrue(player.equals(player), "Player is somehow not itself?");
     }
 
     @Test
