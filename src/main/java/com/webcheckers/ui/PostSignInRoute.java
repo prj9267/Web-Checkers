@@ -79,32 +79,40 @@ public class PostSignInRoute implements Route {
      *   the rendered HTML for the Home page after being signed in.
      */
     @Override
-    public Object handle(Request request, Response response){
+    public Object handle(Request request, Response response) {
         LOG.finer("PostSignInRoute is invoked.");
         String username = request.queryParams("username");
         // start building the View-Model
         final Map<String, Object> vm = new HashMap<>();
         final Session httpSession = request.session();
-        int stat_code = verifyUsername(username);
+        int statCode;
+        if (httpSession.attribute("statCode") == null) {
+            statCode = verifyUsername(username);
+            httpSession.attribute("statCode", statCode);
+        }
+        else
+            statCode = httpSession.attribute("statCode");
+
         Player player = new Player(username);
 
         if(httpSession.attribute("playerServices") != null) {
-            if (stat_code == 0) {
+            if (statCode == 0) {
                 playerServices.addPlayer(player);
 
                 httpSession.attribute("currentPlayer", username);
                 httpSession.removeAttribute("numPlayers");
+                httpSession.removeAttribute("statCode");
 
                 response.redirect(WebServer.HOME_URL);
                 halt();
                 return null;
             } else {
                 vm.put(GetHomeRoute.TITLE_ATTR, TITLE);
-                if (stat_code == 1)
+                if (statCode == 1)
                     vm.put(GetHomeRoute.MESSAGE_ATTR, EMPTY_MESSAGE);
-                else if (stat_code == 2)
+                else if (statCode == 2)
                     vm.put(GetHomeRoute.MESSAGE_ATTR, CONTAIN_MESSAGE);
-                else if (stat_code == 3)
+                else if (statCode == 3)
                     vm.put(GetHomeRoute.MESSAGE_ATTR, TAKEN_MESSAGE);
 
                 return templateEngine.render(new ModelAndView(vm, ERROR_FTL));

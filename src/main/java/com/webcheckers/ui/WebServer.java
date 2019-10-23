@@ -152,6 +152,7 @@ public class WebServer {
     get(HOME_URL, new GetHomeRoute(playerServices, gameCenter, templateEngine));
     //todo get Checkers game page.
     get(SIGNIN_URL, new GetSignInRoute(templateEngine));
+    get(POST_SINGIN_URL, new PostSignInRoute(playerServices, templateEngine));
     post(POST_SINGIN_URL, new PostSignInRoute(playerServices, templateEngine));
     post(POST_SIGNOUT_URL, new PostSignOutRoute(playerServices, templateEngine));
     //get game.

@@ -21,9 +21,9 @@ public class Player {
      * @return  - false if username contains no invalid chars, true otherwise.
      */
     public Boolean containsInvalidCharacter(){
-        String invalidCharacters = "~`!@#$%^&*()-_=+[]{}\\|;:',<.>/?";
+        String invalidCharacters = "~`!@#$%^&*()-_=+[]{}\\|;:',<.>/?\"";
         for (int i = 0; i < invalidCharacters.length(); i++){
-            if (name.indexOf(invalidCharacters.charAt(i)) > 0  )
+            if (name.indexOf(invalidCharacters.charAt(i)) >= 0  )
                 return true;
         }
         return false;
