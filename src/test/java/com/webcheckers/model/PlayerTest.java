@@ -43,8 +43,8 @@ public class PlayerTest {
     @Test
     public void changeStatus() {
         Player player2 = new Player(name2);
-        player.changeStatus(Player.Status.ingame);
-        assertEquals(player.getStatus(), Player.Status.ingame, "Player status wasn't changed.");
+        player2.changeStatus(Player.Status.ingame);
+        assertEquals(player2.getStatus(), Player.Status.ingame, "Player status wasn't changed.");
     }
 
     @Test
