@@ -86,7 +86,6 @@ public class PostSignInRoute implements Route {
         final Map<String, Object> vm = new HashMap<>();
         final Session httpSession = request.session();
         int statCode;
-        System.out.println(username);
         if (httpSession.attribute("statCode") == null ||
                 username != null) {
             statCode = verifyUsername(username);

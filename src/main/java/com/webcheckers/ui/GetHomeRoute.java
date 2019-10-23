@@ -27,8 +27,9 @@ public class GetHomeRoute implements Route {
     static final String PLAYERS_ATTR = "players";
     static final String GAME_ID_ATTR = "gameId";
     static final String NUM_PLAYERS_ATTR = "numPlayers";
+    static final String TITLE = "Welcome!";
+    static final String CURRENT_PLAYER_ATTR = "currentPlayer";
 
-    public static final String TITLE = "Welcome!";
     public static final String VIEW_NAME = "home.ftl";
     private static final Message WELCOME_MSG = Message.info("Welcome to the world of online Checkers.");
     public static final Message SIGNIN_MSG = Message.info("You Have Successfully Sign In!");

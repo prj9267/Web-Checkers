@@ -12,6 +12,7 @@ public class Player {
      * @param name  - sets name to the string provided
      */
     public Player(String name) {
+        assert(name != null);
         this.name = name;
         status = Status.waiting;
     }
@@ -28,6 +29,17 @@ public class Player {
         }
         return false;
     }
+
+    /**
+     * CHecks if a username contains an invalid char
+     * @return  - false if username contains no invalid chars, true otherwise.
+     */
+    /*public Boolean containsInvalidCharacter() {
+        String invalidRegex = "^[a-zA-Z0-9]+$";
+        if(name.contains(invalidRegex))
+            return true;
+        return false;
+    }*/
 
         /**
      * Name getter function
@@ -66,5 +78,13 @@ public class Player {
             return((Player)o).getName().equals((this.getName()));
         }
         return false;
+    }
+
+    /**
+     * hashcode function for testing
+     * @return  - the hashcode of the Player
+     */
+    public int hashcode() {
+        return this.name.hashCode();
     }
 }
