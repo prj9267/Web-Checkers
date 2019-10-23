@@ -51,7 +51,7 @@ public class GetSignInRoute implements Route{
         final Session httpSession = request.session();
         final PlayerServices playerServices = httpSession.attribute(GetHomeRoute.PLAYERSERVICES_KEY);
 
-        if(playerServices == null || httpSession.attribute(GetHomeRoute.CURRENT_USERNAME_KET) == null) {
+        if(playerServices == null || httpSession.attribute(GetHomeRoute.CURRENT_USERNAME_KEY) != null) {
             response.redirect(WebServer.HOME_URL);
             halt();
             return null;

@@ -7,7 +7,9 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import com.webcheckers.ui.GetSignInRoute;
+import com.webcheckers.model.Player;
+import com.webcheckers.ui.PostSignInRoute;
+import com.webcheckers.ui.PlayersList;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
@@ -22,13 +24,14 @@ import spark.Response;
 import spark.Session;
 import spark.TemplateEngine;
 
+import java.util.ArrayList;
+
 /**
- * The unit test suite for the {@link com.webcheckers.ui.GetSignInRoute} component.
+ * The unit test suite for the {@link com.webcheckers.ui.PostSignOutRoute} component.
  *
  */
 @Tag("UI-tier")
-public class GetSignInRouteTest {
-
+public class PostSignInRouteTest {
     /**
      * The component-under-test (CuT).
      *
@@ -37,8 +40,11 @@ public class GetSignInRouteTest {
      * The {@link GameCenter} component is thoroughly tested so
      * we can use it safely as a "friendly" dependency.
      */
+    private PostSignInRoute CuT;
 
-    private GetSignInRoute CuT;
+    // friendly objects
+    private PlayerServices playerServices;
+    private GameCenter gameCenter;
 
     // mock objects
     private Request request;
@@ -58,38 +64,52 @@ public class GetSignInRouteTest {
         engine = mock(TemplateEngine.class);
 
         // create a unique CuT for each test
-        CuT = new GetSignInRoute(engine);
+        // the GameCenter is friendly but the engine mock will need configuration
+        playerServices = new PlayerServices();
+        gameCenter = new GameCenter(playerServices);
+        CuT = new PostSignInRoute(playerServices, engine);
     }
 
     /**
      * Test that CuT shows the Home view when the session is brand new.
      */
     @Test
-    public void old_session() {
+    public void valid_username() {
         // To analyze what the Route created in the View-Model map you need
         // to be able to extract the argument to the TemplateEngine.render method.
         // Mock up the 'render' method by supplying a Mockito 'Answer' object
         // that captures the ModelAndView data passed to the template engine
         final TemplateEngineTester testHelper = new TemplateEngineTester();
-        PlayerServices playerServices = new PlayerServices();
+
+        String username = "valid username";
+
+        when(request.queryParams("username")).thenReturn("valid username");
         when(request.session().attribute(GetHomeRoute.PLAYERSERVICES_KEY)).thenReturn(playerServices);
-        when(request.session().attribute(GetHomeRoute.CURRENT_USERNAME_KEY)).thenReturn(null);
         when(engine.render(any(ModelAndView.class))).thenAnswer(testHelper.makeAnswer());
 
         // Invoke the test
-        CuT.handle(request, response);
+        assertThrows(HaltException.class, () -> {
+            CuT.handle(request, response); }, "Redirect to ./home");
+
+        // Now the previous condition passed, redirect to GetHomeRoute
+        //when(request.session().attribute(GetHomeRoute.CURRENT_USERNAME_KEY)).thenReturn(username);
+        when(request.session().attribute(GetHomeRoute.CURRENT_USERNAME_KEY)).thenReturn(username);
+        GetHomeRoute redirectToHome = new GetHomeRoute(playerServices, gameCenter, engine);
+        redirectToHome.handle(request, response);
 
         // Analyze the results:
         //   * model is a non-null Map
         testHelper.assertViewModelExists();
         testHelper.assertViewModelIsaMap();
         //   * model contains all necessary View-Model data
-        testHelper.assertViewModelAttribute(GetHomeRoute.TITLE_ATTR, GetSignInRoute.TITLE);
-        testHelper.assertViewModelAttribute(GetHomeRoute.MESSAGE_ATTR, GetSignInRoute.INSTRUCTION_MSG);
-        //   * test view name
-        testHelper.assertViewName(GetSignInRoute.VIEW_NAME);
-        //   * verify that a player service object and the session timeout watchdog are stored
-        //   * in the session.
-    }
+        testHelper.assertViewModelAttribute(GetHomeRoute.TITLE_ATTR, GetHomeRoute.TITLE);
+        testHelper.assertViewModelAttribute(GetHomeRoute.MESSAGE_ATTR, GetHomeRoute.SIGNIN_MSG);
+        testHelper.assertViewModelAttribute(GetHomeRoute.CURRENT_USERNAME_KEY, username);
 
+        playerServices.addPlayer(new Player(username));
+        ArrayList<Player> players = playerServices.getPlayerList();
+        testHelper.assertViewModelAttribute(GetHomeRoute.PLAYERS_ATTR, players);
+        //   * test view name
+        testHelper.assertViewName(GetHomeRoute.VIEW_NAME);
+    }
 }
