@@ -30,7 +30,7 @@ public class PlayerTest {
 
     @Test
     public void constructorNullArg() {
-        assertThrows(IllegalArgumentException.class, () -> {
+        assertThrows(AssertionError.class, () -> {
             new Player(null); }, "Player with null name allowed.");
     }
 
@@ -51,6 +51,6 @@ public class PlayerTest {
     public void checkInGame() {
         Player player2 = new Player(name2);
         player2.changeStatus(Player.Status.ingame);
-        assertTrue(player.isInGame(), "Player is not considered in game when they should be.");
+        assertTrue(player2.isInGame(), "Player is not considered in game when they should be.");
     }
 }
