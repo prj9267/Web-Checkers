@@ -27,8 +27,9 @@ public class GetHomeRoute implements Route {
     static final String PLAYERS_ATTR = "players";
     static final String GAME_ID_ATTR = "gameId";
     static final String NUM_PLAYERS_ATTR = "numPlayers";
+    static final String TITLE = "Welcome!";
+    static final String CURRENT_PLAYER_ATTR = "currentPlayer";
 
-    private static final String TITLE = "Welcome!";
     public static final String VIEW_NAME = "home.ftl";
     private static final Message WELCOME_MSG = Message.info("Welcome to the world of online Checkers.");
     private static final Message SIGNIN_MSG = Message.info("You Have Successfully Sign In!");
@@ -94,8 +95,8 @@ public class GetHomeRoute implements Route {
 
         //If user is currently logged in
         ArrayList<Player> players = playerServices.getPlayerList();
-        if(httpSession.attribute("currentPlayer") != null){
-            Player player = playerServices.getPlayer(httpSession.attribute("currentPlayer"));
+        if(httpSession.attribute(CURRENT_PLAYER_ATTR) != null){
+            Player player = playerServices.getPlayer(httpSession.attribute(CURRENT_PLAYER_ATTR));
             // redirect the challenged player to the game
             if (player.getStatus() == Player.Status.challenged ||
                 player.getStatus() == Player.Status.ingame){
@@ -105,7 +106,7 @@ public class GetHomeRoute implements Route {
             }
 
             vm.put(MESSAGE_ATTR, SIGNIN_MSG);
-            vm.put("currentPlayer", httpSession.attribute("currentPlayer"));
+            vm.put(CURRENT_PLAYER_ATTR, httpSession.attribute(CURRENT_PLAYER_ATTR));
             players.remove(player);
             vm.put(PLAYERS_ATTR, players);
         } else {
