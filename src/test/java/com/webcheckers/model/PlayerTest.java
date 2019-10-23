@@ -37,7 +37,7 @@ public class PlayerTest {
     @Test
     public void testInvalidName() {
         Player player2 = new Player("!TrackStaR***美国");
-        assertFalse(player2.containsInvalidCharacter(), "Invalid characters are accepted.");
+        assertTrue(player2.containsInvalidCharacter(), "Invalid characters are accepted.");
     }
 
     @Test
