@@ -29,10 +29,11 @@ public class GetHomeRoute implements Route {
     static final String NUM_PLAYERS_ATTR = "numPlayers";
 
     private static final String TITLE = "Welcome!";
-    public static final String VIEW_NAME = "home.ftl";
+    private static final String VIEW_NAME = "home.ftl";
     private static final Message WELCOME_MSG = Message.info("Welcome to the world of online Checkers.");
     private static final Message SIGNIN_MSG = Message.info("You Have Successfully Sign In!");
 
+    public static final String CURRENT_USERNAME_KET = "currentPlayer";
     public static final String PLAYERSERVICES_KEY = "playerServices";
     public static final String TIMEOUT_SESSION_KEY = "timeoutWatchDog";
 

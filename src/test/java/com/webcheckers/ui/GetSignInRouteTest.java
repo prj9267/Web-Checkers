@@ -71,6 +71,9 @@ public class GetSignInRouteTest {
         // Mock up the 'render' method by supplying a Mockito 'Answer' object
         // that captures the ModelAndView data passed to the template engine
         final TemplateEngineTester testHelper = new TemplateEngineTester();
+        PlayerServices playerServices = new PlayerServices();
+        when(request.session().attribute(GetHomeRoute.PLAYERSERVICES_KEY)).thenReturn(playerServices);
+        when(request.session().attribute(GetHomeRoute.CURRENT_USERNAME_KET)).thenReturn("username");
         when(engine.render(any(ModelAndView.class))).thenAnswer(testHelper.makeAnswer());
 
         // Invoke the test
@@ -84,12 +87,9 @@ public class GetSignInRouteTest {
         testHelper.assertViewModelAttribute(GetHomeRoute.TITLE_ATTR, GetSignInRoute.TITLE);
         testHelper.assertViewModelAttribute(GetHomeRoute.MESSAGE_ATTR, GetSignInRoute.INSTRUCTION_MSG);
         //   * test view name
-        testHelper.assertViewName(GetHomeRoute.VIEW_NAME);
+        testHelper.assertViewName(GetSignInRoute.VIEW_NAME);
         //   * verify that a player service object and the session timeout watchdog are stored
         //   * in the session.
-        verify(session).attribute(eq(GetHomeRoute.PLAYERSERVICES_KEY), any(PlayerServices.class));
-        verify(session).attribute(eq(GetHomeRoute.TIMEOUT_SESSION_KEY),
-                any(SessionTimeoutWatchdog.class));
     }
 
 }
