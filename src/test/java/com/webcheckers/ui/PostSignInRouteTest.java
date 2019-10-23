@@ -10,6 +10,7 @@ import static org.mockito.Mockito.when;
 import com.webcheckers.model.Player;
 import com.webcheckers.ui.PostSignInRoute;
 import com.webcheckers.ui.PlayersList;
+import com.webcheckers.util.Message;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
@@ -114,5 +115,86 @@ public class PostSignInRouteTest {
         testHelper.assertViewModelAttribute(GetHomeRoute.PLAYERS_ATTR, players);
         //   * test view name
         testHelper.assertViewName(GetHomeRoute.VIEW_NAME);
+    }
+
+    /**
+     * Helper method that test CuT shows the SignIn view with proper error message
+     * when the username is invalid
+     */
+    public void invalid_username(String username, Message error) {
+        // To analyze what the Route created in the View-Model map you need
+        // to be able to extract the argument to the TemplateEngine.render method.
+        // Mock up the 'render' method by supplying a Mockito 'Answer' object
+        // that captures the ModelAndView data passed to the template engine
+        final TemplateEngineTester testHelper = new TemplateEngineTester();
+
+        when(request.queryParams("username")).thenReturn(username);
+        when(request.session().attribute(GetHomeRoute.PLAYERSERVICES_KEY)).thenReturn(playerServices);
+        when(request.session().attribute(PostSignInRoute.STAT_CODE_ATTR)).thenReturn(null);
+        when(engine.render(any(ModelAndView.class))).thenAnswer(testHelper.makeAnswer());
+
+        // Invoke the test
+        CuT.handle(request, response);
+
+        // Analyze the results:
+        //   * model is a non-null Map
+        testHelper.assertViewModelExists();
+        testHelper.assertViewModelIsaMap();
+        //   * model contains all necessary View-Model data
+        testHelper.assertViewModelAttribute(GetHomeRoute.TITLE_ATTR, PostSignInRoute.TITLE);
+        testHelper.assertViewModelAttribute(GetHomeRoute.MESSAGE_ATTR, error);
+        // Since it is invalid username, it will not be stored to session
+        testHelper.assertViewModelAttribute(GetHomeRoute.CURRENT_USERNAME_KEY, null);
+
+        //   * test view name
+        testHelper.assertViewName(PostSignInRoute.ERROR_FTL);
+    }
+
+    /**
+     * Test that CuT will handle empty username
+     */
+    @Test
+    public void empty_username(){
+        invalid_username("", PostSignInRoute.EMPTY_MESSAGE);
+    }
+
+    /**
+     * Test that CuT will handle invalid username
+     */
+    @Test
+    public void invalid_username1(){
+        invalid_username("test!", PostSignInRoute.CONTAIN_MESSAGE);
+    }
+
+    /**
+     * Test that CuT will handle invalid username
+     */
+    @Test
+    public void invalid_username2(){
+        invalid_username("!test", PostSignInRoute.CONTAIN_MESSAGE);
+    }
+
+    /**
+     * Test that CuT will handle invalid username
+     */
+    @Test
+    public void invalid_username3(){
+        invalid_username("test !", PostSignInRoute.CONTAIN_MESSAGE);
+    }
+
+    /**
+     * Test that CuT will handle invalid username
+     */
+    @Test
+    public void invalid_username4(){
+        invalid_username("test test!", PostSignInRoute.CONTAIN_MESSAGE);
+    }
+
+    /**
+     * Test that CuT will handle invalid username
+     */
+    @Test
+    public void invalid_username5(){
+        invalid_username("te\\st", PostSignInRoute.CONTAIN_MESSAGE);
     }
 }

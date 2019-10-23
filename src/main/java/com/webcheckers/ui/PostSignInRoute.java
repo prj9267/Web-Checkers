@@ -18,14 +18,14 @@ public class PostSignInRoute implements Route {
     private static final Logger LOG = Logger.getLogger(GetHomeRoute.class.getName());
 
     //Values to be used in the View-Model
-    private static final String TITLE = "Sign In";
-    private static final String ERROR_FTL = "signin.ftl";
-    private static final Message SUCCESS_MESSAGE = Message.info("You have successfully signed in!");
-    private static final Message TAKEN_MESSAGE = Message.error("Your username was taken, enter a new username that only contains" +
+    public static final String TITLE = "Sign In";
+    public static final String ERROR_FTL = "signin.ftl";
+    public static final Message TAKEN_MESSAGE = Message.error("Your username was taken, enter a new username that only contains" +
             " alphanumeric characters and spaces.");
-    private static final Message CONTAIN_MESSAGE = Message.error("Your username is invalid, enter a new username that only contains" +
+    public static final Message CONTAIN_MESSAGE = Message.error("Your username is invalid, enter a new username that only contains" +
             " alphanumeric characters and spaces.");
-    private static final Message EMPTY_MESSAGE = Message.error("Your username cannot be empty.");
+    public static final Message EMPTY_MESSAGE = Message.error("Your username cannot be empty.");
+    public static final String STAT_CODE_ATTR = "statCode";
 
     private final TemplateEngine templateEngine;
     private final PlayerServices playerServices;
@@ -86,23 +86,23 @@ public class PostSignInRoute implements Route {
         final Map<String, Object> vm = new HashMap<>();
         final Session httpSession = request.session();
         int statCode;
-        if (httpSession.attribute("statCode") == null ||
+        if (httpSession.attribute(STAT_CODE_ATTR) == null ||
                 username != null) {
             statCode = verifyUsername(username);
-            httpSession.attribute("statCode", statCode);
+            httpSession.attribute(STAT_CODE_ATTR, statCode);
         }
         else
-            statCode = httpSession.attribute("statCode");
+            statCode = httpSession.attribute(STAT_CODE_ATTR);
 
         Player player = new Player(username);
 
-        if(httpSession.attribute("playerServices") != null) {
+        if(httpSession.attribute(GetHomeRoute.PLAYERSERVICES_KEY) != null) {
             if (statCode == 0) {
                 playerServices.addPlayer(player);
 
-                httpSession.attribute("currentPlayer", username);
+                httpSession.attribute(GetHomeRoute.CURRENT_USERNAME_KEY, username);
                 httpSession.removeAttribute("numPlayers");
-                httpSession.removeAttribute("statCode");
+                httpSession.removeAttribute(STAT_CODE_ATTR);
 
                 response.redirect(WebServer.HOME_URL);
                 halt();
