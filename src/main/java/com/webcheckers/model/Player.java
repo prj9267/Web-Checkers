@@ -67,4 +67,12 @@ public class Player {
         }
         return false;
     }
+
+    /**
+     * hashcode function for testing
+     * @return  - the hashcode of the Player
+     */
+    public int hashcode() {
+        return this.name.hashCode();
+    }
 }

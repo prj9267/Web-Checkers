@@ -10,6 +10,7 @@ import static org.junit.jupiter.api.Assertions.*;
 @Tag("Model-tier")
 public class PlayerTest {
     private String name = "User";
+    private String name2 = "User2";
     private Player player = new Player(name);
 
     @Test
@@ -39,5 +40,19 @@ public class PlayerTest {
     public void testInvalidName() {
         Player player2 = new Player("!TrackStaR***美国");
         assertFalse(player2.containsInvalidCharacter(), "Invalid characters are accepted.");
+    }
+
+    @Test
+    public void changeStatus() {
+        Player player2 = new Player(name2);
+        player.changeStatus(Player.Status.ingame);
+        assertEquals(player.getStatus(), Player.Status.ingame, "Player status wasn't changed.");
+    }
+
+    @Test
+    public void checkInGame() {
+        Player player2 = new Player(name2);
+        player2.changeStatus(Player.Status.ingame);
+        assertTrue(player.isInGame(), "Player is not considered in game when they should be.");
     }
 }
