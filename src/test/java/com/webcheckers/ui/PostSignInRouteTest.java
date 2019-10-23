@@ -107,6 +107,8 @@ public class PostSignInRouteTest {
         testHelper.assertViewModelAttribute(GetHomeRoute.CURRENT_USERNAME_KEY, username);
 
         ArrayList<Player> players = playerServices.getPlayerList();
+        // the player list should not contain the current player for display
+        players.remove(new Player(username));
         testHelper.assertViewModelAttribute(GetHomeRoute.PLAYERS_ATTR, players);
         //   * test view name
         testHelper.assertViewName(GetHomeRoute.VIEW_NAME);
