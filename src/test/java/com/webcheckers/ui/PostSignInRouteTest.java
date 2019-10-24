@@ -121,7 +121,7 @@ public class PostSignInRouteTest {
      * Helper method that test CuT shows the SignIn view with proper error message
      * when the username is invalid
      */
-    public void invalid_username(String username, Message error) {
+    public void invalid_username(String username, Message error, PlayerServices playerServices) {
         // To analyze what the Route created in the View-Model map you need
         // to be able to extract the argument to the TemplateEngine.render method.
         // Mock up the 'render' method by supplying a Mockito 'Answer' object
@@ -155,46 +155,23 @@ public class PostSignInRouteTest {
      */
     @Test
     public void empty_username(){
-        invalid_username("", PostSignInRoute.EMPTY_MESSAGE);
+        invalid_username("", PostSignInRoute.EMPTY_MESSAGE, playerServices);
     }
 
     /**
      * Test that CuT will handle invalid username
      */
     @Test
-    public void invalid_username1(){
-        invalid_username("test!", PostSignInRoute.CONTAIN_MESSAGE);
+    public void invalid_username(){
+        invalid_username("test!", PostSignInRoute.CONTAIN_MESSAGE, playerServices);
     }
 
     /**
-     * Test that CuT will handle invalid username
+     * Test that CuT will handle username that is already taken
      */
     @Test
-    public void invalid_username2(){
-        invalid_username("!test", PostSignInRoute.CONTAIN_MESSAGE);
-    }
-
-    /**
-     * Test that CuT will handle invalid username
-     */
-    @Test
-    public void invalid_username3(){
-        invalid_username("test !", PostSignInRoute.CONTAIN_MESSAGE);
-    }
-
-    /**
-     * Test that CuT will handle invalid username
-     */
-    @Test
-    public void invalid_username4(){
-        invalid_username("test test!", PostSignInRoute.CONTAIN_MESSAGE);
-    }
-
-    /**
-     * Test that CuT will handle invalid username
-     */
-    @Test
-    public void invalid_username5(){
-        invalid_username("te\\st", PostSignInRoute.CONTAIN_MESSAGE);
+    public void existed_username(){
+        playerServices.addPlayer(new Player("test"));
+        invalid_username("test", PostSignInRoute.TAKEN_MESSAGE, playerServices);
     }
 }
