@@ -17,6 +17,7 @@ public class RowTest {
     @BeforeEach
     public void setup() {
         CuT = new Row(index);
+        cols = new Space[NUM_COL];
     }
 
     @Test
@@ -26,7 +27,13 @@ public class RowTest {
 
     @Test
     void checkGetCol() {
-        cols = new Space[NUM_COL];
-        assertEquals(CuT.getCol(), cols, "Number of cols is incorrect");
+        assertEquals(cols.length, CuT.getCol().length, "Number of cols is incorrect");
+    }
+
+    @Test
+    void checkRow() {
+        Row row = new Row(index);
+        assertEquals(row.getIndex(), CuT.getIndex(), "Row constructor not working");
+        assertEquals(row.getCol().length, CuT.getCol().length, "Row constructor not working");
     }
 }
