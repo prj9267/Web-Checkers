@@ -5,7 +5,7 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@Tag("Model-Tier")
+@Tag("Model-tier")
 public class SpaceTest {
     private Piece piece =  new Piece(Piece.Type.SINGLE, Piece.Color.RED);
     private Space space = new Space(0, true, piece);
