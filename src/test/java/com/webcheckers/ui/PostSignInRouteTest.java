@@ -174,4 +174,110 @@ public class PostSignInRouteTest {
         playerServices.addPlayer(new Player("test"));
         invalid_username("test", PostSignInRoute.TAKEN_MESSAGE, playerServices);
     }
+
+    /**
+     * Test that verifyUsername() is returning 0 for valid username
+     */
+    @Test
+    public void verify_valid1(){
+        assertEquals(0, CuT.verifyUsername("valid"));
+    }
+
+    /**
+     * Test that verifyUsername() is returning 0 for valid username
+     */
+    @Test
+    public void verify_valid2(){
+        assertEquals(0, CuT.verifyUsername("valid username"));
+    }
+
+    /**
+     * Test that verifyUsername() is returning 0 for valid username
+     */
+    @Test
+    public void verify_valid3(){
+        assertEquals(0, CuT.verifyUsername(" valid username"));
+    }
+
+    /**
+     * Test that verifyUsername() is returning 0 for valid username
+     */
+    @Test
+    public void verify_valid4(){
+        assertEquals(0, CuT.verifyUsername(" valid username "));
+    }
+
+    /**
+     * Test that verifyUsername() is returning 1 for empty string
+     */
+    @Test
+    public void verify_empty(){
+        assertEquals(1, CuT.verifyUsername(""));
+    }
+
+    /**
+     * Test that verifyUsername() is returning 2 for invalid username
+     */
+    @Test
+    public void verify_invalid1(){
+        assertEquals(2, CuT.verifyUsername("invalid!"));
+    }
+
+    /**
+     * Test that verifyUsername() is returning 2 for invalid username
+     */
+    @Test
+    public void verify_invalid2(){
+        assertEquals(2, CuT.verifyUsername("invalid\""));
+    }
+
+    /**
+     * Test that verifyUsername() is returning 2 for invalid username
+     */
+    @Test
+    public void verify_invalid3(){
+        assertEquals(2, CuT.verifyUsername("\"invalid"));
+    }
+
+    /**
+     * Test that verifyUsername() is returning 2 for invalid username
+     */
+    @Test
+    public void verify_invalid4(){
+        assertEquals(2, CuT.verifyUsername("\\invalid"));
+    }
+
+    /**
+     * Test that verifyUsername() is returning 2 for invalid username
+     */
+    @Test
+    public void verify_invalid5(){
+        assertEquals(2, CuT.verifyUsername("invalid \""));
+    }
+
+    /**
+     * Test that verifyUsername() is returning 2 for invalid username
+     */
+    @Test
+    public void verify_invalid6(){
+        assertEquals(2, CuT.verifyUsername("invalid \"username"));
+    }
+
+    /**
+     * Test that verifyUsername() is returning 2 for invalid username
+     */
+    @Test
+    public void verify_invalid7(){
+        assertEquals(2, CuT.verifyUsername("invalid \" username"));
+    }
+
+    /**
+     * Test that verifyUsername() is returning 3 for taken username
+     */
+    @Test
+    public void verify_taken(){
+        playerServices.addPlayer(new Player("valid"));
+        assertEquals(3, CuT.verifyUsername("valid"));
+    }
+
 }
