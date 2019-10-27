@@ -30,6 +30,8 @@ public class GetGameRoute implements Route {
     private static final String BOARD_ATTR = "board";
     public enum viewMode {PLAY, SPECTATOR, REPLAY}
 
+    public static final String MATCH_ATTR = "match";
+
     private final TemplateEngine templateEngine;
     private final GameCenter gameCenter;
     private final PlayerServices playerServices;
@@ -84,6 +86,7 @@ public class GetGameRoute implements Route {
                 whitePlayer = currentMatch.getWhitePlayer();
             }
 
+            httpSession.attribute(MATCH_ATTR, currentMatch);
             vm.put(RED_PLAYER_ATTR, redPlayer);
             vm.put(WHITE_PLAYER_ATTR, whitePlayer);
 
