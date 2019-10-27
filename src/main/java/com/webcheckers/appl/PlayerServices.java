@@ -1,6 +1,7 @@
 package com.webcheckers.appl;
 
 import com.webcheckers.model.Player;
+import com.webcheckers.ui.PlayersList;
 
 import java.util.ArrayList;
 
@@ -71,6 +72,14 @@ public class PlayerServices {
             if (player.getName().equals(username)) {
                 return player;
             }
+        }
+        return null;
+    }
+
+    public Player getPlayerWithHash(int hash) {
+        for (Player player : playerList) {
+            if (player.getHash() == hash)
+                return player;
         }
         return null;
     }

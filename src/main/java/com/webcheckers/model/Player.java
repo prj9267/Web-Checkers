@@ -4,6 +4,7 @@ public class Player {
 
     //Attributes
     private String name;
+    private int hash;
     public enum Status {waiting, challenged, ingame}
     public Status status;
 
@@ -15,6 +16,7 @@ public class Player {
         assert(name != null);
         this.name = name;
         status = Status.waiting;
+        hash = name.hashCode();
     }
 
     /**
@@ -53,6 +55,10 @@ public class Player {
         return status;
     }
 
+    public int getHash() {
+        return hash;
+    }
+
     /**
      * Check if the player is playing a game or not
      * @return true if  the player is playing a game, else false
@@ -84,7 +90,7 @@ public class Player {
      * hashcode function for testing
      * @return  - the hashcode of the Player
      */
-    public int hashcode() {
-        return this.name.hashCode();
+    public int hashcode(String name) {
+        return name.hashCode();
     }
 }

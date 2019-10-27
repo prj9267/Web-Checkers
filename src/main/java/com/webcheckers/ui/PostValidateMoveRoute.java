@@ -1,10 +1,10 @@
 package com.webcheckers.ui;
 
-import com.sun.tools.javac.comp.Todo;
+//import com.sun.tools.javac.comp.Todo;
 import com.webcheckers.appl.GameCenter;
 import com.webcheckers.appl.PlayerServices;
 import com.webcheckers.model.*;
-import javafx.geometry.Pos;
+//import javafx.geometry.Pos;
 import spark.*;
 
 import java.util.HashMap;
