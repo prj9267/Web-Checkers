@@ -3,8 +3,7 @@ package com.webcheckers.model;
 public class Space {
 
     //Attributes
-    public int cellIdx;
-    //private int cellIdy;
+    private int cellIdx;
     private boolean isValid;
     private Piece piece;
 
@@ -67,7 +66,8 @@ public class Space {
      * @return  - the piece currently at the space, null if none.
      */
     public Piece getPiece() {
-        return piece;
+        Piece ret = new Piece(piece.getType(), piece.getColor());
+        return ret;
     }
 
     /**
