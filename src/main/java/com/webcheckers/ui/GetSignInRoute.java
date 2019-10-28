@@ -49,9 +49,9 @@ public class GetSignInRoute implements Route{
     public Object handle(Request request, Response response){
         LOG.finer("GetSignInRoute is invoked.");
         final Session httpSession = request.session();
-        final PlayerServices playerServices = httpSession.attribute("playerServices");
+        final PlayerServices playerServices = httpSession.attribute(GetHomeRoute.PLAYERSERVICES_KEY);
 
-        if(playerServices == null || httpSession.attribute("name") != null) {
+        if(playerServices == null || httpSession.attribute(GetHomeRoute.CURRENT_USERNAME_KEY) != null) {
             response.redirect(WebServer.HOME_URL);
             halt();
             return null;
