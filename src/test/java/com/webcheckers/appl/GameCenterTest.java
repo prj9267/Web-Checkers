@@ -10,17 +10,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 @Tag("Application-tier")
 public class GameCenterTest {
-//    private PlayerServices playerSrv;
     private GameCenter CuT;
     private HashMap<Player, Match> inMatch = new HashMap<>();
     private ArrayList<Match> gameList = new ArrayList<>();
@@ -30,7 +22,6 @@ public class GameCenterTest {
 
     @BeforeEach
     public void setup() {
-//        playerSrv = mock(PlayerServices.class);
         CuT = new GameCenter(playerSrv);
     }
 
@@ -73,7 +64,9 @@ public class GameCenterTest {
         playerSrv.addPlayer(playerTwo);
 
         CuT.addMatch(playerOne, playerTwo);
-        assertEquals(match, CuT.getMatch(playerOne), "Player is not in current match");
+        assertEquals(match.getRedPlayer(), CuT.getMatch(playerOne).getRedPlayer(), "Player is not in current match");
+        assertEquals(match.getWhitePlayer(), CuT.getMatch(playerTwo).getWhitePlayer(), "Player is not in current match");
+
     }
 
     @Test
