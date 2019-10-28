@@ -1,10 +1,6 @@
 
 package com.webcheckers.model;
 
-
-
-
-
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
@@ -21,8 +17,8 @@ public class PieceTest {
     private Piece.Color white = Piece.Color.WHITE;
 
 
-    public Piece singleWhite = new Piece(single, red);
-    public Piece kingRed = new Piece(king, white);
+    public Piece singleWhite = new Piece(single, white);
+    public Piece kingRed = new Piece(king, red);
 
 
     @Test

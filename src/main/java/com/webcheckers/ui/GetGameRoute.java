@@ -17,18 +17,18 @@ import static spark.Spark.halt;
 
 public class GetGameRoute implements Route {
     // Values used in the view-model map for rendering the game view.
-    private static final String VIEW_NAME = "game.ftl";
-    private static final String TITLE_ATTR = "title";
-    private static final String TITLE = "Game";
-    private static final Message MESSAGE = Message.info("message");
-    private static final String CURRENT_USER_ATTR = "currentUser";
-    private static final String CURRENT_PLAYER_ATTR = "currentPlayer";
-    private static final String VIEW_MODE_ATTR = "viewMode";
-    private static final String MODE_OPTION_ATTR = "modeOption";
-    private static final String RED_PLAYER_ATTR = "redPlayer";
-    private static final String WHITE_PLAYER_ATTR = "whitePlayer";
-    private static final String ACTIVE_COLOR_ATTR = "activeColor";
-    private static final String BOARD_ATTR = "board";
+    static final String VIEW_NAME = "game.ftl";
+    static final String TITLE_ATTR = "title";
+    static final String TITLE = "Game";
+    static final Message MESSAGE = Message.info("message");
+    static final String CURRENT_USER_ATTR = "currentUser";
+    static final String CURRENT_PLAYER_ATTR = "currentPlayer";
+    static final String VIEW_MODE_ATTR = "viewMode";
+    static final String MODE_OPTION_ATTR = "modeOption";
+    static final String RED_PLAYER_ATTR = "redPlayer";
+    static final String WHITE_PLAYER_ATTR = "whitePlayer";
+    static final String ACTIVE_COLOR_ATTR = "activeColor";
+    static final String BOARD_ATTR = "board";
     public enum viewMode {PLAY, SPECTATOR, REPLAY}
 
     private final TemplateEngine templateEngine;

@@ -2,17 +2,17 @@ package com.webcheckers.ui;
 
 import com.webcheckers.appl.GameCenter;
 import com.webcheckers.appl.PlayerServices;
+import com.webcheckers.model.Player;
 import com.webcheckers.util.Message;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
-import spark.Request;
-import spark.Response;
-import spark.Session;
-import spark.TemplateEngine;
+import spark.*;
 
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+
+import static org.junit.jupiter.api.Assertions.fail;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.*;
 
 @Tag("UI-tier")
 public class GetGameRouteTest {
@@ -26,7 +26,6 @@ public class GetGameRouteTest {
 
     private PlayerServices playerServices;
     private GameCenter gameCenter;
-    private Message message;
 
     /**
      * Setup new mock objects for each test.
@@ -40,21 +39,32 @@ public class GetGameRouteTest {
         engine = mock(TemplateEngine.class);
 
         //create required parameters
-        playerServices = mock(PlayerServices.class);
-        gameCenter = mock(GameCenter.class);
+        playerServices = new PlayerServices();
+        gameCenter = new GameCenter(playerServices);
 
         // create a unique CuT for each test
         CuT = new GetGameRoute(playerServices,gameCenter,engine);
     }
-    @Test
-    public void new_game(){
-        final TemplateEngineTester testHelper = new TemplateEngineTester();
-    }
 
+    /**
+     * Test that CuT redirects to the Home view when a @Linkplain(PlayerServices) object does
+     * not exist, i.e. the session timed out or an illegal request on this URL was received.
+     */
     @Test
-    public void faulty_session(){
+    public void faulty_session() {
+        // Arrange the test scenario: There is an existing session with a PlayerServices object
         when(session.attribute(GetHomeRoute.PLAYERSERVICES_KEY)).thenReturn(null);
 
-    }
+        // Invoke the test
+        try {
+            CuT.handle(request, response);
+            fail("Redirects invoke halt exceptions.");
+        } catch (HaltException e) {
+            // expected
+        }
 
+        // Analyze the results:
+        //   * redirect to the Game view
+        verify(response).redirect(WebServer.HOME_URL);
+    }
 }
