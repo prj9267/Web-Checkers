@@ -105,8 +105,8 @@ public class PostCheckTurnRoute implements Route {
         }
         else{
             //TODO take care of resign
-            response.redirect("/");
-            halt();
+            /*response.redirect("/");
+            halt();*/
             return null;
         }
     }

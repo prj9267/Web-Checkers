@@ -6,9 +6,7 @@ import com.webcheckers.model.*;
 import com.webcheckers.util.Message;
 import spark.*;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 
 public class PostValidateMoveRoute implements Route {
     // attributes
@@ -200,6 +198,7 @@ public class PostValidateMoveRoute implements Route {
 
             // Get the information from the match
             Match currentMatch = gameCenter.getMatch(currentPlayer);
+            Piece.Color activeColor = currentMatch.getActiveColor();
             Player redPlayer = currentMatch.getRedPlayer();
             Player whitePlayer = currentMatch.getWhitePlayer();
 
@@ -209,14 +208,17 @@ public class PostValidateMoveRoute implements Route {
             vm.put(GetGameRoute.WHITE_PLAYER_ATTR, whitePlayer);
 
             // get different board from the match
+            BoardView currentBoardView;
             BoardView whiteBoardView = currentMatch.getWhiteBoardView();
             BoardView redBoardView = currentMatch.getRedBoardView();
 
             // send the information accordingly
             if(currentPlayerName.equals(redPlayer.getName())) {
+                currentBoardView = redBoardView;
                 vm.put(GetGameRoute.BOARD_ATTR, redBoardView);
                 vm.put(GetGameRoute.CURRENT_USER_ATTR, redPlayer);
             } else {
+                currentBoardView = whiteBoardView;
                 vm.put(GetGameRoute.BOARD_ATTR, whiteBoardView);
                 vm.put(GetGameRoute.CURRENT_USER_ATTR, whitePlayer);
             }
@@ -233,8 +235,42 @@ public class PostValidateMoveRoute implements Route {
             Position start = move.getStart();
             Position end = move.getEnd();
 
+            Message moveMessage = canMoveForward(start, end);
+            Message jumpMessage = canJumpForward(activeColor, currentBoardView, start, end);
+            boolean validMove = moveMessage.getType() == Message.Type.INFO;
+            boolean validJump = jumpMessage.getType() == Message.Type.INFO;
 
+            Message message;
+            // a stack of moves before the player hit submit
+            Stack<Move> moves;
+            if (httpSession.attribute("moves") == null)
+                moves = new Stack<>();
+            else
+                moves = httpSession.attribute("moves");
+            // if it is valid
+            if (validMove || validJump){
+                if (validMove) {
+                    if (activeColor == Piece.Color.RED)
+                        moveForward(redBoardView, whiteBoardView, start, end);
+                    else
+                        moveForward(whiteBoardView, redBoardView, start, end);
+                    message = moveMessage;
+                }
+                else if (validJump){
+                    if (activeColor == Piece.Color.RED)
+                        jumpForward(redBoardView, whiteBoardView, start, end);
+                    else
+                        jumpForward(whiteBoardView, redBoardView, start, end);
+                    message = jumpMessage;
+                }
+                // add this move to the stack of move
+                // so when we implement backup, we know the exact order
+                moves.push(move);
+            }
+            //TODO need to implement fail message
+            message = Message.error("fail");
 
+            vm.put("message", message);
             return templateEngine.render(new ModelAndView(vm, GetGameRoute.VIEW_NAME));
 
         }
