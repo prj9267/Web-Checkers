@@ -59,6 +59,7 @@ public class WebServer {
   public static final String POST_SINGIN_URL = "/postsignin";
   public static final String GAME_URL = "/game";
   public static final String POST_SIGNOUT_URL = "/signout";
+  public static final String CHECK_TURN = "/checkTurn";
   public static final String VALIDATE_MOVE = "/validateMove";
 
   //
@@ -159,6 +160,7 @@ public class WebServer {
     //get game.
     get(GAME_URL, new GetGameRoute(playerServices, gameCenter, templateEngine));
 
+    post(CHECK_TURN, new PostCheckTurnRoute(playerServices, gameCenter, templateEngine));
     post(VALIDATE_MOVE, new PostValidateMoveRoute(playerServices, gameCenter, templateEngine));
 
     //

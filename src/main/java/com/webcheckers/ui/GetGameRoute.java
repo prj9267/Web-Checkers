@@ -17,17 +17,15 @@ import static spark.Spark.halt;
 
 public class GetGameRoute implements Route {
     // Values used in the view-model map for rendering the game view.
-    private static final String VIEW_NAME = "game.ftl";
-    private static final String TITLE = "Game";
-    private static final Message MESSAGE = Message.info("message");
-    private static final String CURRENT_USER_ATTR = "currentUser";
-    private static final String CURRENT_PLAYER_ATTR = "currentPlayer";
-    private static final String VIEW_MODE_ATTR = "viewMode";
-    private static final String MODE_OPTION_ATTR = "modeOption";
-    private static final String RED_PLAYER_ATTR = "redPlayer";
-    private static final String WHITE_PLAYER_ATTR = "whitePlayer";
-    private static final String ACTIVE_COLOR_ATTR = "activeColor";
-    private static final String BOARD_ATTR = "board";
+    public static final String TITLE = "Game";
+    public static final String VIEW_NAME = "game.ftl";
+    public static final String CURRENT_USER_ATTR = "currentUser";
+    public static final String VIEW_MODE_ATTR = "viewMode";
+    public static final String MODE_OPTION_ATTR = "modeOption";
+    public static final String RED_PLAYER_ATTR = "redPlayer";
+    public static final String WHITE_PLAYER_ATTR = "whitePlayer";
+    public static final String ACTIVE_COLOR_ATTR = "activeColor";
+    public static final String BOARD_ATTR = "board";
     public enum viewMode {PLAY, SPECTATOR, REPLAY}
 
     public static final String MATCH_ATTR = "match";
@@ -86,7 +84,12 @@ public class GetGameRoute implements Route {
                 whitePlayer = currentMatch.getWhitePlayer();
             }
 
+            // save it to session
             httpSession.attribute(MATCH_ATTR, currentMatch);
+            httpSession.attribute(RED_PLAYER_ATTR, redPlayer);
+            httpSession.attribute(WHITE_PLAYER_ATTR, whitePlayer);
+
+            // send players to ftl
             vm.put(RED_PLAYER_ATTR, redPlayer);
             vm.put(WHITE_PLAYER_ATTR, whitePlayer);
 
@@ -103,7 +106,7 @@ public class GetGameRoute implements Route {
             }
 
             // for the nav-bar to display the signout option
-            vm.put(CURRENT_PLAYER_ATTR, currentPlayerName);
+            vm.put(GetHomeRoute.CURRENT_PLAYER_ATTR, currentPlayerName);
 
             vm.put(ACTIVE_COLOR_ATTR, currentMatch.getActiveColor());
             // right now there is only the option to play

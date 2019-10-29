@@ -1,10 +1,9 @@
 package com.webcheckers.ui;
 
-import com.sun.tools.javac.comp.Todo;
 import com.webcheckers.appl.GameCenter;
 import com.webcheckers.appl.PlayerServices;
 import com.webcheckers.model.*;
-import javafx.geometry.Pos;
+import com.webcheckers.util.Message;
 import spark.*;
 
 import java.util.HashMap;
@@ -16,6 +15,18 @@ public class PostValidateMoveRoute implements Route {
     private PlayerServices playerServices;
     private GameCenter gameCenter;
     private TemplateEngine templateEngine;
+
+    // Values used in the view-model map for rendering the game view.
+    // move
+    public static final Message VALID_MOVE_MESSAGE = Message.info("This is a valid move.");
+    public static final Message ADJACENT_MOVE_MESSAGE = Message.error("Your move must be adjacent to you.");
+    public static final Message FORWARD_MOVE_MESSAGE = Message.error("Normal piece can only move forward.");
+    public static final Message JUMP_OPTION_MESSAGE = Message.error("You must jump instead of move.");
+    // jump
+    public static final Message VALID_JUMP_MESSAGE = Message.info("This is a valid jump.");
+    public static final Message ADJACENT_JUMP_MESSAGE = Message.error("Your jump must be adjacent to you.");
+    public static final Message FORWARD_JUMP_MESSAGE = Message.error("Normal piece can only jump forward.");
+    public static final Message OPPONENT_JUMP_MESSAGE = Message.error("You can only jump over your opponent.");
 
     // param name
     public static final String ACTION_DATA = "actionData";
@@ -48,18 +59,22 @@ public class PostValidateMoveRoute implements Route {
      * @param end final position
      * @return integer representation of the validation of the move
      */
-    public int canMoveForward(Position start, Position end){
+    public Message canMoveForward(Position start, Position end){
+        //TODO cases for king
         // base case when there is an option to jump
         if (optionToJump())
-            return 3; // you are not suppose to move if you can jump
+            return JUMP_OPTION_MESSAGE; // you are not suppose to move if you can jump
 
         if (start.getRow() - end.getRow() == 1) { // can only move forward by one row
             int diff = start.getCol() - end.getCol();
             if (diff == 1 || diff == -1)
-                return 0; // valid move
-            return 2; // move is larger than one row
+                return VALID_MOVE_MESSAGE; // valid move
+            return ADJACENT_MOVE_MESSAGE; // move is larger than one row
         }
-        return 1; // move is larger than one row
+        else if (start.getRow() - end.getRow() < 0)
+            return FORWARD_MOVE_MESSAGE; // you can only move forward
+
+        return ADJACENT_MOVE_MESSAGE; // move is larger than one row
     }
 
     /**
@@ -101,17 +116,24 @@ public class PostValidateMoveRoute implements Route {
      * @param end final position
      * @return integer value representing why the move is invalid
      */
-    public int canJumpForward(Piece.Color color, BoardView board, Position start, Position end){
+    public Message canJumpForward(Piece.Color color, BoardView board, Position start, Position end){
+        // TODO cases for king
         if (start.getRow() - end.getRow() == 2) { // can only jump forward by two rows
             int diff = start.getCol() - end.getCol();
             if (diff == 2 || diff == -2) { // can only jump left or right by two columns
                 Space space = board.getSpace(start.getRow() - 1, start.getCol() + (diff / 2));
                 if (space.getPiece().getColor() != color)
-                    return 0; // valid move
-                return 2; // move is larger than 1 col
+                    return VALID_JUMP_MESSAGE; // valid move
+                else
+                    return OPPONENT_JUMP_MESSAGE; // you cannot jump over your own piece
             }
+            else
+                return ADJACENT_JUMP_MESSAGE; // jump is larger than 2 cols in magnitude
         }
-        return 1; // move is larger than 1 row
+        else if (start.getRow() - end.getRow() < 0)
+            return FORWARD_JUMP_MESSAGE; // normal piece can only jump forward
+
+        return ADJACENT_JUMP_MESSAGE; // jump is larger than 2 rows in magnitude
     }
 
     /**
@@ -167,26 +189,53 @@ public class PostValidateMoveRoute implements Route {
         Move actionMove = httpSession.attribute(ACTION_DATA);
 
         if (playerServices != null) {
-
+            final Map<String, Object> vm = new HashMap<>();
+            vm.put(GetHomeRoute.TITLE_ATTR, GetGameRoute.TITLE);
+            // get the information of the current user
             String currentPlayerName = httpSession.attribute(GetHomeRoute.CURRENT_USERNAME_KEY);
             Player currentPlayer = playerServices.getPlayer(currentPlayerName);
 
-            Match match = httpSession.attribute(GetGameRoute.MATCH_ATTR);
-            Player redPlayer = match.getRedPlayer();
+            // send current user to ftl
+            vm.put(GetGameRoute.CURRENT_USER_ATTR, currentPlayer);
 
-            BoardView board;
-            BoardView opp;
-            if (currentPlayer.equals(redPlayer)) {
-                board = match.getRedBoardView();
-                opp = match.getWhiteBoardView();
+            // Get the information from the match
+            Match currentMatch = gameCenter.getMatch(currentPlayer);
+            Player redPlayer = currentMatch.getRedPlayer();
+            Player whitePlayer = currentMatch.getWhitePlayer();
+
+            // give player information to ftl
+            httpSession.attribute(GetGameRoute.MATCH_ATTR, currentMatch);
+            vm.put(GetGameRoute.RED_PLAYER_ATTR, redPlayer);
+            vm.put(GetGameRoute.WHITE_PLAYER_ATTR, whitePlayer);
+
+            // get different board from the match
+            BoardView whiteBoardView = currentMatch.getWhiteBoardView();
+            BoardView redBoardView = currentMatch.getRedBoardView();
+
+            // send the information accordingly
+            if(currentPlayerName.equals(redPlayer.getName())) {
+                vm.put(GetGameRoute.BOARD_ATTR, redBoardView);
+                vm.put(GetGameRoute.CURRENT_USER_ATTR, redPlayer);
             } else {
-                board = match.getWhiteBoardView();
-                opp = match.getRedBoardView();
+                vm.put(GetGameRoute.BOARD_ATTR, whiteBoardView);
+                vm.put(GetGameRoute.CURRENT_USER_ATTR, whitePlayer);
             }
 
-            //TODO continue...
+            // for the nav-bar to display the signout option
+            vm.put(GetHomeRoute.CURRENT_PLAYER_ATTR, currentPlayerName);
+
+            vm.put(GetGameRoute.ACTIVE_COLOR_ATTR, currentMatch.getActiveColor());
+            // right now there is only the option to play
+            GetGameRoute.viewMode currentViewMode = GetGameRoute.viewMode.PLAY;
+            vm.put(GetGameRoute.VIEW_MODE_ATTR, currentViewMode);
+
+            Move move = new Move(request.queryParams("actionData"));
+            Position start = move.getStart();
+            Position end = move.getEnd();
 
 
+
+            return templateEngine.render(new ModelAndView(vm, GetGameRoute.VIEW_NAME));
 
         }
         return null;
