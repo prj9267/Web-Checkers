@@ -64,6 +64,26 @@ public class GameCenter {
         return null;
     }
 
+    /**
+     * adds the match to the match list
+     * @param match         - the match to add
+     * @return              - true if match exists and is added to matchList and false if not
+     */
+    public boolean addMatch(Match match) {
+        if (match != null) {
+            gameList.add(match);
+            return true;
+        }
+        return false;
+    }
+
+    public boolean deleteMatch(Match match) {
+        if (match != null) {
+            gameList.remove(match);
+            return true;
+        }
+        return false;
+    }
 
     /**
      * Checks if the provided player is the current player

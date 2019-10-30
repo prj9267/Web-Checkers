@@ -97,9 +97,9 @@ public class PostCheckTurnRoute implements Route {
             //TODO take care of game end
             // verify turn
             if (isMyTurn(currentPlayer, redPlayer, whitePlayer, currentMatch.getActiveColor()))
-                vm.put("message", isYourTurn);
+                vm.put(GetHomeRoute.MESSAGE_ATTR, isYourTurn);
             else
-                vm.put("message", notYourTurn);
+                vm.put(GetHomeRoute.MESSAGE_ATTR, notYourTurn);
 
             return templateEngine.render(new ModelAndView(vm, GetGameRoute.VIEW_NAME));
         }

@@ -33,7 +33,7 @@
                         <p>Currently Signed in Players:</p>
                         <form action="./game">
                             <#list players as player>
-                                <button type="submit" name=button value="${player.name}""> ${player.name} </button>
+                                <button type="submit" name=button value="${player.name}"> ${player.name} </button>
                             </#list>
                         </form>
                     </#if>
