@@ -14,7 +14,7 @@ public class GameCenter {
     //Attributes
     private PlayerServices playerServices;
     private Map<Player, Match> inMatch;
-    private ArrayList<Match> gameList = new ArrayList<>();
+    private ArrayList<Match> matchList = new ArrayList<>();
 
     /**
      * Constructor for GameCenter Object
@@ -65,24 +65,11 @@ public class GameCenter {
     }
 
     /**
-     * adds the match to the match list
-     * @param match         - the match to add
-     * @return              - true if match exists and is added to matchList and false if not
+     * Return the matchList
+     * @return      - matchList the list of matches
      */
-    public boolean addMatch(Match match) {
-        if (match != null) {
-            gameList.add(match);
-            return true;
-        }
-        return false;
-    }
-
-    public boolean deleteMatch(Match match) {
-        if (match != null) {
-            gameList.remove(match);
-            return true;
-        }
-        return false;
+    public ArrayList getMatchList() {
+        return matchList;
     }
 
     /**
