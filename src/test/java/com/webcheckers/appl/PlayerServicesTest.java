@@ -80,4 +80,12 @@ public class PlayerServicesTest {
         CuT.removePlayer(playerOne);
         assertEquals(0, CuT.numPlayers(), "Player list is not size 0");
     }
+
+    @Test
+    void checkIsAvailable() {
+        CuT.addPlayer(playerOne);
+        assertTrue(CuT.isAvailable(playerOne), "PlayerOne should be available");
+
+        assertFalse(CuT.isAvailable(playerTwo), "PlayerTwo should not be available");
+    }
 }
