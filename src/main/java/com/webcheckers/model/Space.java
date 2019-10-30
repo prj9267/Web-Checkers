@@ -66,8 +66,7 @@ public class Space {
      * @return  - the piece currently at the space, null if none.
      */
     public Piece getPiece() {
-        Piece ret = new Piece(piece.getType(), piece.getColor());
-        return ret;
+        return piece;
     }
 
     /**

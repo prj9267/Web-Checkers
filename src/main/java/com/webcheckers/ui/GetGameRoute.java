@@ -76,9 +76,8 @@ public class GetGameRoute implements Route {
             // if the button is just triggered, initialize everything
             if (request.queryParams("button") != null) {
                 String opponentName = request.queryParams("button");
-                opponentName = opponentName.replace(",", "");
                 redPlayer = currentPlayer;
-                whitePlayer = playerServices.getPlayerWithHash(Integer.parseInt(opponentName));
+                whitePlayer = playerServices.getPlayer(opponentName);
                 gameCenter.addMatch(redPlayer, whitePlayer);
                 currentMatch = gameCenter.getMatch(redPlayer);
             } else { // else get the information from the match

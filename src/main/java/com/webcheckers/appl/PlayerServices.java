@@ -76,13 +76,13 @@ public class PlayerServices {
         return null;
     }
 
-    public Player getPlayerWithHash(int hash) {
+    /*public Player getPlayerWithHash(int hash) {
         for (Player player : playerList) {
             if (player.getHash() == hash)
                 return player;
         }
         return null;
-    }
+    }*/
 
     /**
      * Gets the number of players
