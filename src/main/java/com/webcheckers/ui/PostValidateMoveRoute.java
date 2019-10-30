@@ -1,5 +1,6 @@
 package com.webcheckers.ui;
 
+import com.google.gson.Gson;
 import com.webcheckers.appl.GameCenter;
 import com.webcheckers.appl.PlayerServices;
 import com.webcheckers.model.*;
@@ -13,6 +14,7 @@ public class PostValidateMoveRoute implements Route {
     private PlayerServices playerServices;
     private GameCenter gameCenter;
     private TemplateEngine templateEngine;
+    private final Gson gson;
 
     // Values used in the view-model map for rendering the game view.
     // move
@@ -31,7 +33,8 @@ public class PostValidateMoveRoute implements Route {
 
     public PostValidateMoveRoute(PlayerServices playerServices,
                                  GameCenter gameCenter,
-                                 TemplateEngine templateEngine){
+                                 TemplateEngine templateEngine, Gson gson){
+        this.gson = gson;
         Objects.requireNonNull(playerServices, "playerServices must not be null");
         Objects.requireNonNull(gameCenter, "gameCenter must not be null");
         Objects.requireNonNull(templateEngine, "templateEngine must not be null");
@@ -64,7 +67,7 @@ public class PostValidateMoveRoute implements Route {
             return JUMP_OPTION_MESSAGE; // you are not suppose to move if you can jump
 
         if (start.getRow() - end.getRow() == 1) { // can only move forward by one row
-            int diff = start.getCol() - end.getCol();
+            int diff = start.getCell() - end.getCell();
             if (diff == 1 || diff == -1)
                 return VALID_MOVE_MESSAGE; // valid move
             return ADJACENT_MOVE_MESSAGE; // move is larger than one row
@@ -86,23 +89,23 @@ public class PostValidateMoveRoute implements Route {
                             Position start, Position end){
         // updating current player's board
         // remove the piece at the start position
-        Space myStart = board.getSpace(start.getRow(), start.getCol());
+        Space myStart = board.getSpace(start.getRow(), start.getCell());
         Piece myPiece = myStart.getPiece();
         myStart.setPiece(null);
         myStart.changeValid(true);
         // adding a piece to the end position
-        Space myEnd = board.getSpace(end.getRow(), end.getCol());
+        Space myEnd = board.getSpace(end.getRow(), end.getCell());
         myEnd.setPiece(myPiece);
         myEnd.changeValid(false);
 
         // updating opponent's board
         // remove the piece at the start position
-        Space oppStart = opp.getSpace(7 - start.getRow(), 7 - start.getCol());
+        Space oppStart = opp.getSpace(7 - start.getRow(), 7 - start.getCell());
         Piece oppPiece = oppStart.getPiece();
         oppStart.setPiece(null);
         oppStart.changeValid(true);
         // adding a piece to the end position
-        Space oppEnd = opp.getSpace(7 - end.getRow(), 7 - end.getCol());
+        Space oppEnd = opp.getSpace(7 - end.getRow(), 7 - end.getCell());
         oppEnd.setPiece(oppPiece);
         oppEnd.changeValid(false);
     }
@@ -117,9 +120,9 @@ public class PostValidateMoveRoute implements Route {
     public Message canJumpForward(Piece.Color color, BoardView board, Position start, Position end){
         // TODO cases for king
         if (start.getRow() - end.getRow() == 2) { // can only jump forward by two rows
-            int diff = start.getCol() - end.getCol();
+            int diff = start.getCell() - end.getCell();
             if (diff == 2 || diff == -2) { // can only jump left or right by two columns
-                Space space = board.getSpace(start.getRow() - 1, start.getCol() + (diff / 2));
+                Space space = board.getSpace(start.getRow() - 1, start.getCell() + (diff / 2));
                 if (space.getPiece().getColor() != color)
                     return VALID_JUMP_MESSAGE; // valid move
                 else
@@ -147,34 +150,34 @@ public class PostValidateMoveRoute implements Route {
 
         // updating current player's board
         // remove the piece at the start position
-        Space myStart = board.getSpace(start.getRow(), start.getCol());
+        Space myStart = board.getSpace(start.getRow(), start.getCell());
         Piece myPiece = myStart.getPiece();
         myStart.setPiece(null);
         myStart.changeValid(true);
         // remove the piece that was jumped over
-        int myDiff = start.getCol() - end.getCol();
-        Space myKill = board.getSpace(start.getRow() - 1, start.getCol() + (myDiff / 2));
+        int myDiff = start.getCell() - end.getCell();
+        Space myKill = board.getSpace(start.getRow() - 1, start.getCell() + (myDiff / 2));
         myKill.setPiece(null);
         myKill.changeValid(true);
         // adding a piece to the end position
-        Space myEnd = board.getSpace(end.getRow(), end.getCol());
+        Space myEnd = board.getSpace(end.getRow(), end.getCell());
         myEnd.setPiece(myPiece);
         myEnd.changeValid(false);
 
 
         // updating opponent's board
         // remove the piece at the start position
-        Space oppStart = opp.getSpace(7 - start.getRow(), 7 - start.getCol());
+        Space oppStart = opp.getSpace(7 - start.getRow(), 7 - start.getCell());
         Piece oppPiece = oppStart.getPiece();
         oppStart.setPiece(null);
         oppStart.changeValid(true);
         // remove the piece that was jumped over
-        int oppDiff = start.getCol() - end.getCol();
-        Space oppKill = board.getSpace(7 - (start.getRow() - 1), 7 - (start.getCol() + (oppDiff / 2)));
+        int oppDiff = start.getCell() - end.getCell();
+        Space oppKill = board.getSpace(7 - (start.getRow() - 1), 7 - (start.getCell() + (oppDiff / 2)));
         oppKill.setPiece(null);
         oppKill.changeValid(true);
         // adding a piece to the end position
-        Space oppEnd = opp.getSpace(7 - end.getRow(), 7 - end.getCol());
+        Space oppEnd = opp.getSpace(7 - end.getRow(), 7 - end.getCell());
         oppEnd.setPiece(oppPiece);
         oppEnd.changeValid(false);
     }
@@ -183,8 +186,6 @@ public class PostValidateMoveRoute implements Route {
     public Object handle(Request request, Response response) {
         final Session httpSession = request.session();
         final PlayerServices playerServices = httpSession.attribute(GetHomeRoute.PLAYERSERVICES_KEY);
-
-        Move actionMove = httpSession.attribute(ACTION_DATA);
 
         if (playerServices != null) {
             final Map<String, Object> vm = new HashMap<>();
@@ -215,25 +216,18 @@ public class PostValidateMoveRoute implements Route {
             // send the information accordingly
             if(currentPlayerName.equals(redPlayer.getName())) {
                 currentBoardView = redBoardView;
-                vm.put(GetGameRoute.BOARD_ATTR, redBoardView);
-                vm.put(GetGameRoute.CURRENT_USER_ATTR, redPlayer);
             } else {
                 currentBoardView = whiteBoardView;
-                vm.put(GetGameRoute.BOARD_ATTR, whiteBoardView);
-                vm.put(GetGameRoute.CURRENT_USER_ATTR, whitePlayer);
             }
 
-            // for the nav-bar to display the signout option
-            vm.put(GetHomeRoute.CURRENT_PLAYER_ATTR, currentPlayerName);
-
-            vm.put(GetGameRoute.ACTIVE_COLOR_ATTR, currentMatch.getActiveColor());
-            // right now there is only the option to play
-            GetGameRoute.viewMode currentViewMode = GetGameRoute.viewMode.PLAY;
-            vm.put(GetGameRoute.VIEW_MODE_ATTR, currentViewMode);
-
-            Move move = new Move(request.queryParams("actionData"));
+            Move move = gson.fromJson(request.queryParams(ACTION_DATA), Move.class);
             Position start = move.getStart();
             Position end = move.getEnd();
+
+            System.out.println("action data: " + request.queryParams(ACTION_DATA));
+            System.out.println("start: " + start);
+            System.out.println("end: " + end);
+
 
             Message moveMessage = canMoveForward(start, end);
             Message jumpMessage = canJumpForward(activeColor, currentBoardView, start, end);
@@ -266,12 +260,14 @@ public class PostValidateMoveRoute implements Route {
                 // add this move to the stack of move
                 // so when we implement backup, we know the exact order
                 moves.push(move);
+                message = moveMessage;
             }
             //TODO need to implement fail message
-            message = Message.error("fail");
+            else {
+                message = Message.error("You have to either move or jump.");
+            }
 
-            vm.put("message", message);
-            return templateEngine.render(new ModelAndView(vm, GetGameRoute.VIEW_NAME));
+            return gson.toJson(message);
 
         }
         return null;

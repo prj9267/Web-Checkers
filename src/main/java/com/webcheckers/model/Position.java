@@ -2,20 +2,25 @@ package com.webcheckers.model;
 
 public class Position {
     private int row;
-    private int col;
+    private int cell;
 
-    public Position(int row, int col){
+    public Position(int row, int cell){
         if (row <= 7 && row >= 0)
             this.row = row;
-        if (col <= 7 && col >= 0)
-            this.col = col;
+        if (cell <= 7 && cell >= 0)
+            this.cell = cell;
     }
 
     public int getRow() {
         return row;
     }
 
-    public int getCol() {
-        return col;
+    public int getCell() {
+        return cell;
+    }
+
+    @Override
+    public String toString(){
+        return "row: " + row + ", cell: " + cell;
     }
 }
