@@ -18,11 +18,11 @@ public class Piece {
 
     /**
      * Constructor for piece
-     * @param status    - KING OR NORMAL
+     * @param type    - KING OR NORMAL
      * @param color     - RED OR WHITE
      */
-    public Piece(Type status, Color color) {
-        this.type = status;
+    public Piece(Type type, Color color) {
+        this.type = type;
         this.color = color;
     }
 

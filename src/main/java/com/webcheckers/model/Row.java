@@ -27,19 +27,20 @@ public class Row implements Iterable {
         return index;
     }
 
+    public Space getCol(int col){ return cols[col]; }
+
     /**
      * Column getter function
      * @return  - the array of space objects representing the column.
      */
-    public Space[] getCol(){ return cols; }
+    public Space[] getCols(){ return cols; }
 
     /**
      * Set one of the column
-     * @param j       - the column index
      * @param space   - space for that column
      */
-    public void setCol(int j, Space space){
-        cols[j] = space;
+    public void setCol(Space space){
+        cols[space.getCellIdx()] = space;
     }
 
     /**
