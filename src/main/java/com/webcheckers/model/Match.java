@@ -13,6 +13,7 @@ public class Match {
     private Player whitePlayer;
     private Piece.Color activeColor;
     private Player winner = null;
+    private boolean isGameOver;
 
     /**
      * Create a new match between 2 players.
@@ -23,6 +24,7 @@ public class Match {
         this.redPlayer = redPlayer;
         this.whitePlayer = whitePlayer;
         activeColor = Piece.Color.RED;
+        isGameOver = false;
     }
 
     /**
