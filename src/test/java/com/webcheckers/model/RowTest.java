@@ -27,13 +27,13 @@ public class RowTest {
 
     @Test
     void checkGetCol() {
-        assertEquals(cols.length, CuT.getCol().length, "Number of cols is incorrect");
+        assertEquals(cols.length, CuT.getCols().length, "Number of cols is incorrect");
     }
 
     @Test
     void checkRow() {
         Row row = new Row(index);
         assertEquals(row.getIndex(), CuT.getIndex(), "Row constructor not working");
-        assertEquals(row.getCol().length, CuT.getCol().length, "Row constructor not working");
+        assertEquals(row.getCols().length, CuT.getCols().length, "Row constructor not working");
     }
 }

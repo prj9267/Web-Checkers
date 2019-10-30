@@ -79,7 +79,7 @@ public class Match {
         return winner;
     }
 
-    public Player setWinner(Player winner) {
+    public void setWinner(Player winner) {
         this.winner = winner;
     }
 
