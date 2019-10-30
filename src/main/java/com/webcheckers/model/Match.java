@@ -79,6 +79,10 @@ public class Match {
         return winner;
     }
 
+    public Player setWinner(Player winner) {
+        this.winner = winner;
+    }
+
     /**
      * End the current players turn and switch to the other player.
      */
