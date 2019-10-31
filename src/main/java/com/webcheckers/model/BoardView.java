@@ -47,7 +47,7 @@ public class BoardView implements Iterable {
                     }
                 }
                 space.setPiece(piece);
-                row.setCol(j, space);
+                row.setCol(space);
             }
             rows[i] = row;
         }
@@ -78,14 +78,21 @@ public class BoardView implements Iterable {
         return (row < NUM_ROW && row >= 0 && col < NUM_COL && col >= 0);
     }
 
+    public Space getSpace(int row, int col){
+        return rows[row].getCol(col);
+    }
+
+    public void movePiece(int row, Space space){
+        rows[row].setCol(space);
+    }
+
+    public void removePiece(int row, int col){
+        Space empty = new Space(col);
+        rows[row].setCol(empty);
+    }
+
     @Override
     public Iterator iterator() {
         return Arrays.asList(rows).iterator();
-        /*LinkedList<Row> rows = new LinkedList<Row>();
-        for(int numOfRow = 0; numOfRow < NUM_ROW; numOfRow++) {
-            Row row = new Row(numOfRow, Arrays.asList(spaces[numOfRow]));
-            rows.add(row);
-        }
-        return rows.iterator();*/
     }
 }

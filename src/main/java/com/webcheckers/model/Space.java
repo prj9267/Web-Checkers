@@ -3,8 +3,7 @@ package com.webcheckers.model;
 public class Space {
 
     //Attributes
-    public int cellIdx;
-    //private int cellIdy;
+    private int cellIdx;
     private boolean isValid;
     private Piece piece;
 
