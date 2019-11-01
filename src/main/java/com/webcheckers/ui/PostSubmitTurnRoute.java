@@ -8,16 +8,17 @@ import com.webcheckers.util.Message;
 import spark.*;
 
 import java.util.Objects;
-import java.util.Stack;
+import java.util.logging.Logger;
 
 public class PostSubmitTurnRoute implements Route {
+    private static final Logger LOG = Logger.getLogger(PostSubmitTurnRoute.class.getName());
 
     private final TemplateEngine templateEngine;
     private final GameCenter gameCenter;
     private final PlayerServices playerServices;
 
     /**
-     * The constructor for the {@code POST /game} route handler.
+     * The constructor for the {@code POST /submitTurn} route handler.
      *
      * @param templateEngine
      *    The {@link TemplateEngine} used for rendering page HTML.
@@ -33,8 +34,21 @@ public class PostSubmitTurnRoute implements Route {
         this.templateEngine = templateEngine;
     }
 
+    /**
+     * Refresh the game view after a turn was submitted.
+     *
+     * @param request
+     *   the HTTP request
+     * @param response
+     *   the HTTP response
+     *
+     * @return
+     *   the message displayed after submitting a turn.
+     */
     @Override
     public Object handle(Request request, Response response){
+        LOG.finer("PostSubmitTurnRoute has been invoked.");
+
         final Session httpSession = request.session();
         final PlayerServices playerServices = httpSession.attribute(GetHomeRoute.PLAYERSERVICES_KEY);
 
