@@ -37,6 +37,8 @@ public class GetGameRoute implements Route {
     private final GameCenter gameCenter;
     private final PlayerServices playerServices;
 
+    private boolean isGameOver;
+
     /**
      * The constructor for the {@code GET /game} route handler.
      *
@@ -81,10 +83,12 @@ public class GetGameRoute implements Route {
                 whitePlayer = playerServices.getPlayer(opponentName);
                 gameCenter.addMatch(redPlayer, whitePlayer);
                 currentMatch = gameCenter.getMatch(redPlayer);
+                isGameOver = false;
             } else { // else get the information from the match
                 currentMatch = gameCenter.getMatch(currentPlayer);
                 redPlayer = currentMatch.getRedPlayer();
                 whitePlayer = currentMatch.getWhitePlayer();
+                isGameOver = currentMatch.getGameOver();
             }
 
             httpSession.attribute(MATCH_ATTR, currentMatch);
