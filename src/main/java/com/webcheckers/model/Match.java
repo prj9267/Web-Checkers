@@ -50,6 +50,16 @@ public class Match {
     }
 
     /**
+     * Alternates the current turn of the match, between the red and white player.
+     */
+    public void changeActiveColor(){
+        if(activeColor == Piece.Color.RED)
+            activeColor = Piece.Color.WHITE;
+        else
+            activeColor = Piece.Color.RED;
+    }
+
+    /**
      * Getter function for current player's turn.
      * @return  - the player whose turn it is.
      */

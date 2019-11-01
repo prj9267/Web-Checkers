@@ -267,6 +267,7 @@ public class PostValidateMoveRoute implements Route {
                 message = Message.error("You have to either move or jump.");
             }
 
+            httpSession.attribute("moves", moves);
             return gson.toJson(message);
 
         }
