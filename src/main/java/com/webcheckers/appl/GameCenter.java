@@ -36,11 +36,25 @@ public class GameCenter {
         if(redPlayer.equals(whitePlayer) || inMatch.containsKey(redPlayer) || inMatch.containsKey(whitePlayer))
             return false;
         Match match = new Match(redPlayer, whitePlayer);
+        matchList.add(match);
         inMatch.put(redPlayer, match);
         inMatch.put(whitePlayer, match);
         redPlayer.changeStatus(Player.Status.ingame);
         whitePlayer.changeStatus(Player.Status.challenged);
         return true;
+    }
+
+    /**
+     * Removes the match from the matchList
+     * @param match             - the match to remove
+     * @return                  - returns true if the match has been removed
+     */
+    public synchronized boolean removeMatch(Match match) {
+        if (matchList.contains(match)) {
+            matchList.remove(match);
+            return true;
+        }
+        return false;
     }
 
     /**

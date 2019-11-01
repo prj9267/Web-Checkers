@@ -75,10 +75,9 @@ public class PostResignGameRoute implements Route {
         String username = httpSession.attribute("currentPlayer");
         Player currentPlayer = playerServices.getPlayer(username);
         Match currentMatch = gameCenter.getMatch(currentPlayer);
+        gameCenter.removeMatch(currentMatch);
         removePlayers(currentMatch.getRedPlayer(), currentMatch.getWhitePlayer(), currentMatch);
-        // TODO change, check whose the winner
         currentMatch.setWinner(currentPlayer);
-        // TODO leave match or delete match? TBD
         //redirect to home since that's the next page after ending a game
         return gson.toJson(message);
     }
