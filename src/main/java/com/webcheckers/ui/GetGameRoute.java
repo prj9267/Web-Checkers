@@ -85,6 +85,7 @@ public class GetGameRoute implements Route {
                 currentMatch = gameCenter.getMatch(redPlayer);
                 isGameOver = false;
             } else { // else get the information from the match
+                // TODO modeOptions
                 currentMatch = gameCenter.getMatch(currentPlayer);
                 redPlayer = currentMatch.getRedPlayer();
                 whitePlayer = currentMatch.getWhitePlayer();

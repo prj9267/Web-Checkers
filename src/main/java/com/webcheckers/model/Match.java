@@ -11,6 +11,8 @@ public class Match {
     private BoardView whiteBoardView = new BoardView(Piece.Color.WHITE);
     private Player redPlayer;
     private Player whitePlayer;
+    private Player currentPlayer;
+    private Player otherPlayer;
     private Piece.Color activeColor;
     private Player winner = null;
     private boolean isGameOver;
@@ -56,8 +58,11 @@ public class Match {
      * @return  - the player whose turn it is.
      */
     public Player getCurrentPlayer() {
-        if(activeColor.equals(Piece.Color.RED))
+        if(activeColor.equals(Piece.Color.RED)) {
+            currentPlayer = redPlayer;
             return redPlayer;
+        }
+        otherPlayer = whitePlayer;
         return whitePlayer;
     }
 
@@ -81,10 +86,30 @@ public class Match {
         return winner;
     }
 
+    /**
+     * set the winner of the match
+     * @param winner    - the winner of the match
+     */
     public void setWinner(Player winner) {
         this.winner = winner;
     }
 
+    /**
+     * check for the existence of the other player once the game has officially started
+     */
+    public void checkGameOver() {
+        if(otherPlayer == null) {
+            isGameOver = true;
+        }
+    }
+
+    /**
+     * Returns the game state
+     * @return          - isGameOver game state
+     */
+    public boolean getGameOver() {
+        return isGameOver;
+    }
     /**
      * End the current players turn and switch to the other player.
      */
