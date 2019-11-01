@@ -28,6 +28,7 @@ public class GetGameRoute implements Route {
     private static final String WHITE_PLAYER_ATTR = "whitePlayer";
     private static final String ACTIVE_COLOR_ATTR = "activeColor";
     private static final String BOARD_ATTR = "board";
+    private static final Map<String, Object> modeOptions = new HashMap<>(2);
     public enum viewMode {PLAY, SPECTATOR, REPLAY}
 
     public static final String MATCH_ATTR = "match";
@@ -72,7 +73,7 @@ public class GetGameRoute implements Route {
             Player redPlayer;
             Player whitePlayer;
             Match currentMatch;
-
+            // TODO modeOptions check if game has ended and add modeOptions to vm to send GameOver message
             // if the button is just triggered, initialize everything
             if (request.queryParams("button") != null) {
                 String opponentName = request.queryParams("button");
