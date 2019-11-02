@@ -42,19 +42,6 @@ public class PostResignGameRoute implements Route {
     }
 
     /**
-     * Remove players from the inGame list in gameCenter since the game ended
-     * @param redPlayer
-     * @param whitePlayer
-     */
-    public void removePlayers(Player redPlayer, Player whitePlayer) {
-        gameCenter.removePlayer(redPlayer);
-        gameCenter.removePlayer(whitePlayer);
-
-        redPlayer.changeStatus(Player.Status.waiting);
-        whitePlayer.changeStatus(Player.Status.waiting);
-    }
-
-    /**
      * Render the WebCheckers home page after resigning.
      *
      * @param request
@@ -73,7 +60,8 @@ public class PostResignGameRoute implements Route {
         String username = httpSession.attribute("currentPlayer");
         Player currentPlayer = playerServices.getPlayer(username);
         Match currentMatch = gameCenter.getMatch(currentPlayer);
-        removePlayers(currentMatch.getRedPlayer(), currentMatch.getWhitePlayer());
+        gameCenter.removePlayer(currentPlayer);
+        currentPlayer.changeStatus(Player.Status.waiting);
         currentMatch.resignGame();
         currentMatch.setWinner(currentPlayer);
         //redirect to home since that's the next page after ending a game

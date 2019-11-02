@@ -29,7 +29,6 @@ public class GetGameRoute implements Route {
     private static final String WHITE_PLAYER_ATTR = "whitePlayer";
     private static final String ACTIVE_COLOR_ATTR = "activeColor";
     private static final String BOARD_ATTR = "board";
-    private static final Map<String, Object> modeOptions = new HashMap<>(2);
     public enum viewMode {PLAY, SPECTATOR, REPLAY}
 
     public static final String MATCH_ATTR = "match";
@@ -58,6 +57,19 @@ public class GetGameRoute implements Route {
     }
 
     /**
+     * Remove players from the inGame list in gameCenter since the game ended
+     * @param redPlayer
+     * @param whitePlayer
+     */
+    /*public void removePlayers(Player redPlayer, Player whitePlayer) {
+        gameCenter.removePlayer(redPlayer);
+        gameCenter.removePlayer(whitePlayer);
+
+        redPlayer.changeStatus(Player.Status.waiting);
+        whitePlayer.changeStatus(Player.Status.waiting);
+    }*/
+
+    /**
      * {@inheritDoc}
      */
     @Override
@@ -84,18 +96,16 @@ public class GetGameRoute implements Route {
                 whitePlayer = playerServices.getPlayer(opponentName);
                 gameCenter.addMatch(redPlayer, whitePlayer);
                 currentMatch = gameCenter.getMatch(redPlayer);
-                modeOptions.put("isGameOver", false);
-                modeOptions.put("gameOverMessage", "The game is not over.");
             } else { // else get the information from the match
                 currentMatch = gameCenter.getMatch(currentPlayer);
                 // TODO debug
-                if(currentMatch==null) {
-                    currentMatch.isGameResigned();
-                }
                 if(currentMatch.isGameResigned() == Match.STATE.resigned) {
+                    final Map<String, Object> modeOptions = new HashMap<>(2);
                     modeOptions.put("isGameOver", true);
                     modeOptions.put("gameOverMessage", "The game is over.");
                     vm.put("modeOptionsAsJSON", gson.toJson(modeOptions));
+                    gameCenter.removePlayer(currentPlayer);
+                    currentPlayer.changeStatus(Player.Status.waiting);
                     gameCenter.removeMatch(currentMatch);
                 }
                 redPlayer = currentMatch.getRedPlayer();
