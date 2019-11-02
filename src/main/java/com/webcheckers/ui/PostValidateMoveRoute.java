@@ -70,7 +70,7 @@ public class PostValidateMoveRoute implements Route {
             int diff = start.getCell() - end.getCell();
             if (diff == 1 || diff == -1)
                 return VALID_MOVE_MESSAGE; // valid move
-            return ADJACENT_MOVE_MESSAGE; // move is larger than one row
+            return ADJACENT_MOVE_MESSAGE; // move is larger than one col
         }
         else if (start.getRow() - end.getRow() < 0)
             return FORWARD_MOVE_MESSAGE; // you can only move forward
@@ -267,6 +267,7 @@ public class PostValidateMoveRoute implements Route {
                 message = Message.error("You have to either move or jump.");
             }
 
+            httpSession.attribute("moves", moves);
             return gson.toJson(message);
 
         }

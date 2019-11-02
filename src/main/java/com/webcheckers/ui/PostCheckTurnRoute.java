@@ -20,6 +20,9 @@ public class PostCheckTurnRoute implements Route {
     public static final Message isYourTurn = Message.info("true");
     public static final Message notYourTurn = Message.error("false");
 
+
+    private boolean isMyTurn = false;
+
     private final TemplateEngine templateEngine;
     private final GameCenter gameCenter;
     private final PlayerServices playerServices;
@@ -54,14 +57,10 @@ public class PostCheckTurnRoute implements Route {
         final PlayerServices playerServices = httpSession.attribute(GetHomeRoute.PLAYERSERVICES_KEY);
 
         if(playerServices != null) {
-            final Map<String, Object> vm = new HashMap<>();
-            vm.put(GetHomeRoute.TITLE_ATTR, GetGameRoute.TITLE);
             // get the information of the current user
             String currentPlayerName = httpSession.attribute(GetHomeRoute.CURRENT_USERNAME_KEY);
             Player currentPlayer = playerServices.getPlayer(currentPlayerName);
 
-            // send current user to ftl
-            vm.put(GetGameRoute.CURRENT_USER_ATTR, currentPlayer);
 
             // Get the information from the match
             Match currentMatch = gameCenter.getMatch(currentPlayer);
@@ -69,39 +68,27 @@ public class PostCheckTurnRoute implements Route {
             Player whitePlayer = currentMatch.getWhitePlayer();
 
             // give player information to ftl
-            httpSession.attribute(GetGameRoute.MATCH_ATTR, currentMatch);
-            vm.put(GetGameRoute.RED_PLAYER_ATTR, redPlayer);
-            vm.put(GetGameRoute.WHITE_PLAYER_ATTR, whitePlayer);
+            // httpSession.attribute(GetGameRoute.MATCH_ATTR, currentMatch);
 
             // get different board from the match
             BoardView whiteBoardView = currentMatch.getWhiteBoardView();
             BoardView redBoardView = currentMatch.getRedBoardView();
 
-            // send the information accordingly
-            if(currentPlayerName.equals(redPlayer.getName())) {
-                vm.put(GetGameRoute.BOARD_ATTR, redBoardView);
-                vm.put(GetGameRoute.CURRENT_USER_ATTR, redPlayer);
-            } else {
-                vm.put(GetGameRoute.BOARD_ATTR, whiteBoardView);
-                vm.put(GetGameRoute.CURRENT_USER_ATTR, whitePlayer);
-            }
-
-            // for the nav-bar to display the signout option
-            vm.put(GetHomeRoute.CURRENT_PLAYER_ATTR, currentPlayerName);
-
-            vm.put(GetGameRoute.ACTIVE_COLOR_ATTR, currentMatch.getActiveColor());
             // right now there is only the option to play
             GetGameRoute.viewMode currentViewMode = GetGameRoute.viewMode.PLAY;
-            vm.put(GetGameRoute.VIEW_MODE_ATTR, currentViewMode);
 
             //TODO take care of game end
             // verify turn
-            if (isMyTurn(currentPlayer, redPlayer, whitePlayer, currentMatch.getActiveColor()))
-                vm.put(GetHomeRoute.MESSAGE_ATTR, isYourTurn);
-            else
-                vm.put(GetHomeRoute.MESSAGE_ATTR, notYourTurn);
+            Message message;
+            if (isMyTurn(currentPlayer, redPlayer, whitePlayer, currentMatch.getActiveColor())) {
+                isMyTurn = true;
+                message = isYourTurn;
+            } else {
+                isMyTurn = false;
+                message = notYourTurn;
+            }
 
-            return templateEngine.render(new ModelAndView(vm, GetGameRoute.VIEW_NAME));
+            return message;
         }
         else{
             //TODO take care of resign
