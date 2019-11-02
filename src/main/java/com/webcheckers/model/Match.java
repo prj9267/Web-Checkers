@@ -16,6 +16,8 @@ public class Match {
     private Piece.Color activeColor;
     private Player winner = null;
     private boolean isGameOver;
+    public enum STATE {resigned, running}
+    private STATE state;
 
     /**
      * Create a new match between 2 players.
@@ -27,6 +29,7 @@ public class Match {
         this.whitePlayer = whitePlayer;
         activeColor = Piece.Color.RED;
         isGameOver = false;
+        state = STATE.running;
     }
 
     /**
@@ -92,6 +95,21 @@ public class Match {
      */
     public void setWinner(Player winner) {
         this.winner = winner;
+    }
+
+    /**
+     * returns the state of the game
+     * @return
+     */
+    public STATE isGameResigned() {
+        return state;
+    }
+
+    /**
+     * sets the state of the game to resigned
+     */
+    public void resignGame() {
+        state = STATE.resigned;
     }
 
     /**

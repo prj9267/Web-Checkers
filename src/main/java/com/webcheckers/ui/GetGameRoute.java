@@ -1,5 +1,6 @@
 package com.webcheckers.ui;
 
+import com.google.gson.Gson;
 import com.webcheckers.appl.GameCenter;
 import com.webcheckers.appl.PlayerServices;
 import com.webcheckers.model.BoardView;
@@ -37,7 +38,7 @@ public class GetGameRoute implements Route {
     private final GameCenter gameCenter;
     private final PlayerServices playerServices;
 
-    private boolean isGameOver;
+    private Gson gson;
 
     /**
      * The constructor for the {@code GET /game} route handler.
@@ -83,20 +84,29 @@ public class GetGameRoute implements Route {
                 whitePlayer = playerServices.getPlayer(opponentName);
                 gameCenter.addMatch(redPlayer, whitePlayer);
                 currentMatch = gameCenter.getMatch(redPlayer);
-                isGameOver = false;
+                modeOptions.put("isGameOver", false);
+                modeOptions.put("gameOverMessage", "The game is not over.");
             } else { // else get the information from the match
-                // TODO modeOptions
                 currentMatch = gameCenter.getMatch(currentPlayer);
+                // TODO debug
+                if(currentMatch==null) {
+                    currentMatch.isGameResigned();
+                }
+                if(currentMatch.isGameResigned() == Match.STATE.resigned) {
+                    modeOptions.put("isGameOver", true);
+                    modeOptions.put("gameOverMessage", "The game is over.");
+                    vm.put("modeOptionsAsJSON", gson.toJson(modeOptions));
+                    gameCenter.removeMatch(currentMatch);
+                }
                 redPlayer = currentMatch.getRedPlayer();
                 whitePlayer = currentMatch.getWhitePlayer();
-                isGameOver = currentMatch.getGameOver();
             }
 
             httpSession.attribute(MATCH_ATTR, currentMatch);
             vm.put(RED_PLAYER_ATTR, redPlayer);
             vm.put(WHITE_PLAYER_ATTR, whitePlayer);
 
-            //Match match = gameCenter.getMatch(currentPlayer);
+                //Match match = gameCenter.getMatch(currentPlayer);
             BoardView whiteBoardView = currentMatch.getWhiteBoardView();
             BoardView redBoardView = currentMatch.getRedBoardView();
 

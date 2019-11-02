@@ -46,14 +46,12 @@ public class PostResignGameRoute implements Route {
      * @param redPlayer
      * @param whitePlayer
      */
-    public void removePlayers(Player redPlayer, Player whitePlayer, Match match) {
+    public void removePlayers(Player redPlayer, Player whitePlayer) {
         gameCenter.removePlayer(redPlayer);
         gameCenter.removePlayer(whitePlayer);
 
         redPlayer.changeStatus(Player.Status.waiting);
         whitePlayer.changeStatus(Player.Status.waiting);
-
-        gameCenter.getMatchList().remove(match);
     }
 
     /**
@@ -75,8 +73,8 @@ public class PostResignGameRoute implements Route {
         String username = httpSession.attribute("currentPlayer");
         Player currentPlayer = playerServices.getPlayer(username);
         Match currentMatch = gameCenter.getMatch(currentPlayer);
-        gameCenter.removeMatch(currentMatch);
-        removePlayers(currentMatch.getRedPlayer(), currentMatch.getWhitePlayer(), currentMatch);
+        removePlayers(currentMatch.getRedPlayer(), currentMatch.getWhitePlayer());
+        currentMatch.resignGame();
         currentMatch.setWinner(currentPlayer);
         //redirect to home since that's the next page after ending a game
         return gson.toJson(message);
