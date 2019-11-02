@@ -62,6 +62,7 @@ public class WebServer {
   public static final String CHECK_TURN = "/checkTurn";
   public static final String VALIDATE_MOVE = "/validateMove";
   public static final String SUBMIT_TURN = "/submitTurn";
+  public static final String BACKUP = "/backupMove";
 
   //
   // Attributes
@@ -164,6 +165,7 @@ public class WebServer {
     post(CHECK_TURN, new PostCheckTurnRoute(playerServices, gameCenter, templateEngine));
     post(VALIDATE_MOVE, new PostValidateMoveRoute(playerServices, gameCenter, templateEngine, gson));
     post(SUBMIT_TURN, new PostSubmitTurnRoute(playerServices,gameCenter,templateEngine));
+    post(BACKUP, new PostBackupMoveRoute(playerServices,gameCenter,templateEngine));
 
     //
     LOG.config("WebServer is initialized.");
