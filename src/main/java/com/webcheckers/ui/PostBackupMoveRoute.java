@@ -1,5 +1,6 @@
 package com.webcheckers.ui;
 
+import com.google.gson.Gson;
 import com.webcheckers.appl.GameCenter;
 import com.webcheckers.appl.PlayerServices;
 import com.webcheckers.model.*;
@@ -16,6 +17,7 @@ public class PostBackupMoveRoute implements Route {
     private final TemplateEngine templateEngine;
     private final GameCenter gameCenter;
     private final PlayerServices playerServices;
+    private final Gson gson;
 
     /**
      * The constructor for the {@code POST /backupMove} route handler.
@@ -25,13 +27,14 @@ public class PostBackupMoveRoute implements Route {
      */
     public PostBackupMoveRoute(final PlayerServices playerServices,
                                final GameCenter gameCenter,
-                               final TemplateEngine templateEngine){
+                               final TemplateEngine templateEngine, Gson gson){
         Objects.requireNonNull(playerServices, "playerServices must not be null");
         Objects.requireNonNull(gameCenter, "gameCenter must not be null");
         Objects.requireNonNull(templateEngine, "templateEngine must not be null");
         this.playerServices = playerServices;
         this.gameCenter = gameCenter;
         this.templateEngine = templateEngine;
+        this.gson = gson;
     }
 
     /**
@@ -132,7 +135,7 @@ public class PostBackupMoveRoute implements Route {
             updateOpponentPlayerBoard(currentPlayer, previousMove);
 
             message = Message.info("Backup Successful");
-            return message;
+            return gson.toJson(message);
         }
 
         else
