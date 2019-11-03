@@ -160,7 +160,7 @@ public class WebServer {
     //get game.
     get(GAME_URL, new GetGameRoute(playerServices, gameCenter, templateEngine));
 
-    post(VALIDATE_MOVE, new PostValidateMoveRoute(playerServices, gameCenter, templateEngine));
+    post(VALIDATE_MOVE, new PostValidateMoveRoute(playerServices, gameCenter, templateEngine, gson));
     post(RESIGN, new PostResignGameRoute(playerServices, gameCenter, templateEngine, gson));
     //
     LOG.config("WebServer is initialized.");
