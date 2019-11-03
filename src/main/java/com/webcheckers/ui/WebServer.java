@@ -163,10 +163,10 @@ public class WebServer {
     //get game.
     get(GAME_URL, new GetGameRoute(playerServices, gameCenter, templateEngine));
 
-    post(CHECK_TURN, new PostCheckTurnRoute(playerServices, gameCenter, templateEngine));
+    post(CHECK_TURN, new PostCheckTurnRoute(playerServices, gameCenter, templateEngine, gson));
     post(VALIDATE_MOVE, new PostValidateMoveRoute(playerServices, gameCenter, templateEngine, gson));
-    post(SUBMIT_TURN, new PostSubmitTurnRoute(playerServices,gameCenter,templateEngine));
-    post(BACKUP, new PostBackupMoveRoute(playerServices,gameCenter,templateEngine));
+    post(SUBMIT_TURN, new PostSubmitTurnRoute(playerServices,gameCenter,templateEngine, gson));
+    post(BACKUP, new PostBackupMoveRoute(playerServices,gameCenter,templateEngine, gson));
 
     post(RESIGN, new PostResignGameRoute(playerServices, gameCenter, templateEngine, gson));
     //
