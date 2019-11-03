@@ -3,8 +3,8 @@ package com.webcheckers.model;
 import java.util.*;
 
 public class BoardView implements Iterable {
-    private static final int NUM_ROW = 8;
-    private static final int NUM_COL = 8;
+    public static final int NUM_ROW = 8;
+    public static final int NUM_COL = 8;
     private Piece.Color activeColor;
     private Row[] rows = new Row[NUM_ROW];
 
@@ -53,14 +53,6 @@ public class BoardView implements Iterable {
         }
     }
 
-    public BoardView getWhiteBoard() {
-        return new BoardView(Piece.Color.WHITE);
-    }
-
-    public BoardView getRedBoard() {
-        return new BoardView(Piece.Color.RED);
-    }
-
     /**
      * Getter function for the board object;
      * @return  - this board
@@ -78,8 +70,26 @@ public class BoardView implements Iterable {
         return (row < NUM_ROW && row >= 0 && col < NUM_COL && col >= 0);
     }
 
+    /**
+     * Getter function for the Space
+     * @param row the row number
+     * @param col the col number
+     * @return the desired Space
+     */
     public Space getSpace(int row, int col){
-        return rows[row].getCol(col);
+        if (row >= 0 && row < NUM_ROW &&
+            col >= 0 && col < NUM_COL)
+            return rows[row].getCol(col);
+        return null;
+    }
+
+    /**
+     * Getter function for the row
+     * @param row the row number
+     * @return the desired row
+     */
+    public Row getRow(int row){
+        return rows[row];
     }
 
     public void movePiece(int row, Space space){
