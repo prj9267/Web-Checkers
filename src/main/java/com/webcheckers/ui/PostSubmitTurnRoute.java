@@ -1,5 +1,6 @@
 package com.webcheckers.ui;
 
+import com.google.gson.Gson;
 import com.webcheckers.appl.GameCenter;
 import com.webcheckers.appl.PlayerServices;
 import com.webcheckers.model.Match;
@@ -16,6 +17,7 @@ public class PostSubmitTurnRoute implements Route {
     private final TemplateEngine templateEngine;
     private final GameCenter gameCenter;
     private final PlayerServices playerServices;
+    private final Gson gson;
 
     /**
      * The constructor for the {@code POST /submitTurn} route handler.
@@ -25,13 +27,14 @@ public class PostSubmitTurnRoute implements Route {
      */
     public PostSubmitTurnRoute(final PlayerServices playerServices,
                               final GameCenter gameCenter,
-                              final TemplateEngine templateEngine){
+                              final TemplateEngine templateEngine, Gson gson){
         Objects.requireNonNull(playerServices, "playerServices must not be null");
         Objects.requireNonNull(gameCenter, "gameCenter must not be null");
         Objects.requireNonNull(templateEngine, "templateEngine must not be null");
         this.playerServices = playerServices;
         this.gameCenter = gameCenter;
         this.templateEngine = templateEngine;
+        this.gson = gson;
     }
 
     /**
@@ -66,7 +69,7 @@ public class PostSubmitTurnRoute implements Route {
             currentMatch.changeActiveColor();
 
             message = Message.info("Your turn was submitted");
-            return message;
+            return gson.toJson(message);
         }
         else{
             return null;
