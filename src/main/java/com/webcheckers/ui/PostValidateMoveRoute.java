@@ -51,10 +51,10 @@ public class PostValidateMoveRoute implements Route {
      * if you can jump.
      * @return boolean
      */
-    public boolean optionToJump(BoardView board, ArrayList<HashMap> pieces, Piece.Color color){
+    public boolean optionToJump(BoardView board, ArrayList<Location> pieces, Piece.Color color){
         for (int i = 0; i < pieces.size(); i++){
-            int row = ((Integer) pieces.get(i).get("row")).intValue();
-            int col = ((Integer) pieces.get(i).get("col")).intValue();
+            int row = pieces.get(i).getRow();
+            int col = pieces.get(i).getCol();
             Space space = board.getSpace(row, col);
             Piece piece = space.getPiece();
 
@@ -136,14 +136,10 @@ public class PostValidateMoveRoute implements Route {
      */
     public void moveForward(BoardView board, BoardView opp,
                             Position start, Position end,
-                            ArrayList<HashMap> pieces){
+                            ArrayList<Location> pieces){
         // update the position of player's pieces
-        HashMap<String, Integer> startLocation = new HashMap<>();
-        startLocation.put("row", start.getRow());
-        startLocation.put("col", start.getCell());
-        HashMap<String, Integer> endLocation = new HashMap<>();
-        endLocation.put("row", end.getRow());
-        endLocation.put("col", end.getCell());
+        Location startLocation = new Location(start.getRow(), start.getCell());
+        Location endLocation = new Location(end.getRow(), end.getCell());
         pieces.remove(startLocation);
         pieces.add(endLocation);
         // update current player's board
@@ -167,6 +163,11 @@ public class PostValidateMoveRoute implements Route {
         Space oppEnd = opp.getSpace(7 - end.getRow(), 7 - end.getCell());
         oppEnd.setPiece(oppPiece);
         oppEnd.changeValid(false);
+
+        if (end.getRow() == 0){ // means the piece become a king
+            myEnd.getPiece().setType(Piece.Type.KING);
+            oppEnd.getPiece().setType(Piece.Type.KING);
+        }
     }
 
     /**
@@ -206,15 +207,11 @@ public class PostValidateMoveRoute implements Route {
      */
     public void jumpForward(BoardView board, BoardView opp,
                             Position start, Position end,
-                            ArrayList<HashMap> pieces,
-                            ArrayList<HashMap> oppPieces){
+                            ArrayList<Location> pieces,
+                            ArrayList<Location> oppPieces){
         // update the position of current player's pieces
-        HashMap<String, Integer> startLocation = new HashMap<>();
-        startLocation.put("row", start.getRow());
-        startLocation.put("col", start.getCell());
-        HashMap<String, Integer> endLocation = new HashMap<>();
-        endLocation.put("row", end.getRow());
-        endLocation.put("col", end.getCell());
+        Location startLocation = new Location(start.getRow(), start.getCell());
+        Location endLocation = new Location(end.getRow(), end.getCell());
         pieces.remove(startLocation);
         pieces.add(endLocation);
         // update current player's board
@@ -237,7 +234,8 @@ public class PostValidateMoveRoute implements Route {
         Space myEnd = board.getSpace(end.getRow(), end.getCell());
         myEnd.setPiece(myPiece);
         myEnd.changeValid(false);
-
+        if (board.getSpace(end.getRow(), end.getCell()).getPiece() != null)
+            System.out.println("good");
 
         // updating opponent's board
         // remove the piece at the start position
@@ -249,19 +247,23 @@ public class PostValidateMoveRoute implements Route {
         Space oppKill = board.getSpace(7 - (start.getRow() + yDiff), 7 - (start.getCell() + xDiff));
         oppKill.setPiece(null);
         oppKill.changeValid(true);
-
-        System.out.println("opp y: " + Integer.toString(7 - (start.getRow() - yDiff)));
-        System.out.println("opp x: " + Integer.toString(7 - (start.getCell() - xDiff)));
-
-        // remove the piece that was jumped over for the pieces array
-        HashMap<String, Integer> oppLocation = new HashMap<>();
-        oppLocation.put("row", 7 - (start.getRow() + yDiff));
-        oppLocation.put("col", 7 - (start.getCell() + xDiff));
-        oppPieces.remove(oppLocation);
         // adding a piece to the end position
         Space oppEnd = opp.getSpace(7 - end.getRow(), 7 - end.getCell());
         oppEnd.setPiece(oppPiece);
         oppEnd.changeValid(false);
+        // remove the piece that was jumped over for the pieces array
+        int deadY = 7 - (start.getRow() + yDiff);
+        int deadX = 7 - (start.getCell() + xDiff);
+        Location oppLocation = new Location(deadY, deadX);
+        oppPieces.remove(oppLocation);
+
+        System.out.println("opp y: " + Integer.toString(7 - (start.getRow() - yDiff)));
+        System.out.println("opp x: " + Integer.toString(7 - (start.getCell() - xDiff)));
+
+        if (end.getRow() == 0){ // means the piece become a king
+            myEnd.getPiece().setType(Piece.Type.KING);
+            oppEnd.getPiece().setType(Piece.Type.KING);
+        }
     }
 
     @Override
@@ -287,8 +289,8 @@ public class PostValidateMoveRoute implements Route {
             BoardView whiteBoardView = currentMatch.getWhiteBoardView();
             BoardView redBoardView = currentMatch.getRedBoardView();
 
-            ArrayList<HashMap> pieces;
-            ArrayList<HashMap> oppPieces;
+            ArrayList<Location> pieces;
+            ArrayList<Location> oppPieces;
             Piece.Color color;
             // set the information accordingly
             if(currentPlayerName.equals(redPlayer.getName())) {
