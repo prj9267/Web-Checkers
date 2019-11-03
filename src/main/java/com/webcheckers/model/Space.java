@@ -16,7 +16,6 @@ public class Space {
      */
     public Space(int cellIdx, boolean isValid, Piece piece) {
         this.cellIdx = cellIdx;
-        //this.cellIdy = cellIdy;
         this.isValid = isValid;
         this.piece = piece;
     }

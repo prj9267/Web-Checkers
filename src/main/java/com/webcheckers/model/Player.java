@@ -4,7 +4,6 @@ public class Player {
 
     //Attributes
     private String name;
-    private int hash;
     public enum Status {waiting, challenged, ingame}
     public Status status;
 
@@ -16,21 +15,7 @@ public class Player {
         assert(name != null);
         this.name = name;
         status = Status.waiting;
-        hash = name.hashCode();
     }
-
-    /**
-     * Checks if a username contains an invalid char
-     * @return  - false if username contains no invalid chars, true otherwise.
-     */
-    /*public Boolean containsInvalidCharacter(){
-        String invalidCharacters = "~`!@#$%^&*()-_=+[]{}\\|;:',<.>/?\"";
-        for (int i = 0; i < invalidCharacters.length(); i++) {
-            if (name.indexOf(invalidCharacters.charAt(i)) >= 0)
-                return true;
-        }
-        return false;
-    }*/
 
     /**
      * CHecks if a username contains an invalid char
@@ -55,9 +40,6 @@ public class Player {
         return status;
     }
 
-    public int getHash() {
-        return hash;
-    }
 
     /**
      * Check if the player is playing a game or not
@@ -86,11 +68,4 @@ public class Player {
         return false;
     }
 
-    /**
-     * hashcode function for testing
-     * @return  - the hashcode of the Player
-     */
-    public int hashcode(String name) {
-        return name.hashCode();
-    }
 }

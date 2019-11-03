@@ -1,5 +1,7 @@
 package com.webcheckers.model;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Logger;
 
@@ -13,6 +15,8 @@ public class Match {
     private Player whitePlayer;
     private Piece.Color activeColor;
     private Player winner = null;
+    private ArrayList<HashMap> redPieces = initializePieces(redBoardView);
+    private ArrayList<HashMap> whitePieces = initializePieces(whiteBoardView);
 
     /**
      * Create a new match between 2 players.
@@ -23,6 +27,23 @@ public class Match {
         this.redPlayer = redPlayer;
         this.whitePlayer = whitePlayer;
         activeColor = Piece.Color.RED;
+    }
+
+    public ArrayList<HashMap> initializePieces(BoardView board){
+        ArrayList<HashMap> pieces = new ArrayList<>();
+        for (int y = 5; y < BoardView.NUM_ROW; y++){
+            Row row = board.getRow(y);
+            for (int x = 0; x < BoardView.NUM_COL; x++){
+                Space col = row.getCol(x);
+                if (col.getPiece() != null) { // make sure there is piece
+                    HashMap<String, Integer> temp = new HashMap<>();
+                    temp.put("row", y);
+                    temp.put("col", x);
+                    pieces.add(temp);
+                }
+            }
+        }
+        return pieces;
     }
 
     /**
@@ -47,6 +68,22 @@ public class Match {
      */
     public Piece.Color getActiveColor() {
         return activeColor;
+    }
+
+    /**
+     * Getter function for all the pieces red player has
+     * @return red player's pieces as space
+     */
+    public ArrayList<HashMap> getRedPieces() {
+        return redPieces;
+    }
+
+    /**
+     * Getter function for all the pieces white player has
+     * @return white player's pieces as space
+     */
+    public ArrayList<HashMap> getWhitePieces() {
+        return whitePieces;
     }
 
     /**

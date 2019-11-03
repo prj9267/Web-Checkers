@@ -19,14 +19,16 @@ public class PostValidateMoveRoute implements Route {
     // Values used in the view-model map for rendering the game view.
     // move
     public static final Message VALID_MOVE_MESSAGE = Message.info("This is a valid move.");
-    public static final Message ADJACENT_MOVE_MESSAGE = Message.error("Your move must be adjacent to you.");
-    public static final Message FORWARD_MOVE_MESSAGE = Message.error("Normal piece can only move forward.");
-    public static final Message JUMP_OPTION_MESSAGE = Message.error("You must jump instead of move.");
+    public static final Message ADJACENT_MOVE_ERROR = Message.error("Your move must be adjacent to you.");
+    public static final Message FORWARD_MOVE_ERROR = Message.error("Normal piece can only move forward.");
+    public static final Message JUMP_OPTION_ERROR = Message.error("You must jump instead of move.");
     // jump
     public static final Message VALID_JUMP_MESSAGE = Message.info("This is a valid jump.");
-    public static final Message ADJACENT_JUMP_MESSAGE = Message.error("Your jump must be adjacent to you.");
-    public static final Message FORWARD_JUMP_MESSAGE = Message.error("Normal piece can only jump forward.");
-    public static final Message OPPONENT_JUMP_MESSAGE = Message.error("You can only jump over your opponent.");
+    public static final Message ADJACENT_JUMP_ERROR = Message.error("Your jump must be adjacent to you.");
+    public static final Message FORWARD_JUMP_ERROR = Message.error("Normal piece can only jump forward.");
+    public static final Message OPPONENT_JUMP_ERROR = Message.error("You can only jump over your opponent.");
+    // neither
+    public static final Message MAX_ROW_MESSAGE = Message.error("The maximum number of rows you can move is 2");
 
     // param name
     public static final String ACTION_DATA = "actionData";
@@ -49,8 +51,55 @@ public class PostValidateMoveRoute implements Route {
      * if you can jump.
      * @return boolean
      */
-    public boolean optionToJump(){
-        //TODO
+    public boolean optionToJump(BoardView board, ArrayList<HashMap> pieces, Piece.Color color){
+        for (int i = 0; i < pieces.size(); i++){
+            int row = ((Integer) pieces.get(i).get("row")).intValue();
+            int col = ((Integer) pieces.get(i).get("col")).intValue();
+            Space space = board.getSpace(row, col);
+            Piece piece = space.getPiece();
+
+            Space topLeft = board.getSpace(row - 1, col - 1);
+            Space topLeftJump = board.getSpace(row - 2, col - 2);
+            Space topRight = board.getSpace(row - 1, col + 1);
+            Space topRightJump = board.getSpace(row - 2, col + 2);
+            // case for normal piece
+            if (piece.getType() == Piece.Type.SINGLE){
+                if (spaceForJump(topLeft, topLeftJump, color))
+                    return true;
+                else if (spaceForJump(topRight, topRightJump, color))
+                    return true;
+            } else{ // case for king piece
+                Space bottomLeft = board.getSpace(row + 1, col - 1);
+                Space bottomLeftJump = board.getSpace(row + 2, col - 2);
+                Space bottomRight = board.getSpace(row + 1, col + 2);
+                Space bottomRightJump = board.getSpace(row + 2, col + 2);
+                if (spaceForJump(bottomLeft, bottomLeftJump, color))
+                    return true;
+                else if (spaceForJump(bottomRight, bottomRightJump, color))
+                    return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Check if you can jump to target piece
+     * @param space space that will be jump over
+     * @param target space that will end up if can jump
+     * @param color color of the current player
+     * @return boolean
+     */
+    public boolean spaceForJump(Space space, Space target, Piece.Color color){
+        if (target != null && space != null){
+            // there is a space to jump to
+            // and there is space to jump over
+            if (space.getPiece() == null)
+                return false; // there is no opponent piece there
+            if (space.getPiece().getColor() != color && // not ally
+                target.getPiece() == null) { // that space is empty
+                return true; // there is option for a jump
+            }
+        }
         return false;
     }
 
@@ -60,7 +109,7 @@ public class PostValidateMoveRoute implements Route {
      * @param end final position
      * @return integer representation of the validation of the move
      */
-    public Message canMoveForward(Position start, Position end){
+    /*public Message canMoveForward(Position start, Position end){
         //TODO cases for king
         // base case when there is an option to jump
         if (optionToJump())
@@ -76,7 +125,7 @@ public class PostValidateMoveRoute implements Route {
             return FORWARD_MOVE_MESSAGE; // you can only move forward
 
         return ADJACENT_MOVE_MESSAGE; // move is larger than one row
-    }
+    }*/
 
     /**
      * After validating the move, move the piece
@@ -86,8 +135,18 @@ public class PostValidateMoveRoute implements Route {
      * @param end final position
      */
     public void moveForward(BoardView board, BoardView opp,
-                            Position start, Position end){
-        // updating current player's board
+                            Position start, Position end,
+                            ArrayList<HashMap> pieces){
+        // update the position of player's pieces
+        HashMap<String, Integer> startLocation = new HashMap<>();
+        startLocation.put("row", start.getRow());
+        startLocation.put("col", start.getCell());
+        HashMap<String, Integer> endLocation = new HashMap<>();
+        endLocation.put("row", end.getRow());
+        endLocation.put("col", end.getCell());
+        pieces.remove(startLocation);
+        pieces.add(endLocation);
+        // update current player's board
         // remove the piece at the start position
         Space myStart = board.getSpace(start.getRow(), start.getCell());
         Piece myPiece = myStart.getPiece();
@@ -117,7 +176,7 @@ public class PostValidateMoveRoute implements Route {
      * @param end final position
      * @return integer value representing why the move is invalid
      */
-    public Message canJumpForward(Piece.Color color, BoardView board, Position start, Position end){
+    /*public Message canJumpForward(BoardView board, Position start, Position end, Piece.Color color ){
         // TODO cases for king
         if (start.getRow() - end.getRow() == 2) { // can only jump forward by two rows
             int diff = start.getCell() - end.getCell();
@@ -135,7 +194,7 @@ public class PostValidateMoveRoute implements Route {
             return FORWARD_JUMP_MESSAGE; // normal piece can only jump forward
 
         return ADJACENT_JUMP_MESSAGE; // jump is larger than 2 rows in magnitude
-    }
+    }*/
 
     /**
      * After validating the jump, jump over
@@ -146,17 +205,32 @@ public class PostValidateMoveRoute implements Route {
      * @return
      */
     public void jumpForward(BoardView board, BoardView opp,
-                            Position start, Position end){
-
-        // updating current player's board
+                            Position start, Position end,
+                            ArrayList<HashMap> pieces,
+                            ArrayList<HashMap> oppPieces){
+        // update the position of current player's pieces
+        HashMap<String, Integer> startLocation = new HashMap<>();
+        startLocation.put("row", start.getRow());
+        startLocation.put("col", start.getCell());
+        HashMap<String, Integer> endLocation = new HashMap<>();
+        endLocation.put("row", end.getRow());
+        endLocation.put("col", end.getCell());
+        pieces.remove(startLocation);
+        pieces.add(endLocation);
+        // update current player's board
         // remove the piece at the start position
         Space myStart = board.getSpace(start.getRow(), start.getCell());
         Piece myPiece = myStart.getPiece();
         myStart.setPiece(null);
         myStart.changeValid(true);
         // remove the piece that was jumped over
-        int myDiff = start.getCell() - end.getCell();
-        Space myKill = board.getSpace(start.getRow() - 1, start.getCell() + (myDiff / 2));
+        int xDiff = (start.getCell() - end.getCell()) / 2;
+        int yDiff = (start.getRow() - end.getRow()) / 2;
+
+        System.out.println("my y: " + Integer.toString(start.getRow() - yDiff));
+        System.out.println("my x: " + Integer.toString(start.getCell() - xDiff));
+
+        Space myKill = board.getSpace(start.getRow() - yDiff, start.getCell() - xDiff);
         myKill.setPiece(null);
         myKill.changeValid(true);
         // adding a piece to the end position
@@ -172,10 +246,18 @@ public class PostValidateMoveRoute implements Route {
         oppStart.setPiece(null);
         oppStart.changeValid(true);
         // remove the piece that was jumped over
-        int oppDiff = start.getCell() - end.getCell();
-        Space oppKill = board.getSpace(7 - (start.getRow() - 1), 7 - (start.getCell() + (oppDiff / 2)));
+        Space oppKill = board.getSpace(7 - (start.getRow() + yDiff), 7 - (start.getCell() + xDiff));
         oppKill.setPiece(null);
         oppKill.changeValid(true);
+
+        System.out.println("opp y: " + Integer.toString(7 - (start.getRow() - yDiff)));
+        System.out.println("opp x: " + Integer.toString(7 - (start.getCell() - xDiff)));
+
+        // remove the piece that was jumped over for the pieces array
+        HashMap<String, Integer> oppLocation = new HashMap<>();
+        oppLocation.put("row", 7 - (start.getRow() + yDiff));
+        oppLocation.put("col", 7 - (start.getCell() + xDiff));
+        oppPieces.remove(oppLocation);
         // adding a piece to the end position
         Space oppEnd = opp.getSpace(7 - end.getRow(), 7 - end.getCell());
         oppEnd.setPiece(oppPiece);
@@ -188,53 +270,95 @@ public class PostValidateMoveRoute implements Route {
         final PlayerServices playerServices = httpSession.attribute(GetHomeRoute.PLAYERSERVICES_KEY);
 
         if (playerServices != null) {
-            final Map<String, Object> vm = new HashMap<>();
-            vm.put(GetHomeRoute.TITLE_ATTR, GetGameRoute.TITLE);
             // get the information of the current user
             String currentPlayerName = httpSession.attribute(GetHomeRoute.CURRENT_USERNAME_KEY);
             Player currentPlayer = playerServices.getPlayer(currentPlayerName);
-
-            // send current user to ftl
-            vm.put(GetGameRoute.CURRENT_USER_ATTR, currentPlayer);
 
             // Get the information from the match
             Match currentMatch = gameCenter.getMatch(currentPlayer);
             Piece.Color activeColor = currentMatch.getActiveColor();
             Player redPlayer = currentMatch.getRedPlayer();
-            Player whitePlayer = currentMatch.getWhitePlayer();
 
             // give player information to ftl
             httpSession.attribute(GetGameRoute.MATCH_ATTR, currentMatch);
-            vm.put(GetGameRoute.RED_PLAYER_ATTR, redPlayer);
-            vm.put(GetGameRoute.WHITE_PLAYER_ATTR, whitePlayer);
 
             // get different board from the match
             BoardView currentBoardView;
             BoardView whiteBoardView = currentMatch.getWhiteBoardView();
             BoardView redBoardView = currentMatch.getRedBoardView();
 
-            // send the information accordingly
+            ArrayList<HashMap> pieces;
+            ArrayList<HashMap> oppPieces;
+            Piece.Color color;
+            // set the information accordingly
             if(currentPlayerName.equals(redPlayer.getName())) {
                 currentBoardView = redBoardView;
+                pieces = currentMatch.getRedPieces();
+                oppPieces = currentMatch.getWhitePieces();
+                color = Piece.Color.RED;
             } else {
                 currentBoardView = whiteBoardView;
+                pieces = currentMatch.getWhitePieces();
+                oppPieces = currentMatch.getRedPieces();
+                color = Piece.Color.WHITE;
             }
 
             Move move = gson.fromJson(request.queryParams(ACTION_DATA), Move.class);
             Position start = move.getStart();
             Position end = move.getEnd();
-
-            System.out.println("action data: " + request.queryParams(ACTION_DATA));
-            System.out.println("start: " + start);
-            System.out.println("end: " + end);
-
-
-            Message moveMessage = canMoveForward(start, end);
-            Message jumpMessage = canJumpForward(activeColor, currentBoardView, start, end);
-            boolean validMove = moveMessage.getType() == Message.Type.INFO;
-            boolean validJump = jumpMessage.getType() == Message.Type.INFO;
+            int row = start.getRow();
+            int col = start.getCell();
+            Piece.Type type = currentBoardView.getSpace(row, col).getPiece().getType();
+            boolean isKing = (type == Piece.Type.KING);
 
             Message message;
+            boolean isMove = false;
+            boolean isJump = false;
+            // dealing with moving forward
+            if (row - end.getRow() == 1 ||
+                row - end.getRow() == -1) {
+                // you are not suppose to move if you can jump
+                if (optionToJump(currentBoardView, pieces, color))
+                    message = JUMP_OPTION_ERROR;
+                else if (row - end.getRow() == -1 && isKing)
+                    message = FORWARD_MOVE_ERROR; // you can only move forward
+
+                else {
+                    int diff = col - end.getCell();
+                    if (diff == 1 || diff == -1) {
+                        message = VALID_MOVE_MESSAGE; // valid move
+                        isMove = true;
+                    }
+                    else
+                        message = ADJACENT_MOVE_ERROR; // move is larger than one col
+                }
+            }
+            else if (row - end.getRow() == 2 ||
+                        row - end.getRow() == -2){
+                // dealing with jump
+                if (row - end.getRow() == -2 && type != Piece.Type.KING)
+                    message = FORWARD_JUMP_ERROR; // normal piece can only jump forward
+
+                else { // can jump forward by two rows
+                    int xDiff = col - end.getCell();
+                    int yDiff = row - end.getRow();
+                    Space space = currentBoardView.getSpace(start.getRow() - (yDiff / 2),
+                                                            start.getCell() - (xDiff / 2));
+                    if (xDiff == 2 || xDiff == -2) { // can only jump left or right by two columns
+                        if (space.getPiece().getColor() != color) {
+                            message = VALID_JUMP_MESSAGE; // valid jump
+                            isJump = true;
+                        }
+                        else
+                            message = OPPONENT_JUMP_ERROR; // you cannot jump over your own piece
+                    }
+                    else
+                        message = ADJACENT_JUMP_ERROR; // jump is larger than 2 cols in magnitude
+                }
+            }
+            else
+                message = MAX_ROW_MESSAGE;
+
             // a stack of moves before the player hit submit
             Stack<Move> moves;
             if (httpSession.attribute("moves") == null)
@@ -242,29 +366,23 @@ public class PostValidateMoveRoute implements Route {
             else
                 moves = httpSession.attribute("moves");
             // if it is valid
-            if (validMove || validJump){
-                if (validMove) {
-                    if (activeColor == Piece.Color.RED)
-                        moveForward(redBoardView, whiteBoardView, start, end);
-                    else
-                        moveForward(whiteBoardView, redBoardView, start, end);
-                    message = moveMessage;
-                }
-                else if (validJump){
-                    if (activeColor == Piece.Color.RED)
-                        jumpForward(redBoardView, whiteBoardView, start, end);
-                    else
-                        jumpForward(whiteBoardView, redBoardView, start, end);
-                    message = jumpMessage;
-                }
+            if (isMove) {
+                if (activeColor == Piece.Color.RED)
+                    moveForward(redBoardView, whiteBoardView, start, end, pieces);
+                else
+                    moveForward(whiteBoardView, redBoardView, start, end, pieces);
                 // add this move to the stack of move
                 // so when we implement backup, we know the exact order
                 moves.push(move);
-                message = moveMessage;
             }
-            //TODO need to implement fail message
-            else {
-                message = Message.error("You have to either move or jump.");
+            else if (isJump){
+                if (activeColor == Piece.Color.RED)
+                    jumpForward(redBoardView, whiteBoardView, start, end, pieces, oppPieces);
+                else
+                    jumpForward(whiteBoardView, redBoardView, start, end, pieces, oppPieces);
+                // add this move to the stack of move
+                // so when we implement backup, we know the exact order
+                moves.push(move);
             }
 
             httpSession.attribute("moves", moves);
