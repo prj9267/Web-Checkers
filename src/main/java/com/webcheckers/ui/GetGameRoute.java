@@ -57,19 +57,6 @@ public class GetGameRoute implements Route {
     }
 
     /**
-     * Remove players from the inGame list in gameCenter since the game ended
-     * @param redPlayer
-     * @param whitePlayer
-     */
-    /*public void removePlayers(Player redPlayer, Player whitePlayer) {
-        gameCenter.removePlayer(redPlayer);
-        gameCenter.removePlayer(whitePlayer);
-
-        redPlayer.changeStatus(Player.Status.waiting);
-        whitePlayer.changeStatus(Player.Status.waiting);
-    }*/
-
-    /**
      * {@inheritDoc}
      */
     @Override
@@ -99,15 +86,11 @@ public class GetGameRoute implements Route {
             } else { // else get the information from the match
                 currentMatch = gameCenter.getMatch(currentPlayer);
                 // TODO debug
-                if(currentMatch.isGameResigned() == Match.STATE.resigned) {
-                    final Map<String, Object> modeOptions = new HashMap<>(2);
-                    modeOptions.put("isGameOver", true);
-                    modeOptions.put("gameOverMessage", "The game is over.");
-                    vm.put("modeOptionsAsJSON", gson.toJson(modeOptions));
+                /*if(currentMatch.isGameResigned() == Match.STATE.resigned) {
+                    //vm.put("modeOptionsAsJSON", gson.toJson(currentMatch.getModeOptions()));
                     gameCenter.removePlayer(currentPlayer);
                     currentPlayer.changeStatus(Player.Status.waiting);
-                    gameCenter.removeMatch(currentMatch);
-                }
+                }*/
                 redPlayer = currentMatch.getRedPlayer();
                 whitePlayer = currentMatch.getWhitePlayer();
             }
@@ -135,6 +118,15 @@ public class GetGameRoute implements Route {
             // right now there is only the option to play
             viewMode currentViewMode = viewMode.PLAY;
             vm.put(VIEW_MODE_ATTR, currentViewMode);
+
+            // remove the match at the end since the match is over
+            if(currentMatch.isGameResigned() == Match.STATE.resigned) {
+                Gson gson = new Gson();
+                vm.put("modeOptionsAsJSON", gson.toJson(currentMatch.getModeOptions()));
+                gameCenter.removePlayer(currentPlayer);
+                currentPlayer.changeStatus(Player.Status.waiting);
+                gameCenter.removeMatch(currentMatch);
+            }
 
             return templateEngine.render(new ModelAndView(vm, VIEW_NAME));
         } else {

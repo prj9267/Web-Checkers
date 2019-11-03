@@ -1,5 +1,6 @@
 package com.webcheckers.model;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Logger;
 
@@ -15,6 +16,7 @@ public class Match {
     private Player otherPlayer;
     private Piece.Color activeColor;
     private Player winner = null;
+    private final Map<String, Object> modeOptions;
     private boolean isGameOver;
     public enum STATE {resigned, running}
     private STATE state;
@@ -27,9 +29,10 @@ public class Match {
     public Match(Player redPlayer, Player whitePlayer){
         this.redPlayer = redPlayer;
         this.whitePlayer = whitePlayer;
-        activeColor = Piece.Color.RED;
-        isGameOver = false;
-        state = STATE.running;
+        this.activeColor = Piece.Color.RED;
+        this.modeOptions = new HashMap<>(2);
+        this.modeOptions.put("isGameOver", false);
+        this.modeOptions.put("gameOverMessage", null);
     }
 
     /**
@@ -67,6 +70,10 @@ public class Match {
         }
         otherPlayer = whitePlayer;
         return whitePlayer;
+    }
+
+    public Map<String, Object> getModeOptions() {
+        return modeOptions;
     }
 
     /**
@@ -110,6 +117,8 @@ public class Match {
      */
     public void resignGame() {
         state = STATE.resigned;
+        modeOptions.put("isGameOver", true);
+        modeOptions.put("gameOverMessage", "Resigned game.");
     }
 
     /**
