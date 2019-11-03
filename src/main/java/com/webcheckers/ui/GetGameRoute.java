@@ -1,5 +1,6 @@
 package com.webcheckers.ui;
 
+import com.google.gson.Gson;
 import com.webcheckers.appl.GameCenter;
 import com.webcheckers.appl.PlayerServices;
 import com.webcheckers.model.BoardView;
@@ -34,6 +35,8 @@ public class GetGameRoute implements Route {
     private final TemplateEngine templateEngine;
     private final GameCenter gameCenter;
     private final PlayerServices playerServices;
+
+    private Gson gson;
 
     /**
      * The constructor for the {@code GET /game} route handler.
@@ -71,7 +74,7 @@ public class GetGameRoute implements Route {
             Player redPlayer;
             Player whitePlayer;
             Match currentMatch;
-
+            // TODO modeOptions check if game has ended and add modeOptions to vm to send GameOver message
             // if the button is just triggered, initialize everything
             if (request.queryParams("button") != null) {
                 String opponentName = request.queryParams("button");
@@ -81,6 +84,12 @@ public class GetGameRoute implements Route {
                 currentMatch = gameCenter.getMatch(redPlayer);
             } else { // else get the information from the match
                 currentMatch = gameCenter.getMatch(currentPlayer);
+                // TODO debug
+                /*if(currentMatch.isGameResigned() == Match.STATE.resigned) {
+                    //vm.put("modeOptionsAsJSON", gson.toJson(currentMatch.getModeOptions()));
+                    gameCenter.removePlayer(currentPlayer);
+                    currentPlayer.changeStatus(Player.Status.waiting);
+                }*/
                 redPlayer = currentMatch.getRedPlayer();
                 whitePlayer = currentMatch.getWhitePlayer();
             }
@@ -94,7 +103,7 @@ public class GetGameRoute implements Route {
             vm.put(RED_PLAYER_ATTR, redPlayer);
             vm.put(WHITE_PLAYER_ATTR, whitePlayer);
 
-            //Match match = gameCenter.getMatch(currentPlayer);
+                //Match match = gameCenter.getMatch(currentPlayer);
             BoardView whiteBoardView = currentMatch.getWhiteBoardView();
             BoardView redBoardView = currentMatch.getRedBoardView();
 
@@ -113,6 +122,15 @@ public class GetGameRoute implements Route {
             // right now there is only the option to play
             viewMode currentViewMode = viewMode.PLAY;
             vm.put(VIEW_MODE_ATTR, currentViewMode);
+
+            // remove the match at the end since the match is over
+            if(currentMatch.isGameResigned() == Match.STATE.resigned) {
+                Gson gson = new Gson();
+                vm.put("modeOptionsAsJSON", gson.toJson(currentMatch.getModeOptions()));
+                gameCenter.removePlayer(currentPlayer);
+                currentPlayer.changeStatus(Player.Status.waiting);
+                gameCenter.removeMatch(currentMatch);
+            }
 
             return templateEngine.render(new ModelAndView(vm, VIEW_NAME));
         } else {

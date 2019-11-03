@@ -14,7 +14,7 @@ public class GameCenter {
     //Attributes
     private PlayerServices playerServices;
     private Map<Player, Match> inMatch;
-    private ArrayList<Match> gameList = new ArrayList<>();
+    private ArrayList<Match> matchList = new ArrayList<>();
 
     /**
      * Constructor for GameCenter Object
@@ -36,11 +36,25 @@ public class GameCenter {
         if(redPlayer.equals(whitePlayer) || inMatch.containsKey(redPlayer) || inMatch.containsKey(whitePlayer))
             return false;
         Match match = new Match(redPlayer, whitePlayer);
+        matchList.add(match);
         inMatch.put(redPlayer, match);
         inMatch.put(whitePlayer, match);
         redPlayer.changeStatus(Player.Status.ingame);
         whitePlayer.changeStatus(Player.Status.challenged);
         return true;
+    }
+
+    /**
+     * Removes the match from the matchList
+     * @param match             - the match to remove
+     * @return                  - returns true if the match has been removed
+     */
+    public synchronized boolean removeMatch(Match match) {
+        if (matchList.contains(match)) {
+            matchList.remove(match);
+            return true;
+        }
+        return false;
     }
 
     /**
@@ -65,24 +79,11 @@ public class GameCenter {
     }
 
     /**
-     * adds the match to the match list
-     * @param match         - the match to add
-     * @return              - true if match exists and is added to matchList and false if not
+     * Return the matchList
+     * @return      - matchList the list of matches
      */
-    public boolean addMatch(Match match) {
-        if (match != null) {
-            gameList.add(match);
-            return true;
-        }
-        return false;
-    }
-
-    public boolean deleteMatch(Match match) {
-        if (match != null) {
-            gameList.remove(match);
-            return true;
-        }
-        return false;
+    public ArrayList getMatchList() {
+        return matchList;
     }
 
     /**
