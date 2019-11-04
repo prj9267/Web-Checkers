@@ -1,7 +1,9 @@
 package com.webcheckers.model;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Stack;
 import java.util.logging.Logger;
 
 public class Match {
@@ -16,6 +18,9 @@ public class Match {
     private Player otherPlayer;
     private Piece.Color activeColor;
     private Player winner = null;
+    private ArrayList<Location> redPieces = initializePieces(redBoardView);
+    private ArrayList<Location> whitePieces = initializePieces(whiteBoardView);
+    private Stack<Piece> piecesRemoved = new Stack<>();
     private final Map<String, Object> modeOptions;
     private boolean isGameOver;
     public enum STATE {resigned, running}
@@ -33,6 +38,21 @@ public class Match {
         this.modeOptions = new HashMap<>(2);
         this.modeOptions.put("isGameOver", false);
         this.modeOptions.put("gameOverMessage", null);
+    }
+
+    public ArrayList<Location> initializePieces(BoardView board){
+        ArrayList<Location> pieces = new ArrayList<>();
+        for (int y = 5; y < BoardView.NUM_ROW; y++){
+            Row row = board.getRow(y);
+            for (int x = 0; x < BoardView.NUM_COL; x++){
+                Space col = row.getCol(x);
+                if (col.getPiece() != null) { // make sure there is piece
+                    Location temp = new Location(y, x);
+                    pieces.add(temp);
+                }
+            }
+        }
+        return pieces;
     }
 
     /**
@@ -60,15 +80,42 @@ public class Match {
     }
 
     /**
+     * Getter function for all the pieces red player has
+     * @return red player's pieces as space
+     */
+    public ArrayList<Location> getRedPieces() {
+        return redPieces;
+    }
+
+    /**
+     * Getter function for all the pieces white player has
+     * @return white player's pieces as space
+     */
+    public ArrayList<Location> getWhitePieces() {
+        return whitePieces;
+    }
+
+    public Stack<Piece> getPiecesRemoved(){
+        return piecesRemoved;
+    }
+
+    /**
+     * Alternates the current turn of the match, between the red and white player.
+     */
+    public void changeActiveColor(){
+        if(activeColor == Piece.Color.RED)
+            activeColor = Piece.Color.WHITE;
+        else
+            activeColor = Piece.Color.RED;
+    }
+
+    /**
      * Getter function for current player's turn.
      * @return  - the player whose turn it is.
      */
     public Player getCurrentPlayer() {
-        if(activeColor.equals(Piece.Color.RED)) {
-            currentPlayer = redPlayer;
+        if(activeColor.equals(Piece.Color.RED))
             return redPlayer;
-        }
-        otherPlayer = whitePlayer;
         return whitePlayer;
     }
 
@@ -96,10 +143,6 @@ public class Match {
         return winner;
     }
 
-    /**
-     * set the winner of the match
-     * @param winner    - the winner of the match
-     */
     public void setWinner(Player winner) {
         this.winner = winner;
     }
@@ -137,6 +180,7 @@ public class Match {
     public boolean getGameOver() {
         return isGameOver;
     }
+
     /**
      * End the current players turn and switch to the other player.
      */

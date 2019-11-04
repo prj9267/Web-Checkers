@@ -1,5 +1,6 @@
 package com.webcheckers.ui;
 
+import com.google.gson.Gson;
 import com.webcheckers.appl.GameCenter;
 import com.webcheckers.appl.PlayerServices;
 import com.webcheckers.model.BoardView;
@@ -17,8 +18,8 @@ import static spark.Spark.halt;
 
 public class PostCheckTurnRoute implements Route {
     // Values used in the view-model map for rendering the game view.
-    public static final Message isYourTurn = Message.info("true");
-    public static final Message notYourTurn = Message.error("false");
+    public static final Message isYourTurn = Message.info("It is your turn");
+    public static final Message notYourTurn = Message.error("It is not your turn yet");
 
 
     private boolean isMyTurn = false;
@@ -26,6 +27,7 @@ public class PostCheckTurnRoute implements Route {
     private final TemplateEngine templateEngine;
     private final GameCenter gameCenter;
     private final PlayerServices playerServices;
+    private final Gson gson;
 
     /**
      * The constructor for the {@code POST /game} route handler.
@@ -35,13 +37,14 @@ public class PostCheckTurnRoute implements Route {
      */
     public PostCheckTurnRoute(final PlayerServices playerServices,
                         final GameCenter gameCenter,
-                        final TemplateEngine templateEngine){
+                        final TemplateEngine templateEngine, Gson gson){
         Objects.requireNonNull(playerServices, "playerServices must not be null");
         Objects.requireNonNull(gameCenter, "gameCenter must not be null");
         Objects.requireNonNull(templateEngine, "templateEngine must not be null");
         this.playerServices = playerServices;
         this.gameCenter = gameCenter;
         this.templateEngine = templateEngine;
+        this.gson = gson;
     }
 
     public boolean isMyTurn(Player currentPlayer, Player red, Player white, Piece.Color activeColor){
@@ -88,7 +91,7 @@ public class PostCheckTurnRoute implements Route {
                 message = notYourTurn;
             }
 
-            return message;
+            return gson.toJson(message);
         }
         else{
             //TODO take care of resign
