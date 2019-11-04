@@ -405,8 +405,10 @@ public class PostValidateMoveRoute implements Route {
                 Boolean hasNextJump = checkFourDirections(currentBoardView,
                         end.getRow(), end.getCell(),
                         piece, color);
-                if (hasNextJump == true)
+                if (hasNextJump) {
+                    System.out.println("there is a next jump.");
                     httpSession.attribute("hasNextJump", hasNextJump);
+                }
                 else
                     httpSession.removeAttribute("hasNextJump");
                 // add this move to the stack of move

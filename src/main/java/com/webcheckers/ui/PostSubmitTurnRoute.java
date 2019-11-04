@@ -71,7 +71,7 @@ public class PostSubmitTurnRoute implements Route {
 
             // If you can still jump
             if (httpSession.attribute("hasNextJump") != null){
-                message = Message.info("There is still available jump");
+                message = Message.error("There is still available jump");
                 return gson.toJson(message);
             }
 
