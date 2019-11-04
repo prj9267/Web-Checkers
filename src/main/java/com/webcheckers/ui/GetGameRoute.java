@@ -18,6 +18,7 @@ import static spark.Spark.halt;
 
 public class GetGameRoute implements Route {
     // Values used in the view-model map for rendering the game view.
+
     public static final String TITLE = "Game";
     public static final String VIEW_NAME = "game.ftl";
     public static final String CURRENT_USER_ATTR = "currentUser";
