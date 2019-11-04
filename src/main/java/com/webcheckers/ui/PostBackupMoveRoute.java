@@ -175,7 +175,7 @@ public class PostBackupMoveRoute implements Route {
         System.out.println("opp y: " + Integer.toString(7 - (newStart.getRow() - yDiff)));
         System.out.println("opp x: " + Integer.toString(7 - (newStart.getCell() - xDiff)));
 
-        if (newEnd.getRow() == 0){ // means the piece become a king
+        if (newStart.getRow() == 0){ // means the piece become a king
             myEnd.getPiece().setType(Piece.Type.SINGLE);
             oppEnd.getPiece().setType(Piece.Type.SINGLE);
         }
