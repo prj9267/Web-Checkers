@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Test;
 import spark.*;
 
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
@@ -65,6 +66,17 @@ public class GetGameRouteTest {
 
         // Analyze the results:
         //   * redirect to the Game view
+        verify(response).redirect(WebServer.HOME_URL);
+    }
+
+    @Test
+    void checkHandle() {
+        GetGameRoute gameRoute = new GetGameRoute(playerServices, gameCenter, engine);
+        try {
+            assertEquals(gameRoute.handle(request, response), CuT.handle(request, response), "Handle not functioning properly");
+        } catch (HaltException he) {
+            //
+        }
         verify(response).redirect(WebServer.HOME_URL);
     }
 }

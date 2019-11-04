@@ -17,5 +17,10 @@ public class MoveTest {
         CuT = new Move(start, end);
     }
 
-
+    @Test
+    void checkMove() {
+        Move move = new Move(start, end);
+        assertEquals(move.getEnd(), CuT.getEnd(), "Move End not constructed correctly");
+        assertEquals(move.getStart(), CuT.getStart(), "Move Start not constructed correctly");
+    }
 }
