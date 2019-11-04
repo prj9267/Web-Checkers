@@ -3,13 +3,11 @@ package com.webcheckers.ui;
 import com.google.gson.Gson;
 import com.webcheckers.appl.GameCenter;
 import com.webcheckers.appl.PlayerServices;
-import com.webcheckers.model.BoardView;
-import com.webcheckers.model.Match;
-import com.webcheckers.model.Piece;
-import com.webcheckers.model.Player;
+import com.webcheckers.model.*;
 import com.webcheckers.util.Message;
 import spark.*;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -70,17 +68,35 @@ public class PostCheckTurnRoute implements Route {
             Player redPlayer = currentMatch.getRedPlayer();
             Player whitePlayer = currentMatch.getWhitePlayer();
 
-            // give player information to ftl
-            // httpSession.attribute(GetGameRoute.MATCH_ATTR, currentMatch);
-
             // get different board from the match
             BoardView whiteBoardView = currentMatch.getWhiteBoardView();
             BoardView redBoardView = currentMatch.getRedBoardView();
 
-            // right now there is only the option to play
-            GetGameRoute.viewMode currentViewMode = GetGameRoute.viewMode.PLAY;
 
             //TODO take care of game end
+            ArrayList<Location> pieces;
+            ArrayList<Location> oppPieces = currentMatch.getWhitePieces();
+            if (currentPlayer.equals(redPlayer)) {
+                pieces = currentMatch.getRedPieces();
+                oppPieces = currentMatch.getWhitePieces();
+            }
+            else{
+
+                pieces = currentMatch.getWhitePieces();
+                oppPieces = currentMatch.getRedPieces();
+            }
+
+            if (pieces.size() == 0) {
+                gameCenter.removePlayer(currentPlayer);
+                currentPlayer.changeStatus(Player.Status.waiting);
+                currentMatch.setWinner(currentPlayer);
+            }
+            else if (oppPieces.size() == 0){
+                gameCenter.removePlayer(currentPlayer);
+                currentPlayer.changeStatus(Player.Status.waiting);
+                currentMatch.resignGame();
+                currentMatch.setWinner(currentPlayer);
+            }
             // verify turn
             Message message;
             if (isMyTurn(currentPlayer, redPlayer, whitePlayer, currentMatch.getActiveColor())) {

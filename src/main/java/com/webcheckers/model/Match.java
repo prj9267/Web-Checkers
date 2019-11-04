@@ -22,7 +22,7 @@ public class Match {
     private ArrayList<Location> whitePieces = initializePieces(whiteBoardView);
     private Stack<Piece> piecesRemoved = new Stack<>();
     private final Map<String, Object> modeOptions;
-    private boolean isGameOver;
+    private boolean isGameOver = false;
     public enum STATE {resigned, running}
     private STATE state;
 
