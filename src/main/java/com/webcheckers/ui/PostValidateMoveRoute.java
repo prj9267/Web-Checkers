@@ -60,12 +60,12 @@ public class PostValidateMoveRoute implements Route {
         Space topRight = board.getSpace(row - 1, col + 1);
         Space topRightJump = board.getSpace(row - 2, col + 2);
         // case for normal piece
-        if (piece.getType() == Piece.Type.SINGLE){
-            if (spaceForJump(topLeft, topLeftJump, color))
-                return true;
-            else if (spaceForJump(topRight, topRightJump, color))
-                return true;
-        } else{ // case for king piece
+        if (spaceForJump(topLeft, topLeftJump, color))
+            return true;
+        else if (spaceForJump(topRight, topRightJump, color))
+             return true;
+         // case for king piece
+        if (Piece.Type.KING == piece.getType()) {
             Space bottomLeft = board.getSpace(row + 1, col - 1);
             Space bottomLeftJump = board.getSpace(row + 2, col - 2);
             Space bottomRight = board.getSpace(row + 1, col + 2);
