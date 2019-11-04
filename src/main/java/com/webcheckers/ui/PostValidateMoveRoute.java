@@ -52,6 +52,7 @@ public class PostValidateMoveRoute implements Route {
      * @return boolean
      */
     public boolean optionToJump(BoardView board, ArrayList<Location> pieces, Piece.Color color){
+        System.out.println(pieces);
         for (int i = 0; i < pieces.size(); i++){
             int row = pieces.get(i).getRow();
             int col = pieces.get(i).getCol();
@@ -63,6 +64,7 @@ public class PostValidateMoveRoute implements Route {
             Space topRight = board.getSpace(row - 1, col + 1);
             Space topRightJump = board.getSpace(row - 2, col + 2);
             // case for normal piece
+            System.out.println("x = " + col + " y = " + row);
             if (piece.getType() == Piece.Type.SINGLE){
                 if (spaceForJump(topLeft, topLeftJump, color))
                     return true;
@@ -102,30 +104,6 @@ public class PostValidateMoveRoute implements Route {
         }
         return false;
     }
-
-    /**
-     * Check if the piece moved forward one row
-     * @param start initial position
-     * @param end final position
-     * @return integer representation of the validation of the move
-     */
-    /*public Message canMoveForward(Position start, Position end){
-        //TODO cases for king
-        // base case when there is an option to jump
-        if (optionToJump())
-            return JUMP_OPTION_MESSAGE; // you are not suppose to move if you can jump
-
-        if (start.getRow() - end.getRow() == 1) { // can only move forward by one row
-            int diff = start.getCell() - end.getCell();
-            if (diff == 1 || diff == -1)
-                return VALID_MOVE_MESSAGE; // valid move
-            return ADJACENT_MOVE_MESSAGE; // move is larger than one col
-        }
-        else if (start.getRow() - end.getRow() < 0)
-            return FORWARD_MOVE_MESSAGE; // you can only move forward
-
-        return ADJACENT_MOVE_MESSAGE; // move is larger than one row
-    }*/
 
     /**
      * After validating the move, move the piece
@@ -171,33 +149,6 @@ public class PostValidateMoveRoute implements Route {
     }
 
     /**
-     * Check if the piece jumped over an opponent
-     * @param board player's board
-     * @param start initial position
-     * @param end final position
-     * @return integer value representing why the move is invalid
-     */
-    /*public Message canJumpForward(BoardView board, Position start, Position end, Piece.Color color ){
-        // TODO cases for king
-        if (start.getRow() - end.getRow() == 2) { // can only jump forward by two rows
-            int diff = start.getCell() - end.getCell();
-            if (diff == 2 || diff == -2) { // can only jump left or right by two columns
-                Space space = board.getSpace(start.getRow() - 1, start.getCell() + (diff / 2));
-                if (space.getPiece().getColor() != color)
-                    return VALID_JUMP_MESSAGE; // valid move
-                else
-                    return OPPONENT_JUMP_MESSAGE; // you cannot jump over your own piece
-            }
-            else
-                return ADJACENT_JUMP_MESSAGE; // jump is larger than 2 cols in magnitude
-        }
-        else if (start.getRow() - end.getRow() < 0)
-            return FORWARD_JUMP_MESSAGE; // normal piece can only jump forward
-
-        return ADJACENT_JUMP_MESSAGE; // jump is larger than 2 rows in magnitude
-    }*/
-
-    /**
      * After validating the jump, jump over
      * @param board current player's board
      * @param opp opponent's board
@@ -224,9 +175,6 @@ public class PostValidateMoveRoute implements Route {
         int xDiff = (start.getCell() - end.getCell()) / 2;
         int yDiff = (start.getRow() - end.getRow()) / 2;
 
-        System.out.println("my y: " + Integer.toString(start.getRow() - yDiff));
-        System.out.println("my x: " + Integer.toString(start.getCell() - xDiff));
-
         Space myKill = board.getSpace(start.getRow() - yDiff, start.getCell() - xDiff);
         myKill.setPiece(null);
         myKill.changeValid(true);
@@ -234,8 +182,6 @@ public class PostValidateMoveRoute implements Route {
         Space myEnd = board.getSpace(end.getRow(), end.getCell());
         myEnd.setPiece(myPiece);
         myEnd.changeValid(false);
-        if (board.getSpace(end.getRow(), end.getCell()).getPiece() != null)
-            System.out.println("good");
 
         // updating opponent's board
         // remove the piece at the start position
@@ -244,7 +190,7 @@ public class PostValidateMoveRoute implements Route {
         oppStart.setPiece(null);
         oppStart.changeValid(true);
         // remove the piece that was jumped over
-        Space oppKill = board.getSpace(7 - (start.getRow() + yDiff), 7 - (start.getCell() + xDiff));
+        Space oppKill = opp.getSpace(7 - (start.getRow() - yDiff), 7 - (start.getCell() - xDiff));
         oppKill.setPiece(null);
         oppKill.changeValid(true);
         // adding a piece to the end position
@@ -252,8 +198,8 @@ public class PostValidateMoveRoute implements Route {
         oppEnd.setPiece(oppPiece);
         oppEnd.changeValid(false);
         // remove the piece that was jumped over for the pieces array
-        int deadY = 7 - (start.getRow() + yDiff);
-        int deadX = 7 - (start.getCell() + xDiff);
+        int deadY = 7 - (start.getRow() - yDiff);
+        int deadX = 7 - (start.getCell() - xDiff);
         Location oppLocation = new Location(deadY, deadX);
         oppPieces.remove(oppLocation);
 

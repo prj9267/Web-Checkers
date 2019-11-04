@@ -28,6 +28,6 @@ public class Location {
 
     @Override
     public String toString(){
-        return "{row: " + row + "col: " + col + "}";
+        return "{row: " + row + " col: " + col + "}";
     }
 }
