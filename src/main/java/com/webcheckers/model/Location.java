@@ -20,7 +20,7 @@ public class Location {
     @Override
     public boolean equals(Object o){
         if(o instanceof Location){
-            return ((Location)o).getRow() == ((this.getRow())) ||
+            return ((Location)o).getRow() == ((this.getRow())) &&
                     ((Location)o).getCol() == ((this.getCol()));
         }
         return false;

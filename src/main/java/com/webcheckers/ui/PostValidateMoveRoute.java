@@ -52,7 +52,6 @@ public class PostValidateMoveRoute implements Route {
      * @return boolean
      */
     public boolean optionToJump(BoardView board, ArrayList<Location> pieces, Piece.Color color){
-        System.out.println(pieces);
         for (int i = 0; i < pieces.size(); i++){
             int row = pieces.get(i).getRow();
             int col = pieces.get(i).getCol();
@@ -64,7 +63,6 @@ public class PostValidateMoveRoute implements Route {
             Space topRight = board.getSpace(row - 1, col + 1);
             Space topRightJump = board.getSpace(row - 2, col + 2);
             // case for normal piece
-            System.out.println("x = " + col + " y = " + row);
             if (piece.getType() == Piece.Type.SINGLE){
                 if (spaceForJump(topLeft, topLeftJump, color))
                     return true;
@@ -159,7 +157,8 @@ public class PostValidateMoveRoute implements Route {
     public void jumpForward(BoardView board, BoardView opp,
                             Position start, Position end,
                             ArrayList<Location> pieces,
-                            ArrayList<Location> oppPieces){
+                            ArrayList<Location> oppPieces,
+                            Match match){
         // update the position of current player's pieces
         Location startLocation = new Location(start.getRow(), start.getCell());
         Location endLocation = new Location(end.getRow(), end.getCell());
@@ -175,7 +174,10 @@ public class PostValidateMoveRoute implements Route {
         int xDiff = (start.getCell() - end.getCell()) / 2;
         int yDiff = (start.getRow() - end.getRow()) / 2;
 
+        System.out.println("jumped y: " + (start.getRow() - yDiff));
+        System.out.println("jumped x: " + (start.getCell() - xDiff));
         Space myKill = board.getSpace(start.getRow() - yDiff, start.getCell() - xDiff);
+        match.getPiecesRemoved().push(myKill.getPiece());
         myKill.setPiece(null);
         myKill.changeValid(true);
         // adding a piece to the end position
@@ -268,7 +270,7 @@ public class PostValidateMoveRoute implements Route {
                 // you are not suppose to move if you can jump
                 if (optionToJump(currentBoardView, pieces, color))
                     message = JUMP_OPTION_ERROR;
-                else if (row - end.getRow() == -1 && isKing)
+                else if (row - end.getRow() == -1 && ! isKing)
                     message = FORWARD_MOVE_ERROR; // you can only move forward
 
                 else {
@@ -325,9 +327,9 @@ public class PostValidateMoveRoute implements Route {
             }
             else if (isJump){
                 if (activeColor == Piece.Color.RED)
-                    jumpForward(redBoardView, whiteBoardView, start, end, pieces, oppPieces);
+                    jumpForward(redBoardView, whiteBoardView, start, end, pieces, oppPieces, currentMatch);
                 else
-                    jumpForward(whiteBoardView, redBoardView, start, end, pieces, oppPieces);
+                    jumpForward(whiteBoardView, redBoardView, start, end, pieces, oppPieces, currentMatch);
                 // add this move to the stack of move
                 // so when we implement backup, we know the exact order
                 moves.push(move);

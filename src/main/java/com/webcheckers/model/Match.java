@@ -3,6 +3,7 @@ package com.webcheckers.model;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Stack;
 import java.util.logging.Logger;
 
 public class Match {
@@ -19,6 +20,7 @@ public class Match {
     private Player winner = null;
     private ArrayList<Location> redPieces = initializePieces(redBoardView);
     private ArrayList<Location> whitePieces = initializePieces(whiteBoardView);
+    private Stack<Piece> piecesRemoved = new Stack<>();
     private final Map<String, Object> modeOptions;
     private boolean isGameOver;
     public enum STATE {resigned, running}
@@ -91,6 +93,10 @@ public class Match {
      */
     public ArrayList<Location> getWhitePieces() {
         return whitePieces;
+    }
+
+    public Stack<Piece> getPiecesRemoved(){
+        return piecesRemoved;
     }
 
     /**

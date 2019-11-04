@@ -68,6 +68,8 @@ public class PostSubmitTurnRoute implements Route {
             //alternate turns
             currentMatch.changeActiveColor();
 
+            httpSession.removeAttribute("moves");
+
             message = Message.info("Your turn was submitted");
             return gson.toJson(message);
         }

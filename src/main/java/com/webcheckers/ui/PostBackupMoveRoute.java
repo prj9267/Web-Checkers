@@ -44,20 +44,21 @@ public class PostBackupMoveRoute implements Route {
      * @param currentPlayer - the current player hitting the backup button.
      * @param previousMove  - the previous move that is going to be undone.
      */
-    public void updateCurrentPlayerBoard(Player currentPlayer, Move previousMove){
+    public void updateMove(Player currentPlayer, Move previousMove){
         Match currentMatch = gameCenter.getMatch(currentPlayer);
-        BoardView boardView;
-        Position start = previousMove.getStart();
-        Position end = previousMove.getEnd();
+        BoardView board;
+        BoardView opp;
         ArrayList<Location> pieces;
 
         //Determine which color the current player is.
         if(currentPlayer.getName().equals(currentMatch.getRedPlayer().getName())) {
-            boardView = currentMatch.getRedBoardView();
+            board = currentMatch.getRedBoardView();
+            opp = currentMatch.getWhiteBoardView();
             pieces = currentMatch.getRedPieces();
         }
         else {
-            boardView = currentMatch.getWhiteBoardView();
+            board = currentMatch.getWhiteBoardView();
+            opp = currentMatch.getRedBoardView();
             pieces = currentMatch.getWhitePieces();
         }
 
@@ -65,20 +66,35 @@ public class PostBackupMoveRoute implements Route {
         Position newEnd = previousMove.getStart();
 
         //Remove the piece at the old end location
-        Space myStart = boardView.getSpace(newStart.getRow(), newStart.getCell());
+        Space myStart = board.getSpace(newStart.getRow(), newStart.getCell());
         Piece myPiece = myStart.getPiece();
         myStart.setPiece(null);
         myStart.changeValid(true);
-
         //Put the piece in the old start location.
-        Space myEnd = boardView.getSpace(newEnd.getRow(), newEnd.getCell());
+        Space myEnd = board.getSpace(newEnd.getRow(), newEnd.getCell());
         myEnd.setPiece(myPiece);
         myEnd.changeValid(false);
-
-        Location startLocation = new Location(end.getRow(), end.getCell());
-        Location endLocation = new Location(start.getRow(), start.getCell());
+        // Update current player's pieces
+        Location startLocation = new Location(newStart.getRow(), newStart.getCell());
+        Location endLocation = new Location(newEnd.getRow(), newEnd.getCell());
         pieces.remove(startLocation);
         pieces.add(endLocation);
+
+        // updating opponent's board
+        // remove the piece at the start position
+        Space oppStart = opp.getSpace(7 - newStart.getRow(), 7 - newStart.getCell());
+        Piece oppPiece = oppStart.getPiece();
+        oppStart.setPiece(null);
+        oppStart.changeValid(true);
+        // adding a piece to the end position
+        Space oppEnd = opp.getSpace(7 - newEnd.getRow(), 7 - newEnd.getCell());
+        oppEnd.setPiece(oppPiece);
+        oppEnd.changeValid(false);
+
+        if (newStart.getRow() == 0){ // means the piece become a king
+            myEnd.getPiece().setType(Piece.Type.SINGLE);
+            oppEnd.getPiece().setType(Piece.Type.SINGLE);
+        }
 
     }
 
@@ -88,31 +104,81 @@ public class PostBackupMoveRoute implements Route {
      * @param currentPlayer - the current player who clicks the backup button.
      * @param previousMove  - the previous move that is going to be undone.
      */
-    public void updateOpponentPlayerBoard(Player currentPlayer, Move previousMove){
+    public void updateJump(Player currentPlayer, Move previousMove){
         Match currentMatch = gameCenter.getMatch(currentPlayer);
-        BoardView boardView;
+        BoardView board;
+        BoardView opp;
+        ArrayList<Location> pieces;
+        ArrayList<Location> oppPieces;
+        Piece pieceRemoved = currentMatch.getPiecesRemoved().pop();
 
         //Determine which color the opponent player is.
         if(currentPlayer.getName().equals(currentMatch.getRedPlayer().getName())) {
-            boardView = currentMatch.getWhiteBoardView();
+            board = currentMatch.getRedBoardView();
+            opp = currentMatch.getWhiteBoardView();
+            pieces = currentMatch.getRedPieces();
+            oppPieces = currentMatch.getWhitePieces();
         }
         else {
-            boardView = currentMatch.getRedBoardView();
+            board = currentMatch.getWhiteBoardView();
+            opp = currentMatch.getRedBoardView();
+            pieces = currentMatch.getWhitePieces();
+            oppPieces = currentMatch.getRedPieces();
         }
 
         Position newStart = previousMove.getEnd();
         Position newEnd = previousMove.getStart();
 
-        //Remove the piece at the old end location
-        Space oppStart = boardView.getSpace(7 - newStart.getRow(), 7 - newStart.getCell());
+        // update the position of current player's pieces
+        Location startLocation = new Location(newStart.getRow(), newStart.getCell());
+        Location endLocation = new Location(newEnd.getRow(), newEnd.getCell());
+        pieces.remove(startLocation);
+        pieces.add(endLocation);
+        // update current player's board
+        // remove the piece at the start position
+        Space myStart = board.getSpace(newStart.getRow(), newStart.getCell());
+        Piece myPiece = myStart.getPiece();
+        myStart.setPiece(null);
+        myStart.changeValid(true);
+        // remove the piece that was jumped over
+        int xDiff = (newStart.getCell() - newEnd.getCell()) / 2;
+        int yDiff = (newStart.getRow() - newEnd.getRow()) / 2;
+
+        Space myKill = board.getSpace(newStart.getRow() - yDiff, newStart.getCell() - xDiff);
+        myKill.setPiece(pieceRemoved);
+        myKill.changeValid(false);
+        // adding a piece to the end position
+        Space myEnd = board.getSpace(newEnd.getRow(), newEnd.getCell());
+        myEnd.setPiece(myPiece);
+        myEnd.changeValid(false);
+
+        // updating opponent's board
+        // remove the piece at the start position
+        Space oppStart = opp.getSpace(7 - newStart.getRow(), 7 - newStart.getCell());
         Piece oppPiece = oppStart.getPiece();
         oppStart.setPiece(null);
         oppStart.changeValid(true);
-
-        //Put the piece in the old start location.
-        Space oppEnd = boardView.getSpace(7 - newEnd.getRow(), 7 - newEnd.getCell());
+        // remove the piece that was jumped over
+        Space oppKill = opp.getSpace(7 - (newStart.getRow() - yDiff), 7 - (newStart.getCell() - xDiff));
+        oppKill.setPiece(pieceRemoved);
+        oppKill.changeValid(false);
+        // adding a piece to the end position
+        Space oppEnd = opp.getSpace(7 - newEnd.getRow(), 7 - newEnd.getCell());
         oppEnd.setPiece(oppPiece);
         oppEnd.changeValid(false);
+        // remove the piece that was jumped over for the pieces array
+        int deadY = 7 - (newStart.getRow() - yDiff);
+        int deadX = 7 - (newStart.getCell() - xDiff);
+        Location oppLocation = new Location(deadY, deadX);
+        oppPieces.remove(oppLocation);
+
+        System.out.println("opp y: " + Integer.toString(7 - (newStart.getRow() - yDiff)));
+        System.out.println("opp x: " + Integer.toString(7 - (newStart.getCell() - xDiff)));
+
+        if (newEnd.getRow() == 0){ // means the piece become a king
+            myEnd.getPiece().setType(Piece.Type.SINGLE);
+            oppEnd.getPiece().setType(Piece.Type.SINGLE);
+        }
     }
 
     /**
@@ -138,13 +204,18 @@ public class PostBackupMoveRoute implements Route {
         if(playerServices != null){
             Stack<Move> moves = httpSession.attribute("moves");
             Move previousMove = moves.pop();
+            Position newStart = previousMove.getEnd();
+            Position newEnd = previousMove.getStart();
+            int yDiff = newStart.getRow() - newEnd.getRow();
 
             // get the information of the current user
             String currentPlayerName = httpSession.attribute(GetHomeRoute.CURRENT_USERNAME_KEY);
             Player currentPlayer = playerServices.getPlayer(currentPlayerName);
 
-            updateCurrentPlayerBoard(currentPlayer, previousMove);
-            updateOpponentPlayerBoard(currentPlayer, previousMove);
+            if (yDiff == 1 || yDiff == -1)
+                updateMove(currentPlayer, previousMove);
+            else
+                updateJump(currentPlayer, previousMove);
 
             message = Message.info("Backup Successful");
             return gson.toJson(message);
