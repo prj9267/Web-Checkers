@@ -7,6 +7,7 @@ import com.webcheckers.model.*;
 import com.webcheckers.util.Message;
 import spark.*;
 
+import java.util.ArrayList;
 import java.util.Objects;
 import java.util.Stack;
 import java.util.logging.Logger;
@@ -46,13 +47,18 @@ public class PostBackupMoveRoute implements Route {
     public void updateCurrentPlayerBoard(Player currentPlayer, Move previousMove){
         Match currentMatch = gameCenter.getMatch(currentPlayer);
         BoardView boardView;
+        Position start = previousMove.getStart();
+        Position end = previousMove.getEnd();
+        ArrayList<Location> pieces;
 
         //Determine which color the current player is.
         if(currentPlayer.getName().equals(currentMatch.getRedPlayer().getName())) {
             boardView = currentMatch.getRedBoardView();
+            pieces = currentMatch.getRedPieces();
         }
         else {
             boardView = currentMatch.getWhiteBoardView();
+            pieces = currentMatch.getWhitePieces();
         }
 
         Position newStart = previousMove.getEnd();
@@ -68,6 +74,12 @@ public class PostBackupMoveRoute implements Route {
         Space myEnd = boardView.getSpace(newEnd.getRow(), newEnd.getCell());
         myEnd.setPiece(myPiece);
         myEnd.changeValid(false);
+
+        Location startLocation = new Location(end.getRow(), end.getCell());
+        Location endLocation = new Location(start.getRow(), start.getCell());
+        pieces.remove(startLocation);
+        pieces.add(endLocation);
+
     }
 
     /**
