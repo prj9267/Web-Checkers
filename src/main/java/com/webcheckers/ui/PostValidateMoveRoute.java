@@ -29,6 +29,13 @@ public class PostValidateMoveRoute implements Route {
     public static final Message OPPONENT_JUMP_ERROR = Message.error("You can only jump over your opponent.");
     // neither
     public static final Message MAX_ROW_MESSAGE = Message.error("The maximum number of rows you can move is 2");
+    // multiple jump
+    public static final Message MOVE_ERROR = Message.error("After a jump, you can only jump.");
+    public static final Message DIFFERENT_ERROR = Message.error("After a jump, you can move the previous piece");
+    public static final Message END_ERROR = Message.error("There is no more jump can be made from this piece.\n" +
+                                                            "You have to either submit or backup.");
+    public static final Message MULTIPLE_ERROR = Message.error("You cannot jump if you just moved.");
+
 
     // param name
     public static final String ACTION_DATA = "actionData";
@@ -46,6 +53,31 @@ public class PostValidateMoveRoute implements Route {
 
     }
 
+    public boolean checkFourDirections(BoardView board, int row, int col,
+                                       Piece piece, Piece.Color color){
+        Space topLeft = board.getSpace(row - 1, col - 1);
+        Space topLeftJump = board.getSpace(row - 2, col - 2);
+        Space topRight = board.getSpace(row - 1, col + 1);
+        Space topRightJump = board.getSpace(row - 2, col + 2);
+        // case for normal piece
+        if (piece.getType() == Piece.Type.SINGLE){
+            if (spaceForJump(topLeft, topLeftJump, color))
+                return true;
+            else if (spaceForJump(topRight, topRightJump, color))
+                return true;
+        } else{ // case for king piece
+            Space bottomLeft = board.getSpace(row + 1, col - 1);
+            Space bottomLeftJump = board.getSpace(row + 2, col - 2);
+            Space bottomRight = board.getSpace(row + 1, col + 2);
+            Space bottomRightJump = board.getSpace(row + 2, col + 2);
+            if (spaceForJump(bottomLeft, bottomLeftJump, color))
+                return true;
+            else if (spaceForJump(bottomRight, bottomRightJump, color))
+                return true;
+        }
+        return false;
+    }
+
     /**
      * Check if there is an option to jump. American rule states you have to jump
      * if you can jump.
@@ -58,26 +90,8 @@ public class PostValidateMoveRoute implements Route {
             Space space = board.getSpace(row, col);
             Piece piece = space.getPiece();
 
-            Space topLeft = board.getSpace(row - 1, col - 1);
-            Space topLeftJump = board.getSpace(row - 2, col - 2);
-            Space topRight = board.getSpace(row - 1, col + 1);
-            Space topRightJump = board.getSpace(row - 2, col + 2);
-            // case for normal piece
-            if (piece.getType() == Piece.Type.SINGLE){
-                if (spaceForJump(topLeft, topLeftJump, color))
-                    return true;
-                else if (spaceForJump(topRight, topRightJump, color))
-                    return true;
-            } else{ // case for king piece
-                Space bottomLeft = board.getSpace(row + 1, col - 1);
-                Space bottomLeftJump = board.getSpace(row + 2, col - 2);
-                Space bottomRight = board.getSpace(row + 1, col + 2);
-                Space bottomRightJump = board.getSpace(row + 2, col + 2);
-                if (spaceForJump(bottomLeft, bottomLeftJump, color))
-                    return true;
-                else if (spaceForJump(bottomRight, bottomRightJump, color))
-                    return true;
-            }
+            if (checkFourDirections(board, row, col, piece, color))
+                return true;
         }
         return false;
     }
@@ -258,56 +272,13 @@ public class PostValidateMoveRoute implements Route {
             Position end = move.getEnd();
             int row = start.getRow();
             int col = start.getCell();
+            Piece piece = currentBoardView.getSpace(row, col).getPiece();
             Piece.Type type = currentBoardView.getSpace(row, col).getPiece().getType();
             boolean isKing = (type == Piece.Type.KING);
 
             Message message;
             boolean isMove = false;
             boolean isJump = false;
-            // dealing with moving forward
-            if (row - end.getRow() == 1 ||
-                row - end.getRow() == -1) {
-                // you are not suppose to move if you can jump
-                if (optionToJump(currentBoardView, pieces, color))
-                    message = JUMP_OPTION_ERROR;
-                else if (row - end.getRow() == -1 && ! isKing)
-                    message = FORWARD_MOVE_ERROR; // you can only move forward
-
-                else {
-                    int diff = col - end.getCell();
-                    if (diff == 1 || diff == -1) {
-                        message = VALID_MOVE_MESSAGE; // valid move
-                        isMove = true;
-                    }
-                    else
-                        message = ADJACENT_MOVE_ERROR; // move is larger than one col
-                }
-            }
-            else if (row - end.getRow() == 2 ||
-                        row - end.getRow() == -2){
-                // dealing with jump
-                if (row - end.getRow() == -2 && type != Piece.Type.KING)
-                    message = FORWARD_JUMP_ERROR; // normal piece can only jump forward
-
-                else { // can jump forward by two rows
-                    int xDiff = col - end.getCell();
-                    int yDiff = row - end.getRow();
-                    Space space = currentBoardView.getSpace(start.getRow() - (yDiff / 2),
-                                                            start.getCell() - (xDiff / 2));
-                    if (xDiff == 2 || xDiff == -2) { // can only jump left or right by two columns
-                        if (space.getPiece().getColor() != color) {
-                            message = VALID_JUMP_MESSAGE; // valid jump
-                            isJump = true;
-                        }
-                        else
-                            message = OPPONENT_JUMP_ERROR; // you cannot jump over your own piece
-                    }
-                    else
-                        message = ADJACENT_JUMP_ERROR; // jump is larger than 2 cols in magnitude
-                }
-            }
-            else
-                message = MAX_ROW_MESSAGE;
 
             // a stack of moves before the player hit submit
             Stack<Move> moves;
@@ -315,6 +286,106 @@ public class PostValidateMoveRoute implements Route {
                 moves = new Stack<>();
             else
                 moves = httpSession.attribute("moves");
+
+            // dealing with multiple jump
+            if (moves.size() != 0){
+                Move previousMove = moves.pop();
+                Position previousStart = previousMove.getStart();
+                Position previousEnd = previousMove.getEnd();
+                System.out.println("previous y: " + previousEnd.getRow());
+                System.out.println("previous x: " + previousEnd.getCell());
+
+                if (previousStart.getRow() - previousEnd.getRow() == 1 ||
+                    previousStart.getRow() - previousEnd.getRow() == -1)
+                    message = MULTIPLE_ERROR;
+
+                else if (row != previousEnd.getRow() &&
+                        col != previousEnd.getCell())
+                    message = DIFFERENT_ERROR;
+                else if (row - end.getRow() == 1 ||
+                    row - end.getRow() == -1)
+                    message = MOVE_ERROR;
+                else if (row - end.getRow() == 2 ||
+                        row - end.getRow() == -2){
+                    // dealing with jump
+                    if (! checkFourDirections(currentBoardView, row, col, piece, color))
+                        message = END_ERROR;
+                    else if (row - end.getRow() == -2 && type != Piece.Type.KING)
+                        message = FORWARD_JUMP_ERROR; // normal piece can only jump forward
+                    else { // can jump forward by two rows
+                        int xDiff = col - end.getCell();
+                        int yDiff = row - end.getRow();
+                        Space space = currentBoardView.getSpace(start.getRow() - (yDiff / 2),
+                                start.getCell() - (xDiff / 2));
+                        if (xDiff == 2 || xDiff == -2) { // can only jump left or right by two columns
+                            if (space.getPiece().getColor() != color) {
+                                message = VALID_JUMP_MESSAGE; // valid jump
+                                isJump = true;
+                            }
+                            else
+                                message = OPPONENT_JUMP_ERROR; // you cannot jump over your own piece
+                        }
+                        else
+                            message = ADJACENT_JUMP_ERROR; // jump is larger than 2 cols in magnitude
+                    }
+                }
+                else
+                    message = MAX_ROW_MESSAGE;
+                moves.push(previousMove);
+            }
+
+            // done with multiple jump check
+            // do this is it is regular move
+            else{
+                // dealing with move
+                if (row - end.getRow() == 1 ||
+                        row - end.getRow() == -1) {
+                    // you are not suppose to move if you can jump
+                    if (optionToJump(currentBoardView, pieces, color))
+                        message = JUMP_OPTION_ERROR;
+                    else if (row - end.getRow() == -1 && ! isKing)
+                        message = FORWARD_MOVE_ERROR; // you can only move forward
+
+                    else {
+                        int diff = col - end.getCell();
+                        if (diff == 1 || diff == -1) {
+                            message = VALID_MOVE_MESSAGE; // valid move
+                            isMove = true;
+                        }
+                        else
+                            message = ADJACENT_MOVE_ERROR; // move is larger than one col
+                    }
+                }
+                // dealing with jump
+                else if (row - end.getRow() == 2 ||
+                        row - end.getRow() == -2){
+                    // dealing with jump
+                    if (row - end.getRow() == -2 && type != Piece.Type.KING)
+                        message = FORWARD_JUMP_ERROR; // normal piece can only jump forward
+
+                    else { // can jump forward by two rows
+                        int xDiff = col - end.getCell();
+                        int yDiff = row - end.getRow();
+                        Space space = currentBoardView.getSpace(start.getRow() - (yDiff / 2),
+                                start.getCell() - (xDiff / 2));
+                        if (xDiff == 2 || xDiff == -2) { // can only jump left or right by two columns
+                            if (space.getPiece().getColor() != color) {
+                                message = VALID_JUMP_MESSAGE; // valid jump
+                                isJump = true;
+                            }
+                            else
+                                message = OPPONENT_JUMP_ERROR; // you cannot jump over your own piece
+                        }
+                        else
+                            message = ADJACENT_JUMP_ERROR; // jump is larger than 2 cols in magnitude
+                    }
+                }
+                else
+                    message = MAX_ROW_MESSAGE;
+            }
+
+
+
             // if it is valid
             if (isMove) {
                 if (activeColor == Piece.Color.RED)
@@ -330,6 +401,14 @@ public class PostValidateMoveRoute implements Route {
                     jumpForward(redBoardView, whiteBoardView, start, end, pieces, oppPieces, currentMatch);
                 else
                     jumpForward(whiteBoardView, redBoardView, start, end, pieces, oppPieces, currentMatch);
+                piece = currentBoardView.getSpace(end.getRow(), end.getCell()).getPiece();
+                Boolean hasNextJump = checkFourDirections(currentBoardView,
+                        end.getRow(), end.getCell(),
+                        piece, color);
+                if (hasNextJump == true)
+                    httpSession.attribute("hasNextJump", hasNextJump);
+                else
+                    httpSession.removeAttribute("hasNextJump");
                 // add this move to the stack of move
                 // so when we implement backup, we know the exact order
                 moves.push(move);

@@ -4,11 +4,15 @@ import com.google.gson.Gson;
 import com.webcheckers.appl.GameCenter;
 import com.webcheckers.appl.PlayerServices;
 import com.webcheckers.model.Match;
+import com.webcheckers.model.Move;
 import com.webcheckers.model.Player;
+import com.webcheckers.model.Position;
 import com.webcheckers.util.Message;
 import spark.*;
 
+import java.util.ArrayList;
 import java.util.Objects;
+import java.util.Stack;
 import java.util.logging.Logger;
 
 public class PostSubmitTurnRoute implements Route {
@@ -65,9 +69,16 @@ public class PostSubmitTurnRoute implements Route {
             // Get the information from the match
             Match currentMatch = gameCenter.getMatch(currentPlayer);
 
+            // If you can still jump
+            if (httpSession.attribute("hasNextJump") != null){
+                message = Message.info("There is still available jump");
+                return gson.toJson(message);
+            }
+
+
+
             //alternate turns
             currentMatch.changeActiveColor();
-
             httpSession.removeAttribute("moves");
 
             message = Message.info("Your turn was submitted");

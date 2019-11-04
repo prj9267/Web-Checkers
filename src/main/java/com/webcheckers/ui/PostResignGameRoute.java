@@ -58,6 +58,8 @@ public class PostResignGameRoute implements Route {
         final Session httpSession = request.session();
 
         String username = httpSession.attribute("currentPlayer");
+        // just in case there are moves that is not removed
+        httpSession.removeAttribute("moves");
         Player currentPlayer = playerServices.getPlayer(username);
         Match currentMatch = gameCenter.getMatch(currentPlayer);
         gameCenter.removePlayer(currentPlayer);
