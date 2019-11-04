@@ -23,7 +23,7 @@ public class Match {
     private Stack<Piece> piecesRemoved = new Stack<>();
     private final Map<String, Object> modeOptions;
     private boolean isGameOver = false;
-    public enum STATE {resigned, running}
+    public enum STATE {resigned, finished, running}
     private STATE state;
 
     /**
@@ -145,6 +145,9 @@ public class Match {
 
     public void setWinner(Player winner) {
         this.winner = winner;
+        state = STATE.finished;
+        modeOptions.put("isGameOver", true);
+        modeOptions.put("gameOverMessage", winner.getName() + "captured all of the pieces.");
     }
 
     /**
@@ -158,10 +161,11 @@ public class Match {
     /**
      * sets the state of the game to resigned
      */
-    public void resignGame() {
+    public void resignGame(Player winner, Player loser) {
+        this.winner = winner;
         state = STATE.resigned;
         modeOptions.put("isGameOver", true);
-        modeOptions.put("gameOverMessage", "Resigned game.");
+        modeOptions.put("gameOverMessage", loser.getName() + " has resigned.");
     }
 
     /**

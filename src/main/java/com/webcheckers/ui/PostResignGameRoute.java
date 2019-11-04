@@ -62,10 +62,14 @@ public class PostResignGameRoute implements Route {
         httpSession.removeAttribute("moves");
         Player currentPlayer = playerServices.getPlayer(username);
         Match currentMatch = gameCenter.getMatch(currentPlayer);
-        gameCenter.removePlayer(currentPlayer);
+        Player opponentPlayer;
+        if (currentMatch.getRedPlayer().equals(currentPlayer))
+            opponentPlayer = currentMatch.getWhitePlayer();
+        else
+            opponentPlayer = currentMatch.getRedPlayer();
         currentPlayer.changeStatus(Player.Status.waiting);
-        currentMatch.resignGame();
-        currentMatch.setWinner(currentPlayer);
+        currentMatch.resignGame(currentPlayer, opponentPlayer);
+        gameCenter.removePlayer(currentPlayer);
         //redirect to home since that's the next page after ending a game
         return gson.toJson(message);
     }
