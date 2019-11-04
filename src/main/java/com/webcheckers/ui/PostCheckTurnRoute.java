@@ -61,6 +61,7 @@ public class PostCheckTurnRoute implements Route {
             // get the information of the current user
             String currentPlayerName = httpSession.attribute(GetHomeRoute.CURRENT_USERNAME_KEY);
             Player currentPlayer = playerServices.getPlayer(currentPlayerName);
+            Player opponentPlayer;
 
 
             // Get the information from the match
@@ -77,34 +78,34 @@ public class PostCheckTurnRoute implements Route {
             ArrayList<Location> pieces;
             ArrayList<Location> oppPieces = currentMatch.getWhitePieces();
             if (currentPlayer.equals(redPlayer)) {
+                opponentPlayer = whitePlayer;
                 pieces = currentMatch.getRedPieces();
                 oppPieces = currentMatch.getWhitePieces();
             }
             else{
-
+                opponentPlayer = redPlayer;
                 pieces = currentMatch.getWhitePieces();
                 oppPieces = currentMatch.getRedPieces();
             }
 
+            Message message;
             if (pieces.size() == 0) {
-                gameCenter.removePlayer(currentPlayer);
-                currentPlayer.changeStatus(Player.Status.waiting);
-                currentMatch.setWinner(currentPlayer);
+                currentMatch.setWinner(opponentPlayer);
+                message = null;
             }
             else if (oppPieces.size() == 0){
-                gameCenter.removePlayer(currentPlayer);
-                currentPlayer.changeStatus(Player.Status.waiting);
-                currentMatch.resignGame();
                 currentMatch.setWinner(currentPlayer);
+                message = null;
             }
-            // verify turn
-            Message message;
-            if (isMyTurn(currentPlayer, redPlayer, whitePlayer, currentMatch.getActiveColor())) {
-                isMyTurn = true;
-                message = isYourTurn;
-            } else {
-                isMyTurn = false;
-                message = notYourTurn;
+            else {
+                // verify turn
+                if (isMyTurn(currentPlayer, redPlayer, whitePlayer, currentMatch.getActiveColor())) {
+                    isMyTurn = true;
+                    message = isYourTurn;
+                } else {
+                    isMyTurn = false;
+                    message = notYourTurn;
+                }
             }
 
             return gson.toJson(message);
