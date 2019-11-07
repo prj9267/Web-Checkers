@@ -124,8 +124,44 @@ public class GetGameRoute implements Route {
             vm.put(VIEW_MODE_ATTR, currentViewMode);
 
             // remove the match at the end since the match is over
+            /*if(currentMatch.isGameResigned() == Match.STATE.resigned) {
+                Gson gson = new Gson();
+                vm.put("modeOptionsAsJSON", gson.toJson(currentMatch.getModeOptions()));
+                gameCenter.removePlayer(currentPlayer);
+                currentPlayer.changeStatus(Player.Status.waiting);
+                gameCenter.removeMatch(currentMatch);
+            }*/
+
+            // TODO added
             if(currentMatch.isGameResigned() == Match.STATE.resigned) {
                 Gson gson = new Gson();
+                Map <String, Object> modeOptions = new HashMap<>(2);
+                modeOptions.put("isGameOver", true);
+                modeOptions.put("gameOverMessage", "The other player has resigned. YOU WIN!");
+                vm.put("modeOptionsAsJSON", gson.toJson(currentMatch.getModeOptions()));
+                gameCenter.removePlayer(currentPlayer);
+                currentPlayer.changeStatus(Player.Status.waiting);
+                gameCenter.removeMatch(currentMatch);
+            } else if (currentMatch.getRedPieces().size() == 0) {
+                Map <String, Object> modeOptions = new HashMap<>(2);
+                modeOptions.put("isGameOver", true);
+                if (currentPlayer.equals(redPlayer)) {
+                    modeOptions.put("gameOverMessage", "You win!.");
+                } else {
+                    modeOptions.put("gameOverMessage", "You lost!");
+                }
+                vm.put("modeOptionsAsJSON", gson.toJson(currentMatch.getModeOptions()));
+                gameCenter.removePlayer(currentPlayer);
+                currentPlayer.changeStatus(Player.Status.waiting);
+                gameCenter.removeMatch(currentMatch);
+            } else if (currentMatch.getWhitePieces().size() == 0) {
+                Map <String, Object> modeOptions = new HashMap<>(2);
+                modeOptions.put("isGameOver", true);
+                if (currentPlayer.equals(redPlayer)) {
+                    modeOptions.put("gameOverMessage", "You lost!. :C");
+                } else {
+                    modeOptions.put("gameOverMessage", "You win!");
+                }
                 vm.put("modeOptionsAsJSON", gson.toJson(currentMatch.getModeOptions()));
                 gameCenter.removePlayer(currentPlayer);
                 currentPlayer.changeStatus(Player.Status.waiting);
