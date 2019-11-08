@@ -132,8 +132,7 @@ public class GetGameRoute implements Route {
                 gameCenter.removeMatch(currentMatch);
             }*/
 
-            // TODO added
-            if(currentMatch.isGameResigned() == Match.STATE.resigned) {
+            if (currentMatch.isGameResigned() == Match.STATE.resigned) {
                 Gson gson = new Gson();
                 Map <String, Object> modeOptions = new HashMap<>(2);
                 modeOptions.put("isGameOver", true);
@@ -142,6 +141,7 @@ public class GetGameRoute implements Route {
                 gameCenter.removePlayer(currentPlayer);
                 currentPlayer.changeStatus(Player.Status.waiting);
                 gameCenter.removeMatch(currentMatch);
+            // TODO SOMEWHERE HERE IS PRODUCING A NULL POINTER ERROR IN GETGAMEROUTE: 93 GETREDPLAYER?
             } else if (currentMatch.getRedPieces().size() == 0) {
                 Gson gson = new Gson();
                 Map <String, Object> modeOptions = new HashMap<>(2);
