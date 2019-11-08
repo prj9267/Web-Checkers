@@ -138,11 +138,12 @@ public class GetGameRoute implements Route {
                 Map <String, Object> modeOptions = new HashMap<>(2);
                 modeOptions.put("isGameOver", true);
                 modeOptions.put("gameOverMessage", "The other player has resigned. YOU WIN!");
-                vm.put("modeOptionsAsJSON", gson.toJson(currentMatch.getModeOptions()));
+                vm.put("modeOptionsAsJSON", gson.toJson(modeOptions));
                 gameCenter.removePlayer(currentPlayer);
                 currentPlayer.changeStatus(Player.Status.waiting);
                 gameCenter.removeMatch(currentMatch);
             } else if (currentMatch.getRedPieces().size() == 0) {
+                Gson gson = new Gson();
                 Map <String, Object> modeOptions = new HashMap<>(2);
                 modeOptions.put("isGameOver", true);
                 if (currentPlayer.equals(redPlayer)) {
@@ -150,11 +151,12 @@ public class GetGameRoute implements Route {
                 } else {
                     modeOptions.put("gameOverMessage", "You lost!");
                 }
-                vm.put("modeOptionsAsJSON", gson.toJson(currentMatch.getModeOptions()));
+                vm.put("modeOptionsAsJSON", gson.toJson(modeOptions));
                 gameCenter.removePlayer(currentPlayer);
                 currentPlayer.changeStatus(Player.Status.waiting);
                 gameCenter.removeMatch(currentMatch);
             } else if (currentMatch.getWhitePieces().size() == 0) {
+                Gson gson = new Gson();
                 Map <String, Object> modeOptions = new HashMap<>(2);
                 modeOptions.put("isGameOver", true);
                 if (currentPlayer.equals(redPlayer)) {
@@ -162,7 +164,7 @@ public class GetGameRoute implements Route {
                 } else {
                     modeOptions.put("gameOverMessage", "You win!");
                 }
-                vm.put("modeOptionsAsJSON", gson.toJson(currentMatch.getModeOptions()));
+                vm.put("modeOptionsAsJSON", gson.toJson(modeOptions));
                 gameCenter.removePlayer(currentPlayer);
                 currentPlayer.changeStatus(Player.Status.waiting);
                 gameCenter.removeMatch(currentMatch);

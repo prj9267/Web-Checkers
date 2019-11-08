@@ -14,8 +14,6 @@ public class Match {
     private BoardView whiteBoardView = new BoardView(Piece.Color.WHITE);
     private Player redPlayer;
     private Player whitePlayer;
-    private Player currentPlayer;
-    private Player otherPlayer;
     private Piece.Color activeColor;
     private Player winner = null;
     private ArrayList<Location> redPieces = initializePieces(redBoardView);
@@ -35,6 +33,7 @@ public class Match {
         this.redPlayer = redPlayer;
         this.whitePlayer = whitePlayer;
         this.activeColor = Piece.Color.RED;
+        this.state = STATE.running;
         this.modeOptions = new HashMap<>(2);
         this.modeOptions.put("isGameOver", false);
         this.modeOptions.put("gameOverMessage", null);
@@ -166,23 +165,6 @@ public class Match {
         state = STATE.resigned;
         modeOptions.put("isGameOver", true);
         modeOptions.put("gameOverMessage", loser.getName() + " has resigned.");
-    }
-
-    /**
-     * check for the existence of the other player once the game has officially started
-     */
-    public void checkGameOver() {
-        if(otherPlayer == null) {
-            isGameOver = true;
-        }
-    }
-
-    /**
-     * Returns the game state
-     * @return          - isGameOver game state
-     */
-    public boolean getGameOver() {
-        return isGameOver;
     }
 
     /**
