@@ -85,11 +85,11 @@ public class GetGameRoute implements Route {
             } else { // else get the information from the match
                 currentMatch = gameCenter.getMatch(currentPlayer);
                 // TODO debug
-                /*if(currentMatch.isGameResigned() == Match.STATE.resigned) {
+                if(currentMatch == null) {
                     //vm.put("modeOptionsAsJSON", gson.toJson(currentMatch.getModeOptions()));
-                    gameCenter.removePlayer(currentPlayer);
-                    currentPlayer.changeStatus(Player.Status.waiting);
-                }*/
+                    System.out.println("currentMatch is null");
+                    //currentPlayer.changeStatus(Player.Status.waiting);
+                }
                 redPlayer = currentMatch.getRedPlayer();
                 whitePlayer = currentMatch.getWhitePlayer();
             }
