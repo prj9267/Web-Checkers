@@ -136,7 +136,12 @@ public class GetGameRoute implements Route {
                 Gson gson = new Gson();
                 Map <String, Object> modeOptions = new HashMap<>(2);
                 modeOptions.put("isGameOver", true);
-                modeOptions.put("gameOverMessage", "The other player has resigned. YOU WIN!");
+                //modeOptions.put("gameOverMessage", "The other player has resigned. YOU WIN!");
+                if (currentPlayer.equals(redPlayer)) {
+                    modeOptions.put("gameOverMessage", whitePlayer.getName() + " has resigned. You won!");
+                } else if (currentPlayer.equals(whitePlayer)) {
+                    modeOptions.put("gameOverMessage", redPlayer.getName() + " has resigned. You won!");
+                }
                 vm.put("modeOptionsAsJSON", gson.toJson(modeOptions));
                 gameCenter.removePlayer(currentPlayer);
                 currentPlayer.changeStatus(Player.Status.waiting);
@@ -146,11 +151,12 @@ public class GetGameRoute implements Route {
                 Gson gson = new Gson();
                 Map <String, Object> modeOptions = new HashMap<>(2);
                 modeOptions.put("isGameOver", true);
-                if (currentPlayer.equals(redPlayer)) {
+                /*if (currentPlayer.equals(redPlayer)) {
                     modeOptions.put("gameOverMessage", "You win!.");
                 } else {
                     modeOptions.put("gameOverMessage", "You lost!");
-                }
+                }*/
+                modeOptions.put("gameOverMessage", whitePlayer.getName() + " has captured all opponent pieces!");
                 vm.put("modeOptionsAsJSON", gson.toJson(modeOptions));
                 gameCenter.removePlayer(currentPlayer);
                 currentPlayer.changeStatus(Player.Status.waiting);
@@ -159,11 +165,12 @@ public class GetGameRoute implements Route {
                 Gson gson = new Gson();
                 Map <String, Object> modeOptions = new HashMap<>(2);
                 modeOptions.put("isGameOver", true);
-                if (currentPlayer.equals(redPlayer)) {
+                /*if (currentPlayer.equals(redPlayer)) {
                     modeOptions.put("gameOverMessage", "You lost!. :C");
                 } else {
                     modeOptions.put("gameOverMessage", "You win!");
-                }
+                }*/
+                modeOptions.put("gameOverMessage", redPlayer.getName() + " has captured all opponent pieces!");
                 vm.put("modeOptionsAsJSON", gson.toJson(modeOptions));
                 gameCenter.removePlayer(currentPlayer);
                 currentPlayer.changeStatus(Player.Status.waiting);
