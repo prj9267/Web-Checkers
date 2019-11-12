@@ -40,9 +40,9 @@ public class Match {
         this.modeOptions.put("gameOverMessage", null);
     }
 
-    public ArrayList<Location> initializePieces(BoardView board){
+    public ArrayList<Location> initializePieces(BoardView board){ // remove the color
         ArrayList<Location> pieces = new ArrayList<>();
-        for (int y = 5; y < BoardView.NUM_ROW; y++){
+        for (int y = 5; y < BoardView.NUM_ROW; y++){ // change back to 5
             Row row = board.getRow(y);
             for (int x = 0; x < BoardView.NUM_COL; x++){
                 Space col = row.getCol(x);
