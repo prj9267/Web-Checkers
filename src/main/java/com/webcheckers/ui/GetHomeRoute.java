@@ -8,6 +8,7 @@ import java.util.logging.Logger;
 
 import com.webcheckers.appl.GameCenter;
 import com.webcheckers.appl.PlayerServices;
+import com.webcheckers.model.Match;
 import com.webcheckers.model.Player;
 import spark.*;
 
@@ -64,6 +65,42 @@ public class GetHomeRoute implements Route {
     }
 
     /**
+     * Deletes the player from the ingame list if they recently left a match. Checks if the player still has a match
+     * and they are still in the ingame list before deleting them from the list. Game is not removed since we still need
+     * that if another player is in the game screen, which GetGameRoute still needs the game to refresh the page without
+     * crashing.
+     * @param player the player to remove from ingame list
+     */
+    public synchronized void deletePlayerFromList(Player player) {
+        //if the player just recently left a match, delete them from the ingame list
+        if (gameCenter.getMatch(player) != null && gameCenter.isInMatch(player)) {
+            gameCenter.removePlayer(player);
+            player.changeRecentlyInGame(false);
+        }
+    }
+
+    /**
+     * Deletes the match from gameCenter IF AND ONLY IF both players have left the game screen, since the GetGameRoute
+     * needs match. Checks by seeing if both players have been deleted from the ingame list, which means that both players
+     * have left the game screen.
+     * @param player the player name which identifies which game to remove from gameCenter
+     */
+    public synchronized void deleteMatchIfPossible(Player player) {
+        // if both players of the match has left the match, and returned to the home screen, delete the match
+        // since nothing about the match is needed, otherwise will crash the session still in the game screen
+        if (gameCenter.getMatch(player) != null) {
+            Match match = gameCenter.getMatch(player);
+            if (player.equals(match.getRedPlayer())) {
+                if (!gameCenter.isInMatch(match.getWhitePlayer()))
+                    gameCenter.removeMatch(match);
+            } else if (player.equals(match.getWhitePlayer())) {
+                if (!gameCenter.isInMatch(match.getRedPlayer()))
+                    gameCenter.removeMatch(match);
+            }
+        }
+    }
+
+    /**
      * Render the WebCheckers Home page.
      *
      * @param request
@@ -98,6 +135,28 @@ public class GetHomeRoute implements Route {
         ArrayList<Player> players = playerServices.getPlayerList();
         if(httpSession.attribute(CURRENT_USERNAME_KEY) != null){
             Player player = playerServices.getPlayer(httpSession.attribute(CURRENT_USERNAME_KEY));
+
+            // if the player just recently left a match, delete them from the ingame list
+            if (player.wasRecentlyInGame()) {
+                deletePlayerFromList(player);
+            }
+
+            // if both players of the match has left the match, and returned to the home screen, delete the match
+            // since nothing about the match is needed, otherwise will crash the session still in the game screen
+            deleteMatchIfPossible(player);
+
+            //TODO DEBUG STATEMENTS
+            if (gameCenter.isInMatch(player)) {
+                System.out.println(player.getName() + " is in a match!");
+            } else {
+                System.out.println(player.getName() + " is not in a match!");
+            }
+            if (gameCenter.getMatch(player) != null) {
+                System.out.println(player.getName() + " has a match!");
+            } else {
+                System.out.println(player.getName() + " doesn't have a match!");
+            }
+
             // redirect the challenged player to the game
             if (player.getStatus() == Player.Status.challenged ||
                 player.getStatus() == Player.Status.ingame){

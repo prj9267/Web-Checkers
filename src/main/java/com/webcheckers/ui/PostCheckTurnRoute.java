@@ -87,14 +87,14 @@ public class PostCheckTurnRoute implements Route {
             currentPlayer.changeStatus(Player.Status.waiting);
             opponentPlayer.changeStatus(Player.Status.waiting);
             message = Message.info(opponentPlayer.getName() + " has captured all the pieces.");
-            gameCenter.removePlayer(currentPlayer);
+            //gameCenter.removePlayer(currentPlayer);
         }
-        else if (oppPieces.size() == 0){
+        else if (oppPieces.size() == 0) {
             currentMatch.setWinner(currentPlayer);
             currentPlayer.changeStatus(Player.Status.waiting);
             opponentPlayer.changeStatus(Player.Status.waiting);
             message = Message.info(currentPlayer.getName() + " has captured all the pieces.");
-            gameCenter.removePlayer(currentPlayer);
+            //gameCenter.removePlayer(currentPlayer);
         }
         else {
             // verify turn
