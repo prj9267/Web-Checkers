@@ -14,16 +14,14 @@ public class Match {
     private BoardView whiteBoardView = new BoardView(Piece.Color.WHITE);
     private Player redPlayer;
     private Player whitePlayer;
-    private Player currentPlayer;
-    private Player otherPlayer;
     private Piece.Color activeColor;
     private Player winner = null;
     private ArrayList<Location> redPieces = initializePieces(redBoardView);
     private ArrayList<Location> whitePieces = initializePieces(whiteBoardView);
     private Stack<Piece> piecesRemoved = new Stack<>();
     private final Map<String, Object> modeOptions;
-    private boolean isGameOver;
-    public enum STATE {resigned, running}
+    private boolean isGameOver = false;
+    public enum STATE {resigned, finished, running}
     private STATE state;
 
     /**
@@ -35,14 +33,15 @@ public class Match {
         this.redPlayer = redPlayer;
         this.whitePlayer = whitePlayer;
         this.activeColor = Piece.Color.RED;
+        this.state = STATE.running;
         this.modeOptions = new HashMap<>(2);
         this.modeOptions.put("isGameOver", false);
         this.modeOptions.put("gameOverMessage", null);
     }
 
-    public ArrayList<Location> initializePieces(BoardView board){
+    public ArrayList<Location> initializePieces(BoardView board){ // remove the color
         ArrayList<Location> pieces = new ArrayList<>();
-        for (int y = 5; y < BoardView.NUM_ROW; y++){
+        for (int y = 5; y < BoardView.NUM_ROW; y++){ // change back to 5
             Row row = board.getRow(y);
             for (int x = 0; x < BoardView.NUM_COL; x++){
                 Space col = row.getCol(x);
@@ -145,6 +144,9 @@ public class Match {
 
     public void setWinner(Player winner) {
         this.winner = winner;
+        state = STATE.finished;
+        modeOptions.put("isGameOver", true);
+        modeOptions.put("gameOverMessage", winner.getName() + "captured all of the pieces.");
     }
 
     /**
@@ -158,27 +160,11 @@ public class Match {
     /**
      * sets the state of the game to resigned
      */
-    public void resignGame() {
+    public void resignGame(Player winner, Player loser) {
+        this.winner = winner;
         state = STATE.resigned;
         modeOptions.put("isGameOver", true);
-        modeOptions.put("gameOverMessage", "Resigned game.");
-    }
-
-    /**
-     * check for the existence of the other player once the game has officially started
-     */
-    public void checkGameOver() {
-        if(otherPlayer == null) {
-            isGameOver = true;
-        }
-    }
-
-    /**
-     * Returns the game state
-     * @return          - isGameOver game state
-     */
-    public boolean getGameOver() {
-        return isGameOver;
+        modeOptions.put("gameOverMessage", loser.getName() + " has resigned.");
     }
 
     /**
