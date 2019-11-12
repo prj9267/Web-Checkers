@@ -289,29 +289,36 @@ public class PostValidateMoveRoute implements Route {
 
             // dealing with multiple jump
             if (moves.size() != 0){
+                // check the previous move
                 Move previousMove = moves.pop();
                 Position previousStart = previousMove.getStart();
                 Position previousEnd = previousMove.getEnd();
                 System.out.println("previous y: " + previousEnd.getRow());
                 System.out.println("previous x: " + previousEnd.getCell());
 
+                // you cannot jump if you just moved
                 if (previousStart.getRow() - previousEnd.getRow() == 1 ||
                     previousStart.getRow() - previousEnd.getRow() == -1)
                     message = MULTIPLE_ERROR;
-
+                // you can only make jump from the previous piece
                 else if (row != previousEnd.getRow() &&
                         col != previousEnd.getCell())
                     message = DIFFERENT_ERROR;
+                // after a jump, you can only jump
                 else if (row - end.getRow() == 1 ||
                     row - end.getRow() == -1)
                     message = MOVE_ERROR;
+
+
+                // dealing with jump
                 else if (row - end.getRow() == 2 ||
                         row - end.getRow() == -2){
-                    // dealing with jump
+                    // there is no more possible jump
                     if (! checkFourDirections(currentBoardView, row, col, piece, color))
                         message = END_ERROR;
+                    // normal piece can only jump forward
                     else if (row - end.getRow() == -2 && type != Piece.Type.KING)
-                        message = FORWARD_JUMP_ERROR; // normal piece can only jump forward
+                        message = FORWARD_JUMP_ERROR;
                     else { // can jump forward by two rows
                         int xDiff = col - end.getCell();
                         int yDiff = row - end.getRow();
@@ -405,6 +412,7 @@ public class PostValidateMoveRoute implements Route {
                 Boolean hasNextJump = checkFourDirections(currentBoardView,
                         end.getRow(), end.getCell(),
                         piece, color);
+                System.out.println("Position after jump: row = " + row + " col = " + col);
                 if (hasNextJump) {
                     System.out.println("there is a next jump.");
                     httpSession.attribute("hasNextJump", hasNextJump);
