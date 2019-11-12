@@ -79,7 +79,12 @@ public class GetGameRoute implements Route {
                 String opponentName = request.queryParams("button");
                 redPlayer = currentPlayer;
                 whitePlayer = playerServices.getPlayer(opponentName);
-                gameCenter.addMatch(redPlayer, whitePlayer);
+                // if either player is not available
+                if (! gameCenter.addMatch(redPlayer, whitePlayer)){
+                    response.redirect("./home");
+                    halt();
+                    return null;
+                }
                 currentMatch = gameCenter.getMatch(redPlayer);
             } else { // else get the information from the match
                 currentMatch = gameCenter.getMatch(currentPlayer);

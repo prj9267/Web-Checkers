@@ -53,60 +53,64 @@ public class PostCheckTurnRoute implements Route {
     }
 
     @Override
-    public Object handle(Request request, Response response){
+    public Object handle(Request request, Response response) {
         final Session httpSession = request.session();
         final PlayerServices playerServices = httpSession.attribute(GetHomeRoute.PLAYERSERVICES_KEY);
 
         Message message;
         // get the information of the current user
-        String currentPlayerName = httpSession.attribute(GetHomeRoute.CURRENT_USERNAME_KEY);
-        Player currentPlayer = playerServices.getPlayer(currentPlayerName);
-        Player opponentPlayer;
+        if (playerServices != null) {
+            String currentPlayerName = httpSession.attribute(GetHomeRoute.CURRENT_USERNAME_KEY);
+            Player currentPlayer = playerServices.getPlayer(currentPlayerName);
+            Player opponentPlayer;
 
-        // Get the information from the match
-        Match currentMatch = gameCenter.getMatch(currentPlayer);
-        Player redPlayer = currentMatch.getRedPlayer();
-        Player whitePlayer = currentMatch.getWhitePlayer();
+            // Get the information from the match
+            Match currentMatch = gameCenter.getMatch(currentPlayer);
+            Player redPlayer = currentMatch.getRedPlayer();
+            Player whitePlayer = currentMatch.getWhitePlayer();
 
-        //TODO take care of game end
-        ArrayList<Location> pieces;
-        ArrayList<Location> oppPieces = currentMatch.getWhitePieces();
-        if (currentPlayer.equals(redPlayer)) {
-            opponentPlayer = whitePlayer;
-            pieces = currentMatch.getRedPieces();
-            oppPieces = currentMatch.getWhitePieces();
-        }
-        else{
-            opponentPlayer = redPlayer;
-            pieces = currentMatch.getWhitePieces();
-            oppPieces = currentMatch.getRedPieces();
-        }
+            //TODO take care of game end
+            ArrayList<Location> pieces;
+            ArrayList<Location> oppPieces = currentMatch.getWhitePieces();
+            if (currentPlayer.equals(redPlayer)) {
+                opponentPlayer = whitePlayer;
+                pieces = currentMatch.getRedPieces();
+                oppPieces = currentMatch.getWhitePieces();
+            } else {
+                opponentPlayer = redPlayer;
+                pieces = currentMatch.getWhitePieces();
+                oppPieces = currentMatch.getRedPieces();
+            }
 
-        if (pieces.size() == 0) {
-            currentMatch.setWinner(opponentPlayer);
-            currentPlayer.changeStatus(Player.Status.waiting);
-            opponentPlayer.changeStatus(Player.Status.waiting);
-            message = Message.info(opponentPlayer.getName() + " has captured all the pieces.");
-            //gameCenter.removePlayer(currentPlayer);
-        }
-        else if (oppPieces.size() == 0) {
-            currentMatch.setWinner(currentPlayer);
-            currentPlayer.changeStatus(Player.Status.waiting);
-            opponentPlayer.changeStatus(Player.Status.waiting);
-            message = Message.info(currentPlayer.getName() + " has captured all the pieces.");
-            //gameCenter.removePlayer(currentPlayer);
+            if (pieces.size() == 0) {
+                currentMatch.setWinner(opponentPlayer);
+                currentPlayer.changeStatus(Player.Status.waiting);
+                opponentPlayer.changeStatus(Player.Status.waiting);
+                message = Message.info(opponentPlayer.getName() + " has captured all the pieces.");
+                //gameCenter.removePlayer(currentPlayer);
+            } else if (oppPieces.size() == 0) {
+                currentMatch.setWinner(currentPlayer);
+                currentPlayer.changeStatus(Player.Status.waiting);
+                opponentPlayer.changeStatus(Player.Status.waiting);
+                message = Message.info(currentPlayer.getName() + " has captured all the pieces.");
+                //gameCenter.removePlayer(currentPlayer);
+            } else {
+                // verify turn
+                if (isMyTurn(currentPlayer, redPlayer, whitePlayer, currentMatch.getActiveColor())) {
+                    isMyTurn = true;
+                    message = isYourTurn;
+                } else {
+                    isMyTurn = false;
+                    message = notYourTurn;
+                }
+            }
+
+            return gson.toJson(message);
         }
         else {
-            // verify turn
-            if (isMyTurn(currentPlayer, redPlayer, whitePlayer, currentMatch.getActiveColor())) {
-                isMyTurn = true;
-                message = isYourTurn;
-            } else {
-                isMyTurn = false;
-                message = notYourTurn;
-            }
+            response.redirect("/home");
+            halt();
+            return null;
         }
-
-        return gson.toJson(message);
     }
 }
