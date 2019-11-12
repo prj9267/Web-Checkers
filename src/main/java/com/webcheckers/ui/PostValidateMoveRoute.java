@@ -68,7 +68,7 @@ public class PostValidateMoveRoute implements Route {
         if (Piece.Type.KING == piece.getType()) {
             Space bottomLeft = board.getSpace(row + 1, col - 1);
             Space bottomLeftJump = board.getSpace(row + 2, col - 2);
-            Space bottomRight = board.getSpace(row + 1, col + 2);
+            Space bottomRight = board.getSpace(row + 1, col + 1);
             Space bottomRightJump = board.getSpace(row + 2, col + 2);
             if (spaceForJump(bottomLeft, bottomLeftJump, color))
                 return true;
@@ -348,6 +348,7 @@ public class PostValidateMoveRoute implements Route {
                 if (row - end.getRow() == 1 ||
                         row - end.getRow() == -1) {
                     // you are not suppose to move if you can jump
+                    System.out.println(pieces);
                     if (optionToJump(currentBoardView, pieces, color))
                         message = JUMP_OPTION_ERROR;
                     else if (row - end.getRow() == -1 && ! isKing)
@@ -412,7 +413,7 @@ public class PostValidateMoveRoute implements Route {
                 Boolean hasNextJump = checkFourDirections(currentBoardView,
                         end.getRow(), end.getCell(),
                         piece, color);
-                System.out.println("Position after jump: row = " + row + " col = " + col);
+                System.out.println("Position after jump: row = " + end.getRow() + " col = " + end.getCell());
                 if (hasNextJump) {
                     System.out.println("there is a next jump.");
                     httpSession.attribute("hasNextJump", hasNextJump);
