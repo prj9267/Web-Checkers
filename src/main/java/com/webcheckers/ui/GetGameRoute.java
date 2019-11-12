@@ -74,7 +74,6 @@ public class GetGameRoute implements Route {
             Player redPlayer;
             Player whitePlayer;
             Match currentMatch;
-            // TODO modeOptions check if game has ended and add modeOptions to vm to send GameOver message
             // if the button is just triggered, initialize everything
             if (request.queryParams("button") != null) {
                 String opponentName = request.queryParams("button");
@@ -84,12 +83,6 @@ public class GetGameRoute implements Route {
                 currentMatch = gameCenter.getMatch(redPlayer);
             } else { // else get the information from the match
                 currentMatch = gameCenter.getMatch(currentPlayer);
-                // TODO debug
-                /*if(currentMatch.isGameResigned() == Match.STATE.resigned) {
-                    //vm.put("modeOptionsAsJSON", gson.toJson(currentMatch.getModeOptions()));
-                    gameCenter.removePlayer(currentPlayer);
-                    currentPlayer.changeStatus(Player.Status.waiting);
-                }*/
                 redPlayer = currentMatch.getRedPlayer();
                 whitePlayer = currentMatch.getWhitePlayer();
             }
@@ -103,7 +96,7 @@ public class GetGameRoute implements Route {
             vm.put(RED_PLAYER_ATTR, redPlayer);
             vm.put(WHITE_PLAYER_ATTR, whitePlayer);
 
-                //Match match = gameCenter.getMatch(currentPlayer);
+            //Match match = gameCenter.getMatch(currentPlayer);
             BoardView whiteBoardView = currentMatch.getWhiteBoardView();
             BoardView redBoardView = currentMatch.getRedBoardView();
 
@@ -123,13 +116,40 @@ public class GetGameRoute implements Route {
             viewMode currentViewMode = viewMode.PLAY;
             vm.put(VIEW_MODE_ATTR, currentViewMode);
 
-            // remove the match at the end since the match is over
-            if(currentMatch.isGameResigned() == Match.STATE.resigned) {
+            if (currentMatch.isGameResigned() == Match.STATE.resigned) {
+                // remove the player from the ingame list after exiting the game
+                currentPlayer.changeRecentlyInGame(true);
                 Gson gson = new Gson();
-                vm.put("modeOptionsAsJSON", gson.toJson(currentMatch.getModeOptions()));
-                gameCenter.removePlayer(currentPlayer);
+                Map <String, Object> modeOptions = new HashMap<>(2);
+                modeOptions.put("isGameOver", true);
+                // produce the right message
+                if (currentPlayer.equals(redPlayer)) {
+                    modeOptions.put("gameOverMessage", whitePlayer.getName() + " has resigned. You won!");
+                } else if (currentPlayer.equals(whitePlayer)) {
+                    modeOptions.put("gameOverMessage", redPlayer.getName() + " has resigned. You won!");
+                }
+                vm.put("modeOptionsAsJSON", gson.toJson(modeOptions));
                 currentPlayer.changeStatus(Player.Status.waiting);
-                gameCenter.removeMatch(currentMatch);
+            } else if (currentMatch.getRedPieces().size() == 0) {
+                // remove the player from the ingame list after exiting the game
+                currentPlayer.changeRecentlyInGame(true);
+                Gson gson = new Gson();
+                Map <String, Object> modeOptions = new HashMap<>(2);
+                modeOptions.put("isGameOver", true);
+                modeOptions.put("gameOverMessage", whitePlayer.getName() + " has captured all opponent pieces!");
+                vm.put("modeOptionsAsJSON", gson.toJson(modeOptions));
+                //gameCenter.removePlayer(currentPlayer);
+                currentPlayer.changeStatus(Player.Status.waiting);
+                //gameCenter.removeMatch(currentMatch);
+            } else if (currentMatch.getWhitePieces().size() == 0) {
+                // remove the player from the ingame list after exiting the game
+                currentPlayer.changeRecentlyInGame(true);
+                Gson gson = new Gson();
+                Map <String, Object> modeOptions = new HashMap<>(2);
+                modeOptions.put("isGameOver", true);
+                modeOptions.put("gameOverMessage", redPlayer.getName() + " has captured all opponent pieces!");
+                vm.put("modeOptionsAsJSON", gson.toJson(modeOptions));
+                currentPlayer.changeStatus(Player.Status.waiting);
             }
 
             return templateEngine.render(new ModelAndView(vm, VIEW_NAME));

@@ -6,6 +6,7 @@ public class Player {
     private String name;
     public enum Status {waiting, challenged, ingame}
     public Status status;
+    private boolean recentlyInGame;
 
     /**
      * Player constructor
@@ -15,6 +16,15 @@ public class Player {
         assert(name != null);
         this.name = name;
         status = Status.waiting;
+        recentlyInGame = false;
+    }
+
+    public void changeRecentlyInGame(boolean bool) {
+        recentlyInGame = bool;
+    }
+
+    public boolean wasRecentlyInGame() {
+        return recentlyInGame;
     }
 
     /**
