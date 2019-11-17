@@ -7,7 +7,7 @@ public class Player {
     private int games;
     private int won;
     private int lost;
-    private float ratio;
+    private String ratio;
     public enum Status {waiting, challenged, ingame}
     public Status status;
     private boolean recentlyInGame;
@@ -19,6 +19,29 @@ public class Player {
     public Player(String name) {
         assert(name != null);
         this.name = name;
+        games = 0;
+        won = 0;
+        lost = 0;
+        // undefined because no games played
+        ratio = "undefined";
+        status = Status.waiting;
+        recentlyInGame = false;
+    }
+
+    /**
+     * Player constructor
+     * @param name sets name to the name provided
+     * @param games number of games played
+     * @param won number of games won
+     * @param lost number of games lost
+     */
+    public Player(String name, int games, int won, int lost) {
+        assert(name != null);
+        this.name = name;
+        this.games = games;
+        this.won = won;
+        this.lost = lost;
+        ratio = Float.toString((float)won/games);
         status = Status.waiting;
         recentlyInGame = false;
     }
