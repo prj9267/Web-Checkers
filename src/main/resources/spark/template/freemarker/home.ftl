@@ -28,6 +28,13 @@
 
             <#if currentPlayer??>
                 <p> Hello ${currentPlayer}! </p>
+                <div id="stats">
+                    <h1>Statistics</h1>
+                    <p>Games Played: ${currentPlayer.games}</p><br>
+                    <p>Games Won: ${currentPlayer.won}</p><br>
+                    <p>Games Lost: ${currentPlayer.lost}</p><br>
+                    <p>W/L Ratio: ${currentPlayer.ratio}</p><br>
+                </div>
                 <div class="body">
                     <#if players??>
                         <p>Currently Signed in Players:</p>

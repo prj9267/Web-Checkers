@@ -1,9 +1,12 @@
 package com.webcheckers.ui;
 
+import com.opencsv.CSVReader;
 import com.webcheckers.appl.PlayerServices;
 import com.webcheckers.util.Message;
 import spark.*;
 
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -94,7 +97,45 @@ public class PostSignInRoute implements Route {
         else
             statCode = httpSession.attribute(STAT_CODE_ATTR);
 
-        Player player = new Player(username);
+        boolean found = false;
+        int games = 0;
+        int won = 0;
+        int lost = 0;
+        // check if username has been used before
+        try {
+            FileReader fileReader = new FileReader("../../../../resources/public/Statistics.csv");
+            CSVReader csvReader = new CSVReader(fileReader);
+            String[] nextRecord;
+
+            while ((nextRecord = csvReader.readNext()) != null) {
+                int i = 0;
+                for (String stat : nextRecord) {
+                    if (stat.equals(username))
+                        found = true;
+                    if (found) {
+                        switch (i) {
+                            case 1:
+                                games = Integer.parseInt(stat);
+                            case 2:
+                                won = Integer.parseInt(stat);
+                            case 3:
+                                lost = Integer.parseInt(stat);
+                        }
+                        i++;
+                    }
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        // call constructor for player
+        Player player;
+        if (!found) {
+            player = new Player(username);
+        } else {
+            player = new Player(username, games, won, lost);
+        }
 
         if(httpSession.attribute(GetHomeRoute.PLAYERSERVICES_KEY) != null) {
             if (statCode == 0) {
