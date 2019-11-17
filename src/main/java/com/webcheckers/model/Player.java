@@ -4,6 +4,10 @@ public class Player {
 
     //Attributes
     private String name;
+    private int games;
+    private int won;
+    private int lost;
+    private float ratio;
     public enum Status {waiting, challenged, ingame}
     public Status status;
     private boolean recentlyInGame;
