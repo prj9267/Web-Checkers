@@ -1,12 +1,14 @@
 package com.webcheckers.ui;
 
 import com.opencsv.CSVReader;
+import com.opencsv.CSVWriter;
 import com.webcheckers.appl.PlayerServices;
 import com.webcheckers.util.Message;
 import spark.*;
 
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -133,6 +135,16 @@ public class PostSignInRoute implements Route {
         Player player;
         if (!found) {
             player = new Player(username);
+            try {
+                FileWriter fileWriter = new FileWriter("../../../../resources/public/Statistics.csv");
+                CSVWriter writer = new CSVWriter(fileWriter);
+                String[] stats = {username, Integer.toString(0), Integer.toString(0), Integer.toString(0)};
+                writer.writeNext(stats);
+                writer.flush();
+                writer.close();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         } else {
             player = new Player(username, games, won, lost);
         }
