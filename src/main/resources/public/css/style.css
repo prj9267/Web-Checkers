@@ -87,6 +87,14 @@ div.page div.body {
   padding: 10px;
 }
 
+div.stats {
+  padding: 10px 20px;
+  display: flex;
+  justify-content: flex-start;
+  color: #eb91b7;
+  font-color: #265222;
+}
+
 div.page div.footer {
   background: #eee;
   color: #888;
