@@ -9,6 +9,8 @@ import spark.*;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -103,9 +105,12 @@ public class PostSignInRoute implements Route {
         int games = 0;
         int won = 0;
         int lost = 0;
+        Path currentRelativePath = Paths.get("");
+        String s = currentRelativePath.toAbsolutePath().toString();
         // check if username has been used before
         try {
-            FileReader fileReader = new FileReader("../../../../resources/public/Statistics.csv");
+            //C:\Programming\Intro to Software Engineering\WebCheckers\src\main\resources\public\Statistics.csv
+            FileReader fileReader = new FileReader(s + "/src/main/resources/public/Statistics.csv");
             CSVReader csvReader = new CSVReader(fileReader);
             String[] nextRecord;
 
@@ -136,7 +141,8 @@ public class PostSignInRoute implements Route {
         if (!found) {
             player = new Player(username);
             try {
-                FileWriter fileWriter = new FileWriter("../../../../resources/public/Statistics.csv");
+                // write to the csv file so that the new player data can be found next time
+                FileWriter fileWriter = new FileWriter(s + "/src/main/resources/public/Statistics.csv");
                 CSVWriter writer = new CSVWriter(fileWriter);
                 String[] stats = {username, Integer.toString(0), Integer.toString(0), Integer.toString(0)};
                 writer.writeNext(stats);
