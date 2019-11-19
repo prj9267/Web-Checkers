@@ -29,7 +29,7 @@
             <#if currentPlayer??>
                 <p> Hello ${currentPlayer}! </p>
 
-                <div id="stats">
+                <div class="stats">
                     <h1>Statistics</h1>
                     <p>Games Played: ${games}</p><br>
                     <p>Games Won: ${won}</p><br>

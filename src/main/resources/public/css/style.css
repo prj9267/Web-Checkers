@@ -90,10 +90,18 @@ div.page div.body {
 /*TODO added - change color palette if finished with coding*/
 div.stats {
   padding: 10px 20px;
-  display: flex;
-  justify-content: flex-start;
-  color: #eb91b7;
-  font-color: #265222;
+  background-color: #eb91b7;
+  color: green;
+}
+
+div.stats>h1 {
+  margin-bottom: 1em;
+}
+
+div.stats>p {
+  padding: 0;
+  margin-block-start: 0;
+  margin-block-end: 0;
 }
 
 div.page div.footer {
