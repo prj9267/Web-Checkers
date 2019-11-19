@@ -19,6 +19,7 @@ import java.util.logging.Logger;
 
 import com.webcheckers.model.Player;
 
+import static com.webcheckers.ui.WebServer.csvFile;
 import static spark.Spark.halt;
 
 public class PostSignInRoute implements Route {
@@ -105,58 +106,56 @@ public class PostSignInRoute implements Route {
         int games = 0;
         int won = 0;
         int lost = 0;
-        Path currentRelativePath = Paths.get("");
-        String s = currentRelativePath.toAbsolutePath().toString();
-        // check if username has been used before
-        try {
-            //C:\Programming\Intro to Software Engineering\WebCheckers\src\main\resources\public\Statistics.csv
-            FileReader fileReader = new FileReader(s + "/src/main/resources/public/Statistics.csv");
-            CSVReader csvReader = new CSVReader(fileReader);
-            String[] nextRecord;
-
-            while ((nextRecord = csvReader.readNext()) != null) {
-                int i = 0;
-                for (String stat : nextRecord) {
-                    if (stat.equals(username))
-                        found = true;
-                    if (found) {
-                        switch (i) {
-                            case 1:
-                                games = Integer.parseInt(stat);
-                            case 2:
-                                won = Integer.parseInt(stat);
-                            case 3:
-                                lost = Integer.parseInt(stat);
-                        }
-                        i++;
-                    }
-                }
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        // call constructor for player
-        Player player;
-        if (!found) {
-            player = new Player(username);
-            try {
-                // write to the csv file so that the new player data can be found next time
-                FileWriter fileWriter = new FileWriter(s + "/src/main/resources/public/Statistics.csv");
-                CSVWriter writer = new CSVWriter(fileWriter);
-                String[] stats = {username, Integer.toString(0), Integer.toString(0), Integer.toString(0)};
-                writer.writeNext(stats);
-                writer.flush();
-                writer.close();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        } else {
-            player = new Player(username, games, won, lost);
-        }
-
         if(httpSession.attribute(GetHomeRoute.PLAYERSERVICES_KEY) != null) {
             if (statCode == 0) {
+                Player player;
+
+                try {
+                    //C:\Programming\Intro to Software Engineering\WebCheckers\src\main\resources\public\Statistics.csv
+                    FileReader fileReader = new FileReader(csvFile);
+                    CSVReader csvReader = new CSVReader(fileReader);
+                    String[] nextRecord;
+
+                    while ((nextRecord = csvReader.readNext()) != null) {
+                        int i = 0;
+                        for (String stat : nextRecord) {
+                            if (stat.equals(username))
+                                found = true;
+                            if (found) {
+                                switch (i) {
+                                    case 1:
+                                        games = Integer.parseInt(stat);
+                                    case 2:
+                                        won = Integer.parseInt(stat);
+                                    case 3:
+                                        lost = Integer.parseInt(stat);
+                                }
+                                i++;
+                            }
+                        }
+                        if (found)
+                            break;
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+                if (!found) {
+                    player = new Player(username);
+                    try {
+                        // write to the csv file so that the new player data can be found next time
+                        FileWriter fileWriter = new FileWriter(csvFile, true);
+                        CSVWriter writer = new CSVWriter(fileWriter);
+                        String[] stats = {username, "0", "0", "0"};
+                        writer.writeNext(stats);
+                        writer.flush();
+                        writer.close();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                } else {
+                    player = new Player(username, games, won, lost);
+                }
                 playerServices.addPlayer(player);
 
                 httpSession.attribute(GetHomeRoute.CURRENT_USERNAME_KEY, username);

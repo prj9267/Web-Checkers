@@ -146,7 +146,7 @@ public class GetHomeRoute implements Route {
             deleteMatchIfPossible(player);
 
             //TODO DEBUG STATEMENTS
-            if (gameCenter.isInMatch(player)) {
+            /*if (gameCenter.isInMatch(player)) {
                 System.out.println(player.getName() + " is in a match!");
             } else {
                 System.out.println(player.getName() + " is not in a match!");
@@ -155,7 +155,7 @@ public class GetHomeRoute implements Route {
                 System.out.println(player.getName() + " has a match!");
             } else {
                 System.out.println(player.getName() + " doesn't have a match!");
-            }
+            }*/
 
             // redirect the challenged player to the game
             if (player.getStatus() == Player.Status.challenged ||
