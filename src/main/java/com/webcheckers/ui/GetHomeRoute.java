@@ -30,6 +30,10 @@ public class GetHomeRoute implements Route {
     static final String NUM_PLAYERS_ATTR = "numPlayers";
     static final String TITLE = "Welcome!";
     static final String CURRENT_PLAYER_ATTR = "currentPlayer";
+    static final String GAMES_ATTR = "games";
+    static final String WON_ATTR = "won";
+    static final String LOST_ATTR = "lost";
+    static final String RATIO_ATTR = "ratio";
 
     public static final String VIEW_NAME = "home.ftl";
     private static final Message WELCOME_MSG = Message.info("Welcome to the world of online Checkers.");
@@ -169,6 +173,10 @@ public class GetHomeRoute implements Route {
             if (httpSession.attribute("message") != null)
                 vm.put(MESSAGE_ATTR, httpSession.attribute("message"));
             httpSession.removeAttribute("message");
+            vm.put(GAMES_ATTR, player.getGames());
+            vm.put(WON_ATTR, player.getWon());
+            vm.put(LOST_ATTR, player.getLost());
+            vm.put(RATIO_ATTR, player.getRatio());
             vm.put(CURRENT_USERNAME_KEY, httpSession.attribute(CURRENT_USERNAME_KEY));
             players.remove(player);
             vm.put(PLAYERS_ATTR, players);

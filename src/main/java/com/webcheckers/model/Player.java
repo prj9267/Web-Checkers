@@ -46,6 +46,22 @@ public class Player {
         recentlyInGame = false;
     }
 
+    public String getGames() {
+        return Integer.toString(games);
+    }
+
+    public String getWon() {
+        return Integer.toString(won);
+    }
+
+    public String getLost() {
+        return Integer.toString(lost);
+    }
+
+    public String getRatio() {
+        return ratio;
+    }
+
     public void changeRecentlyInGame(boolean bool) {
         recentlyInGame = bool;
     }
