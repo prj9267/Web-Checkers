@@ -81,7 +81,8 @@ public class GetGameRoute implements Route {
                 whitePlayer = playerServices.getPlayer(opponentName);
                 // if either player is not available
                 if (! gameCenter.addMatch(redPlayer, whitePlayer)){
-                    response.redirect("./home");
+                    httpSession.attribute("message", Message.error(whitePlayer.getName() + " is already in game!"));
+                    response.redirect(WebServer.HOME_URL);
                     halt();
                     return null;
                 }

@@ -166,6 +166,9 @@ public class GetHomeRoute implements Route {
             }
 
             vm.put(MESSAGE_ATTR, SIGNIN_MSG);
+            if (httpSession.attribute("message") != null)
+                vm.put(MESSAGE_ATTR, httpSession.attribute("message"));
+            httpSession.removeAttribute("message");
             vm.put(CURRENT_USERNAME_KEY, httpSession.attribute(CURRENT_USERNAME_KEY));
             players.remove(player);
             vm.put(PLAYERS_ATTR, players);
