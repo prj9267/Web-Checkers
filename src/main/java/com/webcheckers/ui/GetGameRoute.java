@@ -125,6 +125,8 @@ public class GetGameRoute implements Route {
             if (currentMatch.isGameResigned() == Match.STATE.resigned) {
                 // remove the player from the ingame list after exiting the game
                 currentPlayer.changeRecentlyInGame(true);
+                // update stats
+                currentPlayer.addWon();
                 Gson gson = new Gson();
                 Map <String, Object> modeOptions = new HashMap<>(2);
                 modeOptions.put("isGameOver", true);
@@ -139,6 +141,12 @@ public class GetGameRoute implements Route {
             } else if (currentMatch.getRedPieces().size() == 0) {
                 // remove the player from the ingame list after exiting the game
                 currentPlayer.changeRecentlyInGame(true);
+                // update stats
+                if (currentPlayer.equals(currentMatch.getRedPlayer())) {
+                    currentPlayer.addLost();
+                } else {
+                    currentPlayer.addWon();
+                }
                 Gson gson = new Gson();
                 Map <String, Object> modeOptions = new HashMap<>(2);
                 modeOptions.put("isGameOver", true);
@@ -150,6 +158,12 @@ public class GetGameRoute implements Route {
             } else if (currentMatch.getWhitePieces().size() == 0) {
                 // remove the player from the ingame list after exiting the game
                 currentPlayer.changeRecentlyInGame(true);
+                // update stats
+                if (currentPlayer.equals(currentMatch.getRedPlayer())) {
+                    currentPlayer.addWon();
+                } else {
+                    currentPlayer.addLost();
+                }
                 Gson gson = new Gson();
                 Map <String, Object> modeOptions = new HashMap<>(2);
                 modeOptions.put("isGameOver", true);

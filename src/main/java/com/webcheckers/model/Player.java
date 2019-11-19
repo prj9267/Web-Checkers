@@ -46,32 +46,74 @@ public class Player {
         recentlyInGame = false;
     }
 
+    /**
+     * Get the number of games played
+     * @return games number of games played
+     */
     public String getGames() {
         return Integer.toString(games);
     }
 
+    /**
+     * Get the number of games won
+     * @return won number of games won
+     */
     public String getWon() {
         return Integer.toString(won);
     }
 
+    /**
+     * Increase the number of games played and games won. Updates w/l ratio.
+     */
+    public void addWon() {
+        games++;
+        won++;
+        ratio = Float.toString((float)won/games);
+    }
+
+    /**
+     * Get the number of games lost
+     * @return lost number of games lost
+     */
     public String getLost() {
         return Integer.toString(lost);
     }
 
+    /**
+     * Increase the number of games lost and games played. Updates w/l ratio.
+     */
+    public void addLost() {
+        games++;
+        lost++;
+        ratio = Float.toString((float)won/games);
+    }
+
+    /**
+     * Get the w/l ratio.
+     * @return
+     */
     public String getRatio() {
         return ratio;
     }
 
+    /**
+     * Sets the player so that they just left a match recently.
+     * @param bool true if just left a match
+     */
     public void changeRecentlyInGame(boolean bool) {
         recentlyInGame = bool;
     }
 
+    /**
+     * Gets the boolean on whether or not they recently were in a match.
+     * @return recentlyInGame boolean
+     */
     public boolean wasRecentlyInGame() {
         return recentlyInGame;
     }
 
     /**
-     * CHecks if a username contains an invalid char
+     * Checks if a username contains an invalid char
      * @return  - false if username contains no invalid chars, true otherwise.
      */
     public Boolean containsInvalidCharacter() {

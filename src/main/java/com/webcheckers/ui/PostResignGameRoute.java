@@ -71,6 +71,8 @@ public class PostResignGameRoute implements Route {
         currentMatch.resignGame(currentPlayer, opponentPlayer);
         // delete the player from the ingame match list after exiting to home/lobby
         currentPlayer.changeRecentlyInGame(true);
+        // update stats
+        currentPlayer.addLost();
         //redirect to home since that's the next page after ending a game by sending a message
         return gson.toJson(message);
     }
