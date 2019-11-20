@@ -149,6 +149,14 @@ public class GetHomeRoute implements Route {
             // since nothing about the match is needed, otherwise will crash the session still in the game screen
             deleteMatchIfPossible(player);
 
+            // TODO implement top 10 players (games)
+            // read each line
+            // grab the name
+            // check number of games
+            //     if in top 10
+            // sort the list
+            // one whole string appended to each other "name games won lost ratio"
+
             //TODO DEBUG STATEMENTS
             /*if (gameCenter.isInMatch(player)) {
                 System.out.println(player.getName() + " is in a match!");
