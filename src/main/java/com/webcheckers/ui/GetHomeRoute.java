@@ -8,6 +8,7 @@ import java.util.logging.Logger;
 
 import com.webcheckers.appl.GameCenter;
 import com.webcheckers.appl.PlayerServices;
+import com.webcheckers.model.Leaderboard;
 import com.webcheckers.model.Match;
 import com.webcheckers.model.Player;
 import spark.*;
@@ -149,13 +150,14 @@ public class GetHomeRoute implements Route {
             // since nothing about the match is needed, otherwise will crash the session still in the game screen
             deleteMatchIfPossible(player);
 
-            // TODO implement top 10 players (games)
-            // read each line
-            // grab the name
-            // check number of games
-            //     if in top 10
-            // sort the list
-            // one whole string appended to each other "name games won lost ratio"
+            // TODO implement rankings (Leaderboard class)
+            /*
+            Leaderboard leaderboard = new Leaderboard();
+            leaderboard.updateAllBoards();
+            HashMap<String, Integer> gamesBoard = leaderboard.getGamesBoard();
+            HashMap<String, Integer> wonBoard = leaderboard.getWonBoard();
+            HashMap<String, Integer> lostBoard = leaderboard.getLostBoard();
+            */
 
             //TODO DEBUG STATEMENTS
             /*if (gameCenter.isInMatch(player)) {
