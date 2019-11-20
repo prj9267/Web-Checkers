@@ -86,12 +86,24 @@ public class GetGameRoute implements Route {
                     halt();
                     return null;
                 }
+                httpSession.attribute("help", false);
                 currentMatch = gameCenter.getMatch(redPlayer);
             } else { // else get the information from the match
                 currentMatch = gameCenter.getMatch(currentPlayer);
                 redPlayer = currentMatch.getRedPlayer();
                 whitePlayer = currentMatch.getWhitePlayer();
+                httpSession.attribute("help", false);
             }
+
+            if (request.queryParams("help") != null) {
+                if (httpSession.attribute("help")) {
+                    httpSession.attribute("help", false);
+                }
+                else{
+                    httpSession.attribute("help", true);
+                }
+            }
+            vm.put("HELP", httpSession.attribute("help"));
 
             // save it to session
             httpSession.attribute(MATCH_ATTR, currentMatch);

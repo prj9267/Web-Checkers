@@ -53,6 +53,15 @@
 
                         <fieldset id="game-toolbar">
                             <legend>Controls</legend>
+                            <form action="./game">
+                                <#if HELP == false>
+                                    <p> Click me for HELP! </p>
+                                <#else>
+                                    <p> Click me to remove HELP </p>
+                                </#if>
+                                <button type="submit" name=help value="help"> Help </button>
+                            </form>
+                            <br>
                             <div class="toolbar"></div>
                         </fieldset>
 

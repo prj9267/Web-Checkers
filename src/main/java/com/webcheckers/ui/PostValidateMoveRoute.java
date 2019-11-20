@@ -234,6 +234,21 @@ public class PostValidateMoveRoute implements Route {
         final PlayerServices playerServices = httpSession.attribute(GetHomeRoute.PLAYERSERVICES_KEY);
 
         if (playerServices != null) {
+            // if the player click on the help button
+            if (request.queryParams("help") != null){
+                if (httpSession.attribute("help")) {
+                    httpSession.attribute("help", true);
+                }
+                else {
+                    httpSession.attribute("help", false);
+                }
+            }
+
+            //check if the help button is clicked
+            if (httpSession.attribute("help")){
+                return gson.toJson(Message.error("You must click help again in order to make a move."));
+            }
+
             // get the information of the current user
             String currentPlayerName = httpSession.attribute(GetHomeRoute.CURRENT_USERNAME_KEY);
             Player currentPlayer = playerServices.getPlayer(currentPlayerName);
