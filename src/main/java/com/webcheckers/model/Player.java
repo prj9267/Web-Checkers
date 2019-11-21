@@ -50,16 +50,24 @@ public class Player {
      * Get the number of games played
      * @return games number of games played
      */
-    public String getGames() {
-        return Integer.toString(games);
+    public int getGames() {
+        return games;
     }
 
     /**
      * Get the number of games won
      * @return won number of games won
      */
-    public String getWon() {
-        return Integer.toString(won);
+    public int getWon() {
+        return won;
+    }
+
+    /**
+     * Get the number of games lost
+     * @return lost number of games lost
+     */
+    public int getLost() {
+        return lost;
     }
 
     /**
@@ -69,14 +77,6 @@ public class Player {
         games++;
         won++;
         ratio = Float.toString((float)won/games);
-    }
-
-    /**
-     * Get the number of games lost
-     * @return lost number of games lost
-     */
-    public String getLost() {
-        return Integer.toString(lost);
     }
 
     /**

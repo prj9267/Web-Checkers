@@ -37,6 +37,22 @@
                     <p>W/L Ratio: ${ratio}</p><br>
                 </div>
 
+                <#--
+                <div class="stats" id="games">
+                    <#if games??>
+                        <#list games as player>
+                            <p>Name: ${player.name}     Games Played: ${player.games}</p>
+                        </#list>
+                    </#if>
+                </div>
+                -->
+
+                <div class="stats" id="won">
+                </div>
+
+                <div class="stats" id="lost">
+                </div>
+
                 <div class="body">
                     <#if players??>
                         <p>Currently Signed in Players:</p>

@@ -136,9 +136,11 @@ public class PostSignInRoute implements Route {
                         if (found)
                             break;
                     }
+                    csvReader.close();
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
+
 
                 if (!found) {
                     player = new Player(username);

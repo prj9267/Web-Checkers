@@ -3,34 +3,48 @@ package com.webcheckers.model;
 import com.opencsv.CSVReader;
 
 import java.io.FileReader;
-import java.util.HashMap;
-import java.util.Iterator;
+import java.util.*;
 
 import static com.webcheckers.ui.WebServer.csvFile;
 
 public class Leaderboard {
-    private HashMap<String, int[]> list;
-    private HashMap<String, Integer> gamesBoard;
-    private HashMap<String, Integer> wonBoard;
-    private HashMap<String, Integer> lostBoard;
-    private FileReader fileReader;
-    private CSVReader csvReader;
-    private String[] nextRecord;
+    private ArrayList<Player> list;
+    private TreeSet<Player> gamesBoard;
+    private TreeSet<Player> wonBoard;
+    private TreeSet<Player> lostBoard;
 
     public Leaderboard() {
-        list = new HashMap<>();
-        gamesBoard = new HashMap<>();
-        wonBoard = new HashMap<>();
-        lostBoard = new HashMap<>();
-
-        try {
-            //C:\Programming\Intro to Software Engineering\WebCheckers\src\main\resources\public\Statistics.csv
-            FileReader fileReader = new FileReader(csvFile);
-            CSVReader csvReader = new CSVReader(fileReader);
-            String[] nextRecord;
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        list = new ArrayList<>();
+        gamesBoard = new TreeSet<>(new Comparator<Player>() {
+            @Override
+            public int compare(Player o1, Player o2) {
+                if (o1.getGames() > o2.getGames()) {
+                    return -1;
+                } else {
+                    return 1;
+                }
+            }
+        });
+        wonBoard = new TreeSet<>(new Comparator<Player>() {
+            @Override
+            public int compare(Player o1, Player o2) {
+                if (o1.getWon() > o2.getWon()) {
+                    return -1;
+                } else {
+                    return 1;
+                }
+            }
+        });
+        lostBoard = new TreeSet<>(new Comparator<Player>() {
+            @Override
+            public int compare(Player o1, Player o2) {
+                if (o1.getLost() > o2.getLost()) {
+                    return -1;
+                } else {
+                    return 1;
+                }
+            }
+        });
     }
 
     /**
@@ -38,35 +52,31 @@ public class Leaderboard {
      */
     public void updateList() {
         try {
+            FileReader fileReader = new FileReader(csvFile);
+            CSVReader csvReader = new CSVReader(fileReader);
+            String[] nextRecord;
+
             while ((nextRecord = csvReader.readNext()) != null) {
-                int i = 0;
-                String username = "";
-                int[] record = new int[3];
-                for (String stat : nextRecord) {
-                    switch (i) {
-                        case 0:
-                            username = stat;
-                        case 1:
-                            record[0] = Integer.parseInt(stat);
-                        case 2:
-                            record[1] = Integer.parseInt(stat);
-                        case 3:
-                            record[2] = Integer.parseInt(stat);
-                            break;
-                    }
-                }
-                list.put(username, record);
+                String username = nextRecord[0];
+                int games = Integer.parseInt(nextRecord[1]);
+                int won = Integer.parseInt(nextRecord[2]);
+                int lost = Integer.parseInt(nextRecord[3]);
+
+                list.add(new Player(username, games, won, lost));
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
+        // #TODO debug
+        //for (Player player: list)
+        //    System.out.println(player.getName() + " Number of games: " + Integer.toString(player.getGames()));
     }
 
     /**
      * Return the won leaderboard (ranks by number of wins)
      * @return board won leaderboard
      */
-    public HashMap<String, Integer> getWonBoard() {
+    public TreeSet<Player> getWonBoard() {
         return wonBoard;
     }
 
@@ -74,7 +84,7 @@ public class Leaderboard {
      * Return the lost leaderboard (ranks by number of losses)
      * @return lostBoard lost leaderboard
      */
-    public HashMap<String, Integer> getLostBoard() {
+    public TreeSet<Player> getLostBoard() {
         return lostBoard;
     }
 
@@ -82,33 +92,19 @@ public class Leaderboard {
      * Return the games leaderboard (ranks by number of gamse
      * @return gamesBoard leaderboard
      */
-    public HashMap<String, Integer> getGamesBoard() {
+    public TreeSet<Player> getGamesBoard() {
         return gamesBoard;
     }
 
     /**
-     * Updates the boards. TODO SORTING ALGO
+     * Updates the boards.
      */
-    public void updateAllBoards() {
+    public synchronized void updateAllBoards() {
         updateList();
-        //TODO IDEA:
-        //TODO have a hashmap<String, Integer> for each board and sort through everything and list it
-        //TODO in the homepage with top 10 appearing with nums but can scroll down. On a different section
-        //TODO maybe below the overflow scroll section,
-        //TODO list the player rank.
-        for (int i = 0; i < 3; i++) {
-            for (String name : list.keySet()) {
-                switch (i) {
-                    case 0:
-                        gamesBoard.put(name, list.get(name)[0]);
-                    case 1:
-                        wonBoard.put(name, list.get(name)[1]);
-                    case 2:
-                        lostBoard.put(name, list.get(name)[2]);
-                        break;
-                }
-            }
+        for (Player player : list) {
+            gamesBoard.add(player);
+            wonBoard.add(player);
+            lostBoard.add(player);
         }
-        // TODO sort all three boards
     }
 }

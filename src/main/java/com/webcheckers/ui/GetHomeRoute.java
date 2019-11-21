@@ -1,9 +1,6 @@
 package com.webcheckers.ui;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 import java.util.logging.Logger;
 
 import com.webcheckers.appl.GameCenter;
@@ -151,15 +148,18 @@ public class GetHomeRoute implements Route {
             deleteMatchIfPossible(player);
 
             // TODO implement rankings (Leaderboard class)
-            /*
+
             Leaderboard leaderboard = new Leaderboard();
             leaderboard.updateAllBoards();
-            HashMap<String, Integer> gamesBoard = leaderboard.getGamesBoard();
-            HashMap<String, Integer> wonBoard = leaderboard.getWonBoard();
-            HashMap<String, Integer> lostBoard = leaderboard.getLostBoard();
-            */
+            TreeSet<Player> gamesBoard = leaderboard.getGamesBoard();
+            TreeSet<Player> wonBoard = leaderboard.getWonBoard();
+            TreeSet<Player> lostBoard = leaderboard.getLostBoard();
 
             //TODO DEBUG STATEMENTS
+
+            for(Player p: gamesBoard)
+                System.out.println(p.getName() + " Number of games: " + p.getGames());
+
             /*if (gameCenter.isInMatch(player)) {
                 System.out.println(player.getName() + " is in a match!");
             } else {
@@ -179,6 +179,9 @@ public class GetHomeRoute implements Route {
                 return null;
             }
 
+            vm.put(GAMES_ATTR, gamesBoard);
+            vm.put(WON_ATTR, wonBoard);
+            vm.put(LOST_ATTR, lostBoard);
             vm.put(MESSAGE_ATTR, SIGNIN_MSG);
             if (httpSession.attribute("message") != null)
                 vm.put(MESSAGE_ATTR, httpSession.attribute("message"));
