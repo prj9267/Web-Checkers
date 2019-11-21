@@ -32,6 +32,9 @@ public class GetHomeRoute implements Route {
     static final String WON_ATTR = "won";
     static final String LOST_ATTR = "lost";
     static final String RATIO_ATTR = "ratio";
+    static final String GAMESBOARD_ATTR = "gamesBoard";
+    static final String WONBOARD_ATTR = "wonBoard";
+    static final String LOSTBOARD_ATTR = "lostBoard";
 
     public static final String VIEW_NAME = "home.ftl";
     private static final Message WELCOME_MSG = Message.info("Welcome to the world of online Checkers.");
@@ -151,6 +154,9 @@ public class GetHomeRoute implements Route {
 
             Leaderboard leaderboard = new Leaderboard();
             leaderboard.updateAllBoards();
+            //ArrayList<Player> gamesBoard = leaderboard.getGamesBoard();
+            //ArrayList<Player> wonBoard = leaderboard.getWonBoard();
+            //ArrayList<Player> lostBoard = leaderboard.getLostBoard();
             TreeSet<Player> gamesBoard = leaderboard.getGamesBoard();
             TreeSet<Player> wonBoard = leaderboard.getWonBoard();
             TreeSet<Player> lostBoard = leaderboard.getLostBoard();
@@ -179,9 +185,6 @@ public class GetHomeRoute implements Route {
                 return null;
             }
 
-            vm.put(GAMES_ATTR, gamesBoard);
-            vm.put(WON_ATTR, wonBoard);
-            vm.put(LOST_ATTR, lostBoard);
             vm.put(MESSAGE_ATTR, SIGNIN_MSG);
             if (httpSession.attribute("message") != null)
                 vm.put(MESSAGE_ATTR, httpSession.attribute("message"));
@@ -193,8 +196,11 @@ public class GetHomeRoute implements Route {
             vm.put(CURRENT_USERNAME_KEY, httpSession.attribute(CURRENT_USERNAME_KEY));
             players.remove(player);
             vm.put(PLAYERS_ATTR, players);
+            vm.put(GAMESBOARD_ATTR, gamesBoard);
+            vm.put(WONBOARD_ATTR, wonBoard);
+            vm.put(LOSTBOARD_ATTR, lostBoard);
         } else {
-            // only show the number of players online if you are not signin
+            // only show the number of players online if you are not signed in
             vm.put(NUM_PLAYERS_ATTR, playerServices.getPlayerList().size());
             vm.put(MESSAGE_ATTR, WELCOME_MSG);
         }

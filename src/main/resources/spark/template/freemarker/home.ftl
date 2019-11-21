@@ -37,15 +37,14 @@
                     <p>W/L Ratio: ${ratio}</p><br>
                 </div>
 
-                <#--
-                <div class="stats" id="games">
-                    <#if games??>
-                        <#list games as player>
+                <div class="stats" id="gameBoard">
+                    <#if gamesBoard??>
+                        <#list gamesBoard as player>
                             <p>Name: ${player.name}     Games Played: ${player.games}</p>
                         </#list>
                     </#if>
                 </div>
-                -->
+
 
                 <div class="stats" id="won">
                 </div>
