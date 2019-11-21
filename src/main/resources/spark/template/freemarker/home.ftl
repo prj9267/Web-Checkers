@@ -37,19 +37,33 @@
                     <p>W/L Ratio: ${ratio}</p><br>
                 </div>
 
-                <div class="stats" id="gameBoard">
+                <div class="stats" id="leaderboard">
                     <#if gamesBoard??>
                         <#list gamesBoard as player>
-                            <p>Name: ${player.name}     Games Played: ${player.games}</p>
+                            <div class="display">
+                                <p id="name_display">Name: ${player.name}</p>
+                                <p>Games Played: ${player.games}</p>
+                            </div>
                         </#list>
                     </#if>
-                </div>
-
-
-                <div class="stats" id="won">
-                </div>
-
-                <div class="stats" id="lost">
+                    <br>
+                    <#if wonBoard??>
+                        <#list wonBoard as player>
+                            <div class="display">
+                                <p id="name_display">Name: ${player.name}</p>
+                                <p>Games Won: ${player.won}</p>
+                            </div>
+                        </#list>
+                    </#if>
+                    <br>
+                    <#if lostBoard??>
+                        <#list lostBoard as player>
+                            <div class="display">
+                                <p id="name_display">Name: ${player.name}</p>
+                                <p>Games Lost: ${player.lost}</p>
+                            </div>
+                        </#list>
+                    </#if>
                 </div>
 
                 <div class="body">

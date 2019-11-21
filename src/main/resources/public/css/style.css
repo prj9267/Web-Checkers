@@ -104,6 +104,15 @@ div.stats>p {
   margin-block-end: 0;
 }
 
+#name_display {
+  padding-right: 50px;
+}
+
+.display {
+  display: flex;
+  flex-direction: row;
+}
+
 div.page div.footer {
   background: #eee;
   color: #888;
