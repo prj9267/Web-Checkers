@@ -1,6 +1,8 @@
 package com.webcheckers.ui;
 
 import com.google.gson.Gson;
+import com.opencsv.CSVReader;
+import com.opencsv.CSVWriter;
 import com.webcheckers.appl.GameCenter;
 import com.webcheckers.appl.PlayerServices;
 import com.webcheckers.model.BoardView;
@@ -10,10 +12,13 @@ import com.webcheckers.model.Player;
 import com.webcheckers.util.Message;
 import spark.*;
 
+import java.io.FileReader;
+import java.io.FileWriter;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
+import static com.webcheckers.ui.WebServer.csvFile;
 import static spark.Spark.halt;
 
 public class GetGameRoute implements Route {
@@ -53,6 +58,41 @@ public class GetGameRoute implements Route {
         this.playerServices = playerServices;
         this.gameCenter = gameCenter;
         this.templateEngine = templateEngine;
+    }
+
+    /**
+     * edits the CSV file to alter the player's stats
+     * @param name name of the player to change the stats of
+     */
+    public synchronized void editCSV(String name) {
+        try {
+            FileReader fileReader = new FileReader(csvFile);
+            CSVReader csvReader = new CSVReader(fileReader);
+
+            FileWriter fileWriter = new FileWriter(csvFile);
+            CSVWriter csvWriter = new CSVWriter(fileWriter);
+
+            //TODO read to position i
+            //TODO write same stuff up to i which then edit line i with new statistics
+            String nextRecord[];
+            int line = 0;
+            // get the line number in the csv for the player
+            while ((nextRecord = csvReader.readNext()) != null) {
+                if (nextRecord[0].equals(name)) {
+                    Player thePlayer = playerServices.getPlayer(name);
+                    String[] input = new String[4];
+                    input[0] = name;
+                    input[1] = Integer.toString(thePlayer.getGames());
+                    input[2] = Integer.toString(thePlayer.getWon());
+                    input[3] = Integer.toString(thePlayer.getLost());
+                    csvWriter.writeNext(input);
+                    break;
+                }
+                csvWriter.writeNext(nextRecord);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     /**
