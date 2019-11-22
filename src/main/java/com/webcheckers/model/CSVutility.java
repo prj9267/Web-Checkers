@@ -2,19 +2,62 @@ package com.webcheckers.model;
 
 import com.opencsv.CSVReader;
 import com.opencsv.CSVWriter;
+import com.webcheckers.appl.PlayerServices;
 
-import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.util.ArrayList;
+import java.util.List;
 
 import static com.webcheckers.ui.WebServer.csvFile;
 
 public class CSVutility {
-    private FileWriter fileWriter;
-    private FileReader fileReader;
-    private CSVWriter csvWriter;
-    private CSVReader csvReader;
+
+    /**
+     * Edits the player records in case of an extra win or loss.
+     * @param player player to change records of
+     */
+    public synchronized void editPlayerRecords(Player player) {
+        // TODO readall
+        // TODO edit return object
+        // TODO writeall modified return object
+        // TODO this is the plan
+        try {
+            FileReader fileReader = new FileReader(csvFile);
+            CSVReader csvReader = new CSVReader(fileReader);
+
+            List<String[]> lines = csvReader.readAll();
+            int i = 0;
+            String[] input = new String[4];
+            for (String[] line : lines) {
+                for (String str : line)
+                    System.out.print(str + " ");
+                if (line[0].equals(player.getName())) {
+                    input[0] = player.getName();
+                    input[1] = Integer.toString(player.getGames());
+                    input[2] = Integer.toString(player.getWon());
+                    input[3] = Integer.toString(player.getLost());
+                    lines.remove(i);
+                    lines.add(input);
+                    break;
+                }
+                i++;
+                System.out.println();
+            }
+
+            csvReader.close();
+
+            FileWriter fileWriter = new FileWriter(csvFile);
+            CSVWriter csvWriter = new CSVWriter(fileWriter);
+
+            csvWriter.writeAll(lines);
+
+            csvWriter.flush();
+            csvWriter.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
     /**
      * Add a new player to the CSV file that holds all player records.
@@ -23,8 +66,8 @@ public class CSVutility {
     public synchronized void addPlayerToCSV(String username) {
         try {
             // write to the csv file so that the new player data can be found next time
-            fileWriter = new FileWriter(csvFile, true);
-            csvWriter = new CSVWriter(fileWriter);
+            FileWriter fileWriter = new FileWriter(csvFile, true);
+            CSVWriter csvWriter = new CSVWriter(fileWriter);
             String[] stats = {username, "0", "0", "0"};
             csvWriter.writeNext(stats);
             csvWriter.flush();
@@ -47,10 +90,11 @@ public class CSVutility {
 
         Player player;
         try {
-            fileReader = new FileReader(csvFile);
-            csvReader = new CSVReader(fileReader);
+            FileReader fileReader = new FileReader(csvFile);
+            CSVReader csvReader = new CSVReader(fileReader);
             String[] nextRecord;
 
+            // find the username, if found get the attributes games, won, lost
             while ((nextRecord = csvReader.readNext()) != null) {
                 int i = 0;
                 for (String stat : nextRecord) {
@@ -76,14 +120,12 @@ public class CSVutility {
             e.printStackTrace();
         }
 
-        // TODO test
-        //playerServices.addPlayer(new Player("validusername", 555, 333, 222));
-        //editCSV("validusername");
-
+        // if the player is not found in the csv file, add them to the csv file
         if (!found) {
             player = new Player(username);
             addPlayerToCSV(username);
         } else {
+            // create a new player with found attributes
             player = new Player(username, games, won, lost);
         }
         return player;
@@ -99,7 +141,6 @@ public class CSVutility {
             FileReader fileReader = new FileReader(csvFile);
             CSVReader csvReader = new CSVReader(fileReader);
             String[] nextRecord;
-
             while ((nextRecord = csvReader.readNext()) != null) {
                 String username = nextRecord[0];
                 int games = Integer.parseInt(nextRecord[1]);
@@ -108,16 +149,10 @@ public class CSVutility {
 
                 list.add(new Player(username, games, won, lost));
             }
+            csvReader.close();
         } catch (Exception e) {
             e.printStackTrace();
         }
         return list;
-    }
-
-    /**
-     * edit the csv file for the player
-     */
-    public void editCSV() {
-
     }
 }

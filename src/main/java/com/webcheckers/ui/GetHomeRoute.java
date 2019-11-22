@@ -157,11 +157,6 @@ public class GetHomeRoute implements Route {
             TreeSet<Player> wonBoard = leaderboard.getWonBoard();
             TreeSet<Player> lostBoard = leaderboard.getLostBoard();
 
-            //TODO DEBUG STATEMENTS
-
-            for(Player p: gamesBoard)
-                System.out.println(p.getName() + " Number of games: " + p.getGames());
-
             /*if (gameCenter.isInMatch(player)) {
                 System.out.println(player.getName() + " is in a match!");
             } else {

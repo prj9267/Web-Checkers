@@ -77,21 +77,6 @@ public class PostSignInRoute implements Route {
         return 0;
     }
 
-    public synchronized void editCSV(String name) {
-        try {
-            FileReader fileReader = new FileReader(csvFile);
-            CSVReader csvReader = new CSVReader(fileReader);
-
-            FileWriter fileWriter = new FileWriter(csvFile);
-            CSVWriter csvWriter = new CSVWriter(fileWriter);
-
-            // lines;
-            //readall
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
     /**
      * Render the WebCheckers Home page after signing in.
      *
@@ -125,6 +110,9 @@ public class PostSignInRoute implements Route {
 
                 Player player = csvutility.findPlayer(username);
                 playerServices.addPlayer(player);
+
+                // TODO test
+                csvutility.editPlayerRecords(new Player("Yuqi", 9999, 1, 9998));
 
                 httpSession.attribute(GetHomeRoute.CURRENT_USERNAME_KEY, username);
                 httpSession.removeAttribute("numPlayers");
