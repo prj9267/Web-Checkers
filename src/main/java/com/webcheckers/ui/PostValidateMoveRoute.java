@@ -53,7 +53,7 @@ public class PostValidateMoveRoute implements Route {
 
     }
 
-    public boolean checkFourDirections(BoardView board, int row, int col,
+    /*public boolean checkFourDirections(BoardView board, int row, int col,
                                        Piece piece, Piece.Color color){
         Space topLeft = board.getSpace(row - 1, col - 1);
         Space topLeftJump = board.getSpace(row - 2, col - 2);
@@ -78,11 +78,11 @@ public class PostValidateMoveRoute implements Route {
         return false;
     }
 
-    /**
+    *//**
      * Check if there is an option to jump. American rule states you have to jump
      * if you can jump.
      * @return boolean
-     */
+     *//*
     public boolean optionToJump(BoardView board, ArrayList<Location> pieces, Piece.Color color){
         for (int i = 0; i < pieces.size(); i++){
             int row = pieces.get(i).getRow();
@@ -96,13 +96,13 @@ public class PostValidateMoveRoute implements Route {
         return false;
     }
 
-    /**
+    *//**
      * Check if you can jump to target piece
      * @param space space that will be jump over
      * @param target space that will end up if can jump
      * @param color color of the current player
      * @return boolean
-     */
+     *//*
     public boolean spaceForJump(Space space, Space target, Piece.Color color){
         if (target != null && space != null){
             // there is a space to jump to
@@ -117,13 +117,13 @@ public class PostValidateMoveRoute implements Route {
         return false;
     }
 
-    /**
+    *//**
      * After validating the move, move the piece
      * @param board current player's board
      * @param opp opponent player's board
      * @param start start position
      * @param end final position
-     */
+     *//*
     public void moveForward(BoardView board, BoardView opp,
                             Position start, Position end,
                             ArrayList<Location> pieces){
@@ -160,14 +160,14 @@ public class PostValidateMoveRoute implements Route {
         }
     }
 
-    /**
+    *//**
      * After validating the jump, jump over
      * @param board current player's board
      * @param opp opponent's board
      * @param start start position
      * @param end final position
      * @return
-     */
+     *//*
     public void jumpForward(BoardView board, BoardView opp,
                             Position start, Position end,
                             ArrayList<Location> pieces,
@@ -226,7 +226,7 @@ public class PostValidateMoveRoute implements Route {
             myEnd.getPiece().setType(Piece.Type.KING);
             oppEnd.getPiece().setType(Piece.Type.KING);
         }
-    }
+    }*/
 
     @Override
     public Object handle(Request request, Response response) {
@@ -238,22 +238,16 @@ public class PostValidateMoveRoute implements Route {
             String currentPlayerName = httpSession.attribute(GetHomeRoute.CURRENT_USERNAME_KEY);
             Player currentPlayer = playerServices.getPlayer(currentPlayerName);
 
-            // if the player click on the help button
-            if (gson.fromJson(request.queryParams(ACTION_DATA), Move.class) == null){
-                System.out.println("===============Help btn is clicked===============");
-                Boolean help = currentPlayer.changeHelp();
-                return gson.toJson(Message.info("Help button is clicked!"));
-            }
-
-            //check if the help mode is on or not
+            //check if the help button is clicked
             if (currentPlayer.getHelp()){
                 return gson.toJson(Message.error("You must click help again in order to make a move."));
             }
 
+            Move move = gson.fromJson(request.queryParams(ACTION_DATA), Move.class);
 
             // Get the information from the match
             Match currentMatch = gameCenter.getMatch(currentPlayer);
-            Piece.Color activeColor = currentMatch.getActiveColor();
+            /*Piece.Color activeColor = currentMatch.getActiveColor();
             Player redPlayer = currentMatch.getRedPlayer();
 
             // give player information to ftl
@@ -403,22 +397,27 @@ public class PostValidateMoveRoute implements Route {
                 }
                 else
                     message = MAX_ROW_MESSAGE;
-            }
+            }*/
 
-
+            ArrayList<Object> result = currentMatch.validateMove(currentPlayer, move);
+            Message message = (Message) result.get(0);
+            Boolean isMove = (Boolean) result.get(1);
+            Boolean isJump = (Boolean) result.get(2);
 
             // if it is valid
             if (isMove) {
-                if (activeColor == Piece.Color.RED)
+                // let the submit do these
+                /*if (activeColor == Piece.Color.RED)
                     moveForward(redBoardView, whiteBoardView, start, end, pieces);
                 else
-                    moveForward(whiteBoardView, redBoardView, start, end, pieces);
+                    moveForward(whiteBoardView, redBoardView, start, end, pieces);*/
                 // add this move to the stack of move
                 // so when we implement backup, we know the exact order
-                moves.push(move);
+                currentMatch.pushMove(move);
             }
             else if (isJump){
-                if (activeColor == Piece.Color.RED)
+                // let submit turn do this
+                /*if (activeColor == Piece.Color.RED)
                     jumpForward(redBoardView, whiteBoardView, start, end, pieces, oppPieces, currentMatch);
                 else
                     jumpForward(whiteBoardView, redBoardView, start, end, pieces, oppPieces, currentMatch);
@@ -426,19 +425,17 @@ public class PostValidateMoveRoute implements Route {
                 Boolean hasNextJump = checkFourDirections(currentBoardView,
                         end.getRow(), end.getCell(),
                         piece, color);
-                System.out.println("Position after jump: row = " + end.getRow() + " col = " + end.getCell());
                 if (hasNextJump) {
                     System.out.println("there is a next jump.");
                     httpSession.attribute("hasNextJump", hasNextJump);
                 }
                 else
-                    httpSession.removeAttribute("hasNextJump");
+                    httpSession.removeAttribute("hasNextJump");*/
                 // add this move to the stack of move
                 // so when we implement backup, we know the exact order
-                moves.push(move);
+                currentMatch.pushMove(move);
             }
 
-            httpSession.attribute("moves", moves);
             return gson.toJson(message);
 
         }

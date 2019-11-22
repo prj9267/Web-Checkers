@@ -20,6 +20,14 @@ public class Position {
     }
 
     @Override
+    public boolean equals(Object o){
+        if(o instanceof Position){
+            return ((Position)o).getRow() == ((this.getRow())) &&
+                    ((Position)o).getCell() == ((this.getCell()));
+        }
+        return false;
+    }
+    @Override
     public String toString(){
         return "row: " + row + ", cell: " + cell;
     }
