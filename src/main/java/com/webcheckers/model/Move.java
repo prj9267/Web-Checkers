@@ -23,4 +23,13 @@ public class Move {
     public Position getEnd(){
         return end;
     }
+
+    @Override
+    public boolean equals(Object o){
+        if(o instanceof Move){
+            return ((Move)o).getStart().equals((this.getStart())) &&
+                    ((Move)o).getEnd().equals(this.getEnd());
+        }
+        return false;
+    }
 }

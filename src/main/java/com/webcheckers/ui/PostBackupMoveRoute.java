@@ -48,7 +48,7 @@ public class PostBackupMoveRoute implements Route {
         Match currentMatch = gameCenter.getMatch(currentPlayer);
         BoardView board;
         BoardView opp;
-        ArrayList<Location> pieces;
+        ArrayList<Position> pieces;
 
         //Determine which color the current player is.
         if(currentPlayer.getName().equals(currentMatch.getRedPlayer().getName())) {
@@ -75,8 +75,8 @@ public class PostBackupMoveRoute implements Route {
         myEnd.setPiece(myPiece);
         myEnd.changeValid(false);
         // Update current player's pieces
-        Location startLocation = new Location(newStart.getRow(), newStart.getCell());
-        Location endLocation = new Location(newEnd.getRow(), newEnd.getCell());
+        Position startLocation = new Position(newStart.getRow(), newStart.getCell());
+        Position endLocation = new Position(newEnd.getRow(), newEnd.getCell());
         pieces.remove(startLocation);
         pieces.add(endLocation);
 
@@ -108,8 +108,8 @@ public class PostBackupMoveRoute implements Route {
         Match currentMatch = gameCenter.getMatch(currentPlayer);
         BoardView board;
         BoardView opp;
-        ArrayList<Location> pieces;
-        ArrayList<Location> oppPieces;
+        ArrayList<Position> pieces;
+        ArrayList<Position> oppPieces;
         Piece pieceRemoved = currentMatch.getPiecesRemoved().pop();
 
         //Determine which color the opponent player is.
@@ -130,8 +130,8 @@ public class PostBackupMoveRoute implements Route {
         Position newEnd = previousMove.getStart();
 
         // update the position of current player's pieces
-        Location startLocation = new Location(newStart.getRow(), newStart.getCell());
-        Location endLocation = new Location(newEnd.getRow(), newEnd.getCell());
+        Position startLocation = new Position(newStart.getRow(), newStart.getCell());
+        Position endLocation = new Position(newEnd.getRow(), newEnd.getCell());
         pieces.remove(startLocation);
         pieces.add(endLocation);
         // update current player's board
@@ -202,20 +202,20 @@ public class PostBackupMoveRoute implements Route {
         Message message;
 
         if(playerServices != null){
-            Stack<Move> moves = httpSession.attribute("moves");
-            Move previousMove = moves.pop();
-            Position newStart = previousMove.getEnd();
-            Position newEnd = previousMove.getStart();
-            int yDiff = newStart.getRow() - newEnd.getRow();
-
             // get the information of the current user
             String currentPlayerName = httpSession.attribute(GetHomeRoute.CURRENT_USERNAME_KEY);
             Player currentPlayer = playerServices.getPlayer(currentPlayerName);
+            Match currentMatch = gameCenter.getMatch(currentPlayer);
 
-            if (yDiff == 1 || yDiff == -1)
+            Move previousMove = currentMatch.popMove();
+            if (previousMove.getEnd().getRow() == 0) {
+                currentMatch.typeSingle();
+            }
+
+            /*if (yDiff == 1 || yDiff == -1)
                 updateMove(currentPlayer, previousMove);
             else
-                updateJump(currentPlayer, previousMove);
+                updateJump(currentPlayer, previousMove);*/
 
             message = Message.info("Backup Successful");
             return gson.toJson(message);

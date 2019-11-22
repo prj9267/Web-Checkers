@@ -70,8 +70,8 @@ public class PostCheckTurnRoute implements Route {
             Player whitePlayer = currentMatch.getWhitePlayer();
 
             //TODO take care of game end
-            ArrayList<Location> pieces;
-            ArrayList<Location> oppPieces = currentMatch.getWhitePieces();
+            ArrayList<Position> pieces;
+            ArrayList<Position> oppPieces = currentMatch.getWhitePieces();
             if (currentPlayer.equals(redPlayer)) {
                 opponentPlayer = whitePlayer;
                 pieces = currentMatch.getRedPieces();

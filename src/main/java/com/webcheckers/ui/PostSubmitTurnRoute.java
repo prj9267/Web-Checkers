@@ -75,14 +75,27 @@ public class PostSubmitTurnRoute implements Route {
                 return gson.toJson(message);
             }
 
+            else {
+                ArrayList<Move> moves = currentMatch.getMoves();
+                Move move;
+                for (int i = 0; i < moves.size(); i++){
+                    move = moves.get(i);
+                    int dif = Math.abs(move.getStart().getRow() - move.getEnd().getRow());
+                    if (dif == 2) {
+                        currentMatch.jump(move);
+                    }
+                    else {
+                        currentMatch.move(move);
+                    }
+                }
+                currentMatch.emptyMoves();
 
+                //alternate turns
+                currentMatch.changeActiveColor();
 
-            //alternate turns
-            currentMatch.changeActiveColor();
-            httpSession.removeAttribute("moves");
-
-            message = Message.info("Your turn was submitted");
-            return gson.toJson(message);
+                message = Message.info("Your turn was submitted");
+                return gson.toJson(message);
+            }
         }
         else{
             return null;

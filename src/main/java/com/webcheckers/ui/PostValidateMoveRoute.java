@@ -96,14 +96,14 @@ public class PostValidateMoveRoute implements Route {
         return false;
     }
 
-    *//**
+    /**
      * Check if you can jump to target piece
      * @param space space that will be jump over
      * @param target space that will end up if can jump
      * @param color color of the current player
      * @return boolean
-     *//*
-    public boolean spaceForJump(Space space, Space target, Piece.Color color){
+     */
+    /*public boolean spaceForJump(Space space, Space target, Piece.Color color){
         if (target != null && space != null){
             // there is a space to jump to
             // and there is space to jump over
@@ -117,7 +117,7 @@ public class PostValidateMoveRoute implements Route {
         return false;
     }
 
-    *//**
+    /**
      * After validating the move, move the piece
      * @param board current player's board
      * @param opp opponent player's board
@@ -160,15 +160,15 @@ public class PostValidateMoveRoute implements Route {
         }
     }
 
-    *//**
+    /*
      * After validating the jump, jump over
      * @param board current player's board
      * @param opp opponent's board
      * @param start start position
      * @param end final position
      * @return
-     *//*
-    public void jumpForward(BoardView board, BoardView opp,
+     */
+    /*public void jumpForward(BoardView board, BoardView opp,
                             Position start, Position end,
                             ArrayList<Location> pieces,
                             ArrayList<Location> oppPieces,
@@ -399,25 +399,22 @@ public class PostValidateMoveRoute implements Route {
                     message = MAX_ROW_MESSAGE;
             }*/
 
-            ArrayList<Object> result = currentMatch.validateMove(currentPlayer, move);
-            Message message = (Message) result.get(0);
-            Boolean isMove = (Boolean) result.get(1);
-            Boolean isJump = (Boolean) result.get(2);
+            Message message = currentMatch.validateMove(currentPlayer, move);
 
             // if it is valid
-            if (isMove) {
+            /*if (isMove) {
                 // let the submit do these
-                /*if (activeColor == Piece.Color.RED)
+                *//*if (activeColor == Piece.Color.RED)
                     moveForward(redBoardView, whiteBoardView, start, end, pieces);
                 else
-                    moveForward(whiteBoardView, redBoardView, start, end, pieces);*/
+                    moveForward(whiteBoardView, redBoardView, start, end, pieces);*//*
                 // add this move to the stack of move
                 // so when we implement backup, we know the exact order
                 currentMatch.pushMove(move);
             }
             else if (isJump){
                 // let submit turn do this
-                /*if (activeColor == Piece.Color.RED)
+                *//*if (activeColor == Piece.Color.RED)
                     jumpForward(redBoardView, whiteBoardView, start, end, pieces, oppPieces, currentMatch);
                 else
                     jumpForward(whiteBoardView, redBoardView, start, end, pieces, oppPieces, currentMatch);
@@ -430,11 +427,11 @@ public class PostValidateMoveRoute implements Route {
                     httpSession.attribute("hasNextJump", hasNextJump);
                 }
                 else
-                    httpSession.removeAttribute("hasNextJump");*/
+                    httpSession.removeAttribute("hasNextJump");*//*
                 // add this move to the stack of move
                 // so when we implement backup, we know the exact order
                 currentMatch.pushMove(move);
-            }
+            }*/
 
             return gson.toJson(message);
 

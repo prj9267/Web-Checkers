@@ -20,14 +20,16 @@ public class Match {
     private Player whitePlayer;
     private Piece.Color activeColor;
     private Player winner = null;
-    private ArrayList<Location> redPieces = initializePieces(redBoardView);
-    private ArrayList<Location> whitePieces = initializePieces(whiteBoardView);
+    private ArrayList<Position> redPieces = initializePieces(redBoardView);
+    private ArrayList<Position> whitePieces = initializePieces(whiteBoardView);
     private Stack<Piece> piecesRemoved = new Stack<>();
     private final Map<String, Object> modeOptions;
     private boolean isGameOver = false;
     public enum STATE {resigned, finished, running}
     private STATE state;
-    private Stack<Move> moves;
+    private ArrayList<Move> moves = new ArrayList<>();
+    private boolean hasNextJump = false;
+    private Piece.Type currentType = Piece.Type.SINGLE;
 
     /**
      * Create a new match between 2 players.
@@ -44,14 +46,14 @@ public class Match {
         this.modeOptions.put("gameOverMessage", null);
     }
 
-    public ArrayList<Location> initializePieces(BoardView board){ // remove the color
-        ArrayList<Location> pieces = new ArrayList<>();
+    public ArrayList<Position> initializePieces(BoardView board){ // remove the color
+        ArrayList<Position> pieces = new ArrayList<>();
         for (int y = 5; y < BoardView.NUM_ROW; y++){ // change back to 5
             Row row = board.getRow(y);
             for (int x = 0; x < BoardView.NUM_COL; x++){
                 Space col = row.getCol(x);
                 if (col.getPiece() != null) { // make sure there is piece
-                    Location temp = new Location(y, x);
+                    Position temp = new Position(y, x);
                     pieces.add(temp);
                 }
             }
@@ -87,7 +89,7 @@ public class Match {
      * Getter function for all the pieces red player has
      * @return red player's pieces as space
      */
-    public ArrayList<Location> getRedPieces() {
+    public ArrayList<Position> getRedPieces() {
         return redPieces;
     }
 
@@ -95,7 +97,7 @@ public class Match {
      * Getter function for all the pieces white player has
      * @return white player's pieces as space
      */
-    public ArrayList<Location> getWhitePieces() {
+    public ArrayList<Position> getWhitePieces() {
         return whitePieces;
     }
 
@@ -172,38 +174,54 @@ public class Match {
         modeOptions.put("gameOverMessage", loser.getName() + " has resigned.");
     }
 
-    public Stack<Move> getMoves(){ return this.moves; }
+    public void typeSingle() { this.currentType = Piece.Type.SINGLE; }
 
-    public void pushMove(Move move) { this.moves.push(move); }
+    public ArrayList<Move> getMoves(){ return this.moves; }
 
-    public Move popMove() { return this.moves.pop(); }
+    public void pushMove(Move move) { this.moves.add(move); }
 
-    public boolean checkFourDirections(BoardView board, Move move) {
-        Position start = move.getStart();
-        int row = start.getRow();
-        int col = start.getCell();
+    public Move popMove() { return this.moves.remove(moves.size() - 1); }
+
+    public void emptyMoves() { this.moves = new ArrayList<>(); }
+
+    public boolean checkFourDirections(BoardView board, Position pos) {
+        int row = pos.getRow();
+        int col = pos.getCell();
         Piece piece = board.getSpace(row, col).getPiece();
-        Piece.Color color = piece.getColor();
+        Piece.Color color = activeColor;
 
         Space topLeft = board.getSpace(row - 1, col - 1);
         Space topLeftJump = board.getSpace(row - 2, col - 2);
         Space topRight = board.getSpace(row - 1, col + 1);
         Space topRightJump = board.getSpace(row - 2, col + 2);
+
+        Move moveTopLeft = new Move(pos, new Position(row - 2, col - 2));
+        Move moveTopRight = new Move(pos, new Position(row - 2, col + 2));
+
         // case for normal piece
-        if (spaceForJump(topLeft, topLeftJump, color))
+        if ( ! moves.contains(moveTopLeft) && spaceForJump(topLeft, topLeftJump, color)) {
             return true;
-        else if (spaceForJump(topRight, topRightJump, color))
+        }
+        else if (! moves.contains(moveTopRight) && spaceForJump(topRight, topRightJump, color)) {
             return true;
+        }
+
         // case for king piece
-        if (Piece.Type.KING == piece.getType()) {
+        if (Piece.Type.KING == currentType) {
             Space bottomLeft = board.getSpace(row + 1, col - 1);
             Space bottomLeftJump = board.getSpace(row + 2, col - 2);
             Space bottomRight = board.getSpace(row + 1, col + 1);
             Space bottomRightJump = board.getSpace(row + 2, col + 2);
-            if (spaceForJump(bottomLeft, bottomLeftJump, color))
+
+            Move moveButLeft = new Move(pos, new Position(row + 2, col - 2));
+            Move moveButRight = new Move(pos, new Position(row + 2, col + 2));
+
+            if (! moves.contains(moveButLeft) && spaceForJump(bottomLeft, bottomLeftJump, color)) {
                 return true;
-            else if (spaceForJump(bottomRight, bottomRightJump, color))
+            }
+            else if (! moves.contains(moveButRight) && spaceForJump(bottomRight, bottomRightJump, color)) {
                 return true;
+            }
         }
         return false;
     }
@@ -213,14 +231,13 @@ public class Match {
      * if you can jump.
      * @return boolean
      */
-    public boolean optionToJump(BoardView board, ArrayList<Location> pieces, Piece.Color color){
+    public boolean optionToJump(BoardView board, ArrayList<Position> pieces){
         for (int i = 0; i < pieces.size(); i++){
             int row = pieces.get(i).getRow();
-            int col = pieces.get(i).getCol();
-            Space space = board.getSpace(row, col);
-            Piece piece = space.getPiece();
+            int col = pieces.get(i).getCell();
+            Position pos = new Position(row, col);
 
-            if (checkFourDirections(board, row, col, piece, color))
+            if (checkFourDirections(board, pos))
                 return true;
         }
         return false;
@@ -249,19 +266,26 @@ public class Match {
 
     /**
      * After validating the move, move the piece
-     * @param board current player's board
-     * @param opp opponent player's board
-     * @param start start position
-     * @param end final position
+     * @param move the move made
      */
-    public void moveForward(BoardView board, BoardView opp,
-                            Position start, Position end,
-                            ArrayList<Location> pieces){
+    public void move(Move move){
         // update the position of player's pieces
-        Location startLocation = new Location(start.getRow(), start.getCell());
-        Location endLocation = new Location(end.getRow(), end.getCell());
-        pieces.remove(startLocation);
-        pieces.add(endLocation);
+        Position start = move.getStart();
+        Position end = move.getEnd();
+        ArrayList<Position> pieces;
+        BoardView board, opp;
+        if (activeColor == Piece.Color.RED) {
+            pieces = redPieces;
+            board = redBoardView;
+            opp = whiteBoardView;
+        }
+        else {
+            pieces = whitePieces;
+            board = whiteBoardView;
+            opp = redBoardView;
+        }
+        pieces.remove(start);
+        pieces.add(end);
         // update current player's board
         // remove the piece at the start position
         Space myStart = board.getSpace(start.getRow(), start.getCell());
@@ -292,22 +316,29 @@ public class Match {
 
     /**
      * After validating the jump, jump over
-     * @param board current player's board
-     * @param opp opponent's board
-     * @param start start position
-     * @param end final position
+     * @param move the move made by player
      * @return
      */
-    public void jumpForward(BoardView board, BoardView opp,
-                            Position start, Position end,
-                            ArrayList<Location> pieces,
-                            ArrayList<Location> oppPieces,
-                            Match match){
+    public void jump(Move move){
         // update the position of current player's pieces
-        Location startLocation = new Location(start.getRow(), start.getCell());
-        Location endLocation = new Location(end.getRow(), end.getCell());
-        pieces.remove(startLocation);
-        pieces.add(endLocation);
+        Position start = move.getStart();
+        Position end = move.getEnd();
+        ArrayList<Position> pieces, oppPieces;
+        BoardView board, opp;
+        if (activeColor == Piece.Color.RED){
+            pieces = redPieces;
+            board = redBoardView;
+            opp = whiteBoardView;
+            oppPieces = whitePieces;
+        }
+        else {
+            pieces = whitePieces;
+            board = whiteBoardView;
+            opp = redBoardView;
+            oppPieces = redPieces;
+        }
+        pieces.remove(start);
+        pieces.add(end);
         // update current player's board
         // remove the piece at the start position
         Space myStart = board.getSpace(start.getRow(), start.getCell());
@@ -321,7 +352,7 @@ public class Match {
         System.out.println("jumped y: " + (start.getRow() - yDiff));
         System.out.println("jumped x: " + (start.getCell() - xDiff));
         Space myKill = board.getSpace(start.getRow() - yDiff, start.getCell() - xDiff);
-        match.getPiecesRemoved().push(myKill.getPiece());
+        this.getPiecesRemoved().push(myKill.getPiece());
         myKill.setPiece(null);
         myKill.changeValid(true);
         // adding a piece to the end position
@@ -358,7 +389,7 @@ public class Match {
         }
     }
 
-    public ArrayList<Object> validateMove(Player currentPlayer, Move move){
+    public Message validateMove(Player currentPlayer, Move move){
         ArrayList<Object> ret = new ArrayList<>();
         // Get the information from the match
         Player redPlayer = this.getRedPlayer();
@@ -366,8 +397,8 @@ public class Match {
         // get different board from the match
         BoardView currentBoardView;
 
-        ArrayList<Location> pieces;
-        ArrayList<Location> oppPieces;
+        ArrayList<Position> pieces;
+        ArrayList<Position> oppPieces;
         Piece.Color color;
         // set the information accordingly
         if (activeColor == Piece.Color.RED){
@@ -383,9 +414,12 @@ public class Match {
         Position end = move.getEnd();
         int row = start.getRow();
         int col = start.getCell();
-        Piece piece = currentBoardView.getSpace(row, col).getPiece();
-        Piece.Type type = currentBoardView.getSpace(row, col).getPiece().getType();
-        boolean isKing = (type == Piece.Type.KING);
+        if (moves.size() == 0) {
+            Piece piece = currentBoardView.getSpace(row, col).getPiece();
+            currentType = piece.getType();
+        }
+
+        boolean isKing = (currentType == Piece.Type.KING);
 
         Message message;
         boolean isMove = false;
@@ -394,7 +428,7 @@ public class Match {
         // dealing with multiple jump
         if (moves.size() != 0){
             // check the previous move
-            Move previousMove = moves.pop();
+            Move previousMove = this.popMove();
             Position previousStart = previousMove.getStart();
             Position previousEnd = previousMove.getEnd();
             System.out.println("previous y: " + previousEnd.getRow());
@@ -414,16 +448,18 @@ public class Match {
                 message = PostValidateMoveRoute.MOVE_ERROR;
 
 
-                // dealing with jump
+            // dealing with jump
             else if (row - end.getRow() == 2 ||
                     row - end.getRow() == -2){
                 // there is no more possible jump
-                if (! checkFourDirections(currentBoardView, row, col, piece, activeColor))
+                if (! checkFourDirections(currentBoardView, start))
                     message = PostValidateMoveRoute.END_ERROR;
-                    // normal piece can only jump forward
-                else if (row - end.getRow() == -2 && type != Piece.Type.KING)
+                // normal piece can only jump forward
+                else if (row - end.getRow() == -2 && currentType != Piece.Type.KING) {
                     message = PostValidateMoveRoute.FORWARD_JUMP_ERROR;
-                else { // can jump forward by two rows
+                }
+                // can jump forward by two rows
+                else {
                     int xDiff = col - end.getCell();
                     int yDiff = row - end.getRow();
                     Space space = currentBoardView.getSpace(start.getRow() - (yDiff / 2),
@@ -442,7 +478,7 @@ public class Match {
             }
             else
                 message = PostValidateMoveRoute.MAX_ROW_MESSAGE;
-            moves.push(previousMove);
+            this.pushMove(previousMove);
         }
 
         // done with multiple jump check
@@ -452,7 +488,7 @@ public class Match {
             if (row - end.getRow() == 1 ||
                     row - end.getRow() == -1) {
                 // you are not suppose to move if you can jump
-                if (optionToJump(currentBoardView, pieces, activeColor))
+                if (optionToJump(currentBoardView, pieces))
                     message = PostValidateMoveRoute.JUMP_OPTION_ERROR;
                 else if (row - end.getRow() == -1 && ! isKing)
                     message = PostValidateMoveRoute.FORWARD_MOVE_ERROR; // you can only move forward
@@ -471,7 +507,7 @@ public class Match {
             else if (row - end.getRow() == 2 ||
                     row - end.getRow() == -2){
                 // dealing with jump
-                if (row - end.getRow() == -2 && type != Piece.Type.KING)
+                if (row - end.getRow() == -2 && currentType != Piece.Type.KING)
                     message = PostValidateMoveRoute.FORWARD_JUMP_ERROR; // normal piece can only jump forward
 
                 else { // can jump forward by two rows
@@ -495,11 +531,23 @@ public class Match {
                 message = PostValidateMoveRoute.MAX_ROW_MESSAGE;
         }
 
-        // pack up all the information and return it
-        ret.add(message);
-        ret.add(isMove);
-        ret.add(isJump);
-        return ret;
+        if (isMove) {
+            this.pushMove(move);
+            if (end.getRow() == 0) {
+                currentType = Piece.Type.KING;
+            }
+        }
+        else if (isJump){
+            // add this move to the stack of move
+            // so when we implement backup, we know the exact order
+            this.pushMove(move);
+            if (end.getRow() == 0) {
+                currentType = Piece.Type.KING;
+            }
+            hasNextJump = checkFourDirections(currentBoardView, end);
+        }
+
+        return message;
     }
 
 }

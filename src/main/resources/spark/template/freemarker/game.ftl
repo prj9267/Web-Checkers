@@ -53,7 +53,6 @@
 
                         <fieldset id="game-toolbar">
                             <legend>Controls</legend>
-                            <form action="./validateMove" method="post">
                             <div class="toolbar"></div>
                         </fieldset>
 
