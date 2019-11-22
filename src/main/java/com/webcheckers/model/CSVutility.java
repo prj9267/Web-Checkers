@@ -18,10 +18,6 @@ public class CSVutility {
      * @param player player to change records of
      */
     public synchronized void editPlayerRecords(Player player) {
-        // TODO readall
-        // TODO edit return object
-        // TODO writeall modified return object
-        // TODO this is the plan
         try {
             FileReader fileReader = new FileReader(csvFile);
             CSVReader csvReader = new CSVReader(fileReader);

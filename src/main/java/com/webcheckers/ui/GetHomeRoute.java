@@ -141,6 +141,10 @@ public class GetHomeRoute implements Route {
         if(httpSession.attribute(CURRENT_USERNAME_KEY) != null){
             Player player = playerServices.getPlayer(httpSession.attribute(CURRENT_USERNAME_KEY));
 
+            // set it to false so the next time they win or lose a game their records will be modified
+            if (player.getRecordsModified())
+                player.setRecordsModified(false);
+
             // if the player just recently left a match, delete them from the ingame list
             if (player.wasRecentlyInGame()) {
                 deletePlayerFromList(player);

@@ -74,9 +74,12 @@ public class PostResignGameRoute implements Route {
         currentMatch.resignGame(currentPlayer, opponentPlayer);
         // delete the player from the ingame match list after exiting to home/lobby
         currentPlayer.changeRecentlyInGame(true);
-        // update stats
-        currentPlayer.addLost();
-        csvutility.editPlayerRecords(currentPlayer);
+        // guard so that their records won't be modified more than once in case of mandatory refreshes
+        if (currentPlayer.getRecordsModified() == false) {
+            currentPlayer.addLost();
+            csvutility.editPlayerRecords(currentPlayer);
+            currentPlayer.setRecordsModified(true);
+        }
         //redirect to home since that's the next page after ending a game by sending a message
         return gson.toJson(message);
     }

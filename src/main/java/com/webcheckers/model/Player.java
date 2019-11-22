@@ -11,6 +11,7 @@ public class Player {
     public enum Status {waiting, challenged, ingame}
     public Status status;
     private boolean recentlyInGame;
+    private boolean recordsModified;
 
     /**
      * Player constructor
@@ -26,6 +27,7 @@ public class Player {
         ratio = "undefined";
         status = Status.waiting;
         recentlyInGame = false;
+        recordsModified = false;
     }
 
     /**
@@ -44,6 +46,23 @@ public class Player {
         ratio = Float.toString((float)won/games);
         status = Status.waiting;
         recentlyInGame = false;
+        recordsModified = false;
+    }
+
+    /**
+     * Sets recordsEdited to True or False
+     * @param recordsModified True or False
+     */
+    public void setRecordsModified(Boolean recordsModified) {
+        this.recordsModified = recordsModified;
+    }
+
+    /**
+     * Gets boolean recordsEdited to determine if end of match modified records already.
+     * @return True if records were already modified once
+     */
+    public Boolean getRecordsModified() {
+        return recordsModified;
     }
 
     /**

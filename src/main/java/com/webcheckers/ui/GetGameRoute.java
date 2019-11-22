@@ -126,11 +126,16 @@ public class GetGameRoute implements Route {
             viewMode currentViewMode = viewMode.PLAY;
             vm.put(VIEW_MODE_ATTR, currentViewMode);
 
+            // if game is in resigned state (opponent resigned)
             if (currentMatch.isGameResigned() == Match.STATE.resigned) {
                 // remove the player from the ingame list after exiting the game
                 currentPlayer.changeRecentlyInGame(true);
-                // update stats
-                currentPlayer.addWon();
+                // guard so that their records won't be modified more than once in case of mandatory refreshes
+                if (currentPlayer.getRecordsModified() == false) {
+                    currentPlayer.addWon();
+                    csvutility.editPlayerRecords(currentPlayer);
+                    currentPlayer.setRecordsModified(true);
+                }
 
                 Gson gson = new Gson();
                 Map <String, Object> modeOptions = new HashMap<>(2);
@@ -146,11 +151,15 @@ public class GetGameRoute implements Route {
             } else if (currentMatch.getRedPieces().size() == 0) {
                 // remove the player from the ingame list after exiting the game
                 currentPlayer.changeRecentlyInGame(true);
-                // update stats
-                if (currentPlayer.equals(currentMatch.getRedPlayer())) {
-                    currentPlayer.addLost();
-                } else {
-                    currentPlayer.addWon();
+                // guard so that their records won't be modified more than once in case of mandatory refreshes
+                if (currentPlayer.getRecordsModified() == false) {
+                    if (currentPlayer.equals(currentMatch.getRedPlayer())) {
+                        currentPlayer.addLost();
+                    } else {
+                        currentPlayer.addWon();
+                    }
+                    csvutility.editPlayerRecords(currentPlayer);
+                    currentPlayer.setRecordsModified(true);
                 }
                 Gson gson = new Gson();
                 Map <String, Object> modeOptions = new HashMap<>(2);
@@ -163,11 +172,15 @@ public class GetGameRoute implements Route {
             } else if (currentMatch.getWhitePieces().size() == 0) {
                 // remove the player from the ingame list after exiting the game
                 currentPlayer.changeRecentlyInGame(true);
-                // update stats
-                if (currentPlayer.equals(currentMatch.getRedPlayer())) {
-                    currentPlayer.addWon();
-                } else {
-                    currentPlayer.addLost();
+                // guard so that their records won't be modified more than once in case of mandatory refreshes
+                if (currentPlayer.getRecordsModified() == false) {
+                    if (currentPlayer.equals(currentMatch.getRedPlayer())) {
+                        currentPlayer.addWon();
+                    } else {
+                        currentPlayer.addLost();
+                    }
+                    csvutility.editPlayerRecords(currentPlayer);
+                    currentPlayer.setRecordsModified(true);
                 }
                 Gson gson = new Gson();
                 Map <String, Object> modeOptions = new HashMap<>(2);
@@ -176,7 +189,6 @@ public class GetGameRoute implements Route {
                 vm.put("modeOptionsAsJSON", gson.toJson(modeOptions));
                 currentPlayer.changeStatus(Player.Status.waiting);
             }
-            csvutility.editPlayerRecords(currentPlayer);
             return templateEngine.render(new ModelAndView(vm, VIEW_NAME));
         } else {
             response.redirect("/");
