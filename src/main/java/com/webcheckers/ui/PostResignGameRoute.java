@@ -8,6 +8,7 @@ import java.util.logging.Logger;
 import com.google.gson.Gson;
 import com.webcheckers.appl.GameCenter;
 import com.webcheckers.appl.PlayerServices;
+import com.webcheckers.model.CSVutility;
 import com.webcheckers.model.Match;
 import com.webcheckers.model.Player;
 import com.webcheckers.util.Message;
@@ -17,6 +18,7 @@ public class PostResignGameRoute implements Route {
     private PlayerServices playerServices;
     private GameCenter gameCenter;
     private TemplateEngine templateEngine;
+    private final CSVutility csvutility;
     private final Gson gson;
     private final Message message = Message.info("You've resigned.");
     private static final String INSTRUCTION_MSG = "Choose your next action."; //TODO change
@@ -39,6 +41,7 @@ public class PostResignGameRoute implements Route {
         this.gameCenter = gameCenter;
         this.templateEngine = templateEngine;
         this.gson = gson;
+        this.csvutility = new CSVutility();
     }
 
     /**
@@ -73,6 +76,7 @@ public class PostResignGameRoute implements Route {
         currentPlayer.changeRecentlyInGame(true);
         // update stats
         currentPlayer.addLost();
+        csvutility.editPlayerRecords(currentPlayer);
         //redirect to home since that's the next page after ending a game by sending a message
         return gson.toJson(message);
     }

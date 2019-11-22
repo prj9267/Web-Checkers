@@ -111,9 +111,6 @@ public class PostSignInRoute implements Route {
                 Player player = csvutility.findPlayer(username);
                 playerServices.addPlayer(player);
 
-                // TODO test
-                csvutility.editPlayerRecords(new Player("Yuqi", 9999, 1, 9998));
-
                 httpSession.attribute(GetHomeRoute.CURRENT_USERNAME_KEY, username);
                 httpSession.removeAttribute("numPlayers");
                 httpSession.removeAttribute(STAT_CODE_ATTR);

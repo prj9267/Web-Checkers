@@ -5,10 +5,7 @@ import com.opencsv.CSVReader;
 import com.opencsv.CSVWriter;
 import com.webcheckers.appl.GameCenter;
 import com.webcheckers.appl.PlayerServices;
-import com.webcheckers.model.BoardView;
-import com.webcheckers.model.Match;
-import com.webcheckers.model.Piece;
-import com.webcheckers.model.Player;
+import com.webcheckers.model.*;
 import com.webcheckers.util.Message;
 import spark.*;
 
@@ -40,6 +37,7 @@ public class GetGameRoute implements Route {
     private final TemplateEngine templateEngine;
     private final GameCenter gameCenter;
     private final PlayerServices playerServices;
+    private final CSVutility csvutility;
 
     private Gson gson;
 
@@ -58,41 +56,7 @@ public class GetGameRoute implements Route {
         this.playerServices = playerServices;
         this.gameCenter = gameCenter;
         this.templateEngine = templateEngine;
-    }
-
-    /**
-     * edits the CSV file to alter the player's stats
-     * @param name name of the player to change the stats of
-     */
-    public synchronized void editCSV(String name) {
-        try {
-            FileReader fileReader = new FileReader(csvFile);
-            CSVReader csvReader = new CSVReader(fileReader);
-
-            FileWriter fileWriter = new FileWriter(csvFile);
-            CSVWriter csvWriter = new CSVWriter(fileWriter);
-
-            //TODO read to position i
-            //TODO write same stuff up to i which then edit line i with new statistics
-            String nextRecord[];
-            int line = 0;
-            // get the line number in the csv for the player
-            while ((nextRecord = csvReader.readNext()) != null) {
-                if (nextRecord[0].equals(name)) {
-                    Player thePlayer = playerServices.getPlayer(name);
-                    String[] input = new String[4];
-                    input[0] = name;
-                    input[1] = Integer.toString(thePlayer.getGames());
-                    input[2] = Integer.toString(thePlayer.getWon());
-                    input[3] = Integer.toString(thePlayer.getLost());
-                    csvWriter.writeNext(input);
-                    break;
-                }
-                csvWriter.writeNext(nextRecord);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        this.csvutility = new CSVutility();
     }
 
     /**
@@ -167,6 +131,7 @@ public class GetGameRoute implements Route {
                 currentPlayer.changeRecentlyInGame(true);
                 // update stats
                 currentPlayer.addWon();
+
                 Gson gson = new Gson();
                 Map <String, Object> modeOptions = new HashMap<>(2);
                 modeOptions.put("isGameOver", true);
@@ -211,7 +176,7 @@ public class GetGameRoute implements Route {
                 vm.put("modeOptionsAsJSON", gson.toJson(modeOptions));
                 currentPlayer.changeStatus(Player.Status.waiting);
             }
-
+            csvutility.editPlayerRecords(currentPlayer);
             return templateEngine.render(new ModelAndView(vm, VIEW_NAME));
         } else {
             response.redirect("/");
