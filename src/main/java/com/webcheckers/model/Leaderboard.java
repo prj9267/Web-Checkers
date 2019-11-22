@@ -77,7 +77,7 @@ public class Leaderboard {
      * Updates the boards.
      */
     public synchronized void updateAllBoards() {
-        list = csvutility.addPlayers();
+        list = csvutility.readPlayers();
         for (Player player : list) {
             gamesBoard.add(player);
             wonBoard.add(player);

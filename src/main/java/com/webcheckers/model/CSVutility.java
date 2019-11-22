@@ -17,6 +17,24 @@ public class CSVutility {
     private CSVReader csvReader;
 
     /**
+     * Add a new player to the CSV file that holds all player records.
+     * @param username name of player to store
+     */
+    public synchronized void addPlayerToCSV(String username) {
+        try {
+            // write to the csv file so that the new player data can be found next time
+            fileWriter = new FileWriter(csvFile, true);
+            csvWriter = new CSVWriter(fileWriter);
+            String[] stats = {username, "0", "0", "0"};
+            csvWriter.writeNext(stats);
+            csvWriter.flush();
+            csvWriter.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
      * Find the player's stat and return a new player with those attributes.
      * @param username name of the player to find
      * @return player
@@ -28,9 +46,7 @@ public class CSVutility {
         int lost = 0;
 
         Player player;
-
         try {
-            //C:\Programming\Intro to Software Engineering\WebCheckers\src\main\resources\public\Statistics.csv
             fileReader = new FileReader(csvFile);
             csvReader = new CSVReader(fileReader);
             String[] nextRecord;
@@ -64,20 +80,9 @@ public class CSVutility {
         //playerServices.addPlayer(new Player("validusername", 555, 333, 222));
         //editCSV("validusername");
 
-
         if (!found) {
             player = new Player(username);
-            try {
-                // write to the csv file so that the new player data can be found next time
-                fileWriter = new FileWriter(csvFile, true);
-                csvWriter = new CSVWriter(fileWriter);
-                String[] stats = {username, "0", "0", "0"};
-                csvWriter.writeNext(stats);
-                csvWriter.flush();
-                csvWriter.close();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+            addPlayerToCSV(username);
         } else {
             player = new Player(username, games, won, lost);
         }
@@ -88,7 +93,7 @@ public class CSVutility {
      * Read through the CSV file and add a player from every row to an array list
      * @return arraylist with all existing players offline or online
      */
-    public ArrayList<Player> addPlayers() {
+    public synchronized ArrayList<Player> readPlayers() {
         ArrayList<Player> list = new ArrayList<>();
         try {
             FileReader fileReader = new FileReader(csvFile);
@@ -107,5 +112,12 @@ public class CSVutility {
             e.printStackTrace();
         }
         return list;
+    }
+
+    /**
+     * edit the csv file for the player
+     */
+    public void editCSV() {
+
     }
 }
