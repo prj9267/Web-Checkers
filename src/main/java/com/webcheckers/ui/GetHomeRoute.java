@@ -150,13 +150,9 @@ public class GetHomeRoute implements Route {
             // since nothing about the match is needed, otherwise will crash the session still in the game screen
             deleteMatchIfPossible(player);
 
-            // TODO implement rankings (Leaderboard class)
-
+            // Grab leaderboards
             Leaderboard leaderboard = new Leaderboard();
             leaderboard.updateAllBoards();
-            //ArrayList<Player> gamesBoard = leaderboard.getGamesBoard();
-            //ArrayList<Player> wonBoard = leaderboard.getWonBoard();
-            //ArrayList<Player> lostBoard = leaderboard.getLostBoard();
             TreeSet<Player> gamesBoard = leaderboard.getGamesBoard();
             TreeSet<Player> wonBoard = leaderboard.getWonBoard();
             TreeSet<Player> lostBoard = leaderboard.getLostBoard();

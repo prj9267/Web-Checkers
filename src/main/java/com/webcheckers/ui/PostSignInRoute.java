@@ -3,6 +3,7 @@ package com.webcheckers.ui;
 import com.opencsv.CSVReader;
 import com.opencsv.CSVWriter;
 import com.webcheckers.appl.PlayerServices;
+import com.webcheckers.model.CSVutility;
 import com.webcheckers.util.Message;
 import spark.*;
 
@@ -37,6 +38,7 @@ public class PostSignInRoute implements Route {
 
     private final TemplateEngine templateEngine;
     private final PlayerServices playerServices;
+    private CSVutility csvutility;
 
     /**
      * Create the Spark Route (UI controller) to handle all {@code GET /} HTTP requests.
@@ -75,6 +77,21 @@ public class PostSignInRoute implements Route {
         return 0;
     }
 
+    public synchronized void editCSV(String name) {
+        try {
+            FileReader fileReader = new FileReader(csvFile);
+            CSVReader csvReader = new CSVReader(fileReader);
+
+            FileWriter fileWriter = new FileWriter(csvFile);
+            CSVWriter csvWriter = new CSVWriter(fileWriter);
+
+            // lines;
+            //readall
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     /**
      * Render the WebCheckers Home page after signing in.
      *
@@ -102,62 +119,11 @@ public class PostSignInRoute implements Route {
         else
             statCode = httpSession.attribute(STAT_CODE_ATTR);
 
-        boolean found = false;
-        int games = 0;
-        int won = 0;
-        int lost = 0;
         if(httpSession.attribute(GetHomeRoute.PLAYERSERVICES_KEY) != null) {
             if (statCode == 0) {
-                Player player;
+                csvutility = new CSVutility();
 
-                try {
-                    //C:\Programming\Intro to Software Engineering\WebCheckers\src\main\resources\public\Statistics.csv
-                    FileReader fileReader = new FileReader(csvFile);
-                    CSVReader csvReader = new CSVReader(fileReader);
-                    String[] nextRecord;
-
-                    while ((nextRecord = csvReader.readNext()) != null) {
-                        int i = 0;
-                        for (String stat : nextRecord) {
-                            if (stat.equals(username))
-                                found = true;
-                            if (found) {
-                                switch (i) {
-                                    case 1:
-                                        games = Integer.parseInt(stat);
-                                    case 2:
-                                        won = Integer.parseInt(stat);
-                                    case 3:
-                                        lost = Integer.parseInt(stat);
-                                }
-                                i++;
-                            }
-                        }
-                        if (found)
-                            break;
-                    }
-                    csvReader.close();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-
-
-                if (!found) {
-                    player = new Player(username);
-                    try {
-                        // write to the csv file so that the new player data can be found next time
-                        FileWriter fileWriter = new FileWriter(csvFile, true);
-                        CSVWriter writer = new CSVWriter(fileWriter);
-                        String[] stats = {username, "0", "0", "0"};
-                        writer.writeNext(stats);
-                        writer.flush();
-                        writer.close();
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                } else {
-                    player = new Player(username, games, won, lost);
-                }
+                Player player = csvutility.findPlayer(username);
                 playerServices.addPlayer(player);
 
                 httpSession.attribute(GetHomeRoute.CURRENT_USERNAME_KEY, username);

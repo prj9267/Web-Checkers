@@ -12,8 +12,10 @@ public class Leaderboard {
     private TreeSet<Player> gamesBoard;
     private TreeSet<Player> wonBoard;
     private TreeSet<Player> lostBoard;
+    private CSVutility csvutility;
 
     public Leaderboard() {
+        csvutility = new CSVutility();
         list = new ArrayList<>();
         gamesBoard = new TreeSet<>(new Comparator<Player>() {
             @Override
@@ -48,31 +50,6 @@ public class Leaderboard {
     }
 
     /**
-     * Update list of all stored players with their number of games played.
-     */
-    public void updateList() {
-        try {
-            FileReader fileReader = new FileReader(csvFile);
-            CSVReader csvReader = new CSVReader(fileReader);
-            String[] nextRecord;
-
-            while ((nextRecord = csvReader.readNext()) != null) {
-                String username = nextRecord[0];
-                int games = Integer.parseInt(nextRecord[1]);
-                int won = Integer.parseInt(nextRecord[2]);
-                int lost = Integer.parseInt(nextRecord[3]);
-
-                list.add(new Player(username, games, won, lost));
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        // #TODO debug
-        //for (Player player: list)
-        //    System.out.println(player.getName() + " Number of games: " + Integer.toString(player.getGames()));
-    }
-
-    /**
      * Return the won leaderboard (ranks by number of wins)
      * @return board won leaderboard
      */
@@ -100,7 +77,7 @@ public class Leaderboard {
      * Updates the boards.
      */
     public synchronized void updateAllBoards() {
-        updateList();
+        list = csvutility.addPlayers();
         for (Player player : list) {
             gamesBoard.add(player);
             wonBoard.add(player);
