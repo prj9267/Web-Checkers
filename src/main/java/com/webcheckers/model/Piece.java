@@ -14,7 +14,7 @@ public class Piece {
     /**
      * COLOR of the piece
      */
-    public enum Color {RED, WHITE}
+    public enum Color {RED, WHITE, HELP}
 
     /**
      * Constructor for piece

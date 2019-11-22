@@ -7,6 +7,7 @@ public class Player {
     public enum Status {waiting, challenged, ingame}
     public Status status;
     private boolean recentlyInGame;
+    private boolean help;
 
     /**
      * Player constructor
@@ -17,6 +18,7 @@ public class Player {
         this.name = name;
         status = Status.waiting;
         recentlyInGame = false;
+        help = false;
     }
 
     public void changeRecentlyInGame(boolean bool) {
@@ -63,6 +65,20 @@ public class Player {
 
     public void changeStatus(Status status) {
         this.status = status;
+    }
+
+    public boolean getHelp(){
+        return help;
+    }
+
+    public boolean changeHelp() {
+        if (help == true){
+            help = false;
+        }
+        else{
+            help = true;
+        }
+        return help;
     }
 
     /**

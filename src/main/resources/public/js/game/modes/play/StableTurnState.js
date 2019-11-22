@@ -41,6 +41,7 @@ define(function(require){
    */
   StableTurnState.prototype.onEntry = function onEntry() {
     // enable all UI controls
+    this._controller.enableButton(PlayModeConstants.HELP_BUTTON_ID);
     this._controller.enableButton(PlayModeConstants.BACKUP_BUTTON_ID);
     this._controller.enableButton(PlayModeConstants.SUBMIT_BUTTON_ID);
     // re-enable active Piece
@@ -55,6 +56,13 @@ define(function(require){
     this._controller.setPendingMove(pendingMove);
     // and change the data to Pending
     this._controller.setState(PlayModeConstants.WAITING_FOR_MOVE_VALIDATION);
+  };
+
+  /**
+     * Backup a single move.
+     */
+  StableTurnState.prototype.requestHelp = function requestHelp() {
+    this._controller.setState(PlayModeConstants.WAITING_FOR_HELP_VALIDATION);
   };
 
   /**

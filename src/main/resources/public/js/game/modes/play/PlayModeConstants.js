@@ -18,6 +18,7 @@ define(function () {
     // "Playing My Turn" composite states
     , EMPTY_TURN: 'Empty Turn'
     , WAITING_FOR_MOVE_VALIDATION: 'Waiting for Move Validation'
+    , WAITING_FOR_HELP_VALIDATION: 'Waiting for Help Validation'
     , STABLE_TURN: 'Stable Turn'
     , WAITING_FOR_TURN_VALIDATION: 'Waiting for Turn Validation'
     , WAITING_FOR_BACKUP_VALIDATION: 'Waiting for Backup Validation'
@@ -31,6 +32,8 @@ define(function () {
     // Buttons
     //
 
+    , HELP_BUTTON_ID: 'helpBtn'
+    , HELP_BUTTON_TOOLTIP: 'Display all possible moves or remove all possible moves.'
     , BACKUP_BUTTON_ID: 'backupBtn'
     , BACKUP_BUTTON_TOOLTIP: 'Remove the last move with your current turn.'
     , SUBMIT_BUTTON_ID: 'submitBtn'

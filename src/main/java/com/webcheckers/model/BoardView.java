@@ -5,7 +5,6 @@ import java.util.*;
 public class BoardView implements Iterable {
     public static final int NUM_ROW = 8;
     public static final int NUM_COL = 8;
-    private Piece.Color activeColor;
     private Row[] rows = new Row[NUM_ROW];
 
     /**
@@ -14,7 +13,6 @@ public class BoardView implements Iterable {
     public BoardView(Piece.Color currentPlayerColor) {
         Piece piece;
         Piece.Color opponentPlayerColor;
-        activeColor = currentPlayerColor;
         if (currentPlayerColor == Piece.Color.RED)
             opponentPlayerColor = Piece.Color.WHITE;
         else
