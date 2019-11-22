@@ -24,7 +24,7 @@ public class CSVutility {
 
             List<String[]> lines = csvReader.readAll();
             int i = 0;
-            String[] input = new String[4];
+            String[] input = new String[6];
             for (String[] line : lines) {
                 for (String str : line)
                     System.out.print(str + " ");
@@ -33,12 +33,13 @@ public class CSVutility {
                     input[1] = Integer.toString(player.getGames());
                     input[2] = Integer.toString(player.getWon());
                     input[3] = Integer.toString(player.getLost());
+                    input[4] = Integer.toString(player.getPiecesTaken());
+                    input[5] = Integer.toString(player.getPiecesLost());
                     lines.remove(i);
                     lines.add(input);
                     break;
                 }
                 i++;
-                System.out.println();
             }
 
             csvReader.close();
@@ -64,7 +65,7 @@ public class CSVutility {
             // write to the csv file so that the new player data can be found next time
             FileWriter fileWriter = new FileWriter(csvFile, true);
             CSVWriter csvWriter = new CSVWriter(fileWriter);
-            String[] stats = {username, "0", "0", "0"};
+            String[] stats = {username, "0", "0", "0", "0", "0"};
             csvWriter.writeNext(stats);
             csvWriter.flush();
             csvWriter.close();
@@ -83,6 +84,8 @@ public class CSVutility {
         int games = 0;
         int won = 0;
         int lost = 0;
+        int piecesTaken = 0;
+        int piecesLost = 0;
 
         Player player;
         try {
@@ -94,8 +97,11 @@ public class CSVutility {
             while ((nextRecord = csvReader.readNext()) != null) {
                 int i = 0;
                 for (String stat : nextRecord) {
-                    if (stat.equals(username))
+                    if (stat.equals(username)) {
                         found = true;
+                    } else {
+                        break;
+                    }
                     if (found) {
                         switch (i) {
                             case 1:
@@ -104,6 +110,10 @@ public class CSVutility {
                                 won = Integer.parseInt(stat);
                             case 3:
                                 lost = Integer.parseInt(stat);
+                            case 4:
+                                piecesTaken = Integer.parseInt(stat);
+                            case 5:
+                                piecesLost = Integer.parseInt(stat);
                         }
                         i++;
                     }
@@ -122,8 +132,9 @@ public class CSVutility {
             addPlayerToCSV(username);
         } else {
             // create a new player with found attributes
-            player = new Player(username, games, won, lost);
+            player = new Player(username, games, won, lost, piecesTaken, piecesLost);
         }
+        System.out.println(player.getName() + " found: " + Boolean.toString(found));
         return player;
     }
 
@@ -142,8 +153,10 @@ public class CSVutility {
                 int games = Integer.parseInt(nextRecord[1]);
                 int won = Integer.parseInt(nextRecord[2]);
                 int lost = Integer.parseInt(nextRecord[3]);
+                int piecesTaken = Integer.parseInt(nextRecord[4]);
+                int piecesLost = Integer.parseInt(nextRecord[5]);
 
-                list.add(new Player(username, games, won, lost));
+                list.add(new Player(username, games, won, lost, piecesTaken, piecesLost));
             }
             csvReader.close();
         } catch (Exception e) {

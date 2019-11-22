@@ -132,6 +132,16 @@ public class GetGameRoute implements Route {
                 currentPlayer.changeRecentlyInGame(true);
                 // guard so that their records won't be modified more than once in case of mandatory refreshes
                 if (currentPlayer.getRecordsModified() == false) {
+                    int piecesTaken, piecesLost;
+                    if (currentPlayer.equals(currentMatch.getRedPlayer())) {
+                        piecesTaken = 12 - currentMatch.getWhitePieces().size();
+                        piecesLost = 12 - currentMatch.getRedPieces().size();
+                    } else {
+                        piecesTaken = 12 - currentMatch.getRedPieces().size();
+                        piecesLost = 12 - currentMatch.getWhitePieces().size();
+                    }
+                    currentPlayer.addPiecesTaken(piecesTaken);
+                    currentPlayer.addPiecesLost(piecesLost);
                     currentPlayer.addWon();
                     csvutility.editPlayerRecords(currentPlayer);
                     currentPlayer.setRecordsModified(true);
@@ -153,9 +163,18 @@ public class GetGameRoute implements Route {
                 currentPlayer.changeRecentlyInGame(true);
                 // guard so that their records won't be modified more than once in case of mandatory refreshes
                 if (currentPlayer.getRecordsModified() == false) {
+                    int piecesTaken, piecesLost;
                     if (currentPlayer.equals(currentMatch.getRedPlayer())) {
+                        piecesTaken = 12 - currentMatch.getWhitePieces().size();
+                        piecesLost = 12 - currentMatch.getRedPieces().size();
+                        currentPlayer.addPiecesTaken(piecesTaken);
+                        currentPlayer.addPiecesLost(piecesLost);
                         currentPlayer.addLost();
                     } else {
+                        piecesTaken = 12 - currentMatch.getRedPieces().size();
+                        piecesLost = 12 - currentMatch.getWhitePieces().size();
+                        currentPlayer.addPiecesTaken(piecesTaken);
+                        currentPlayer.addPiecesLost(piecesLost);
                         currentPlayer.addWon();
                     }
                     csvutility.editPlayerRecords(currentPlayer);
@@ -174,9 +193,18 @@ public class GetGameRoute implements Route {
                 currentPlayer.changeRecentlyInGame(true);
                 // guard so that their records won't be modified more than once in case of mandatory refreshes
                 if (currentPlayer.getRecordsModified() == false) {
+                    int piecesTaken, piecesLost;
                     if (currentPlayer.equals(currentMatch.getRedPlayer())) {
+                        piecesTaken = 12 - currentMatch.getWhitePieces().size();
+                        piecesLost = 12 - currentMatch.getRedPieces().size();
+                        currentPlayer.addPiecesTaken(piecesTaken);
+                        currentPlayer.addPiecesLost(piecesLost);
                         currentPlayer.addWon();
                     } else {
+                        piecesTaken = 12 - currentMatch.getRedPieces().size();
+                        piecesLost = 12 - currentMatch.getWhitePieces().size();
+                        currentPlayer.addPiecesTaken(piecesTaken);
+                        currentPlayer.addPiecesLost(piecesLost);
                         currentPlayer.addLost();
                     }
                     csvutility.editPlayerRecords(currentPlayer);

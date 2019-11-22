@@ -7,6 +7,8 @@ public class Player {
     private int games;
     private int won;
     private int lost;
+    private int piecesTaken;
+    private int piecesLost;
     private String ratio;
     public enum Status {waiting, challenged, ingame}
     public Status status;
@@ -23,6 +25,8 @@ public class Player {
         games = 0;
         won = 0;
         lost = 0;
+        piecesTaken = 0;
+        piecesLost = 0;
         // undefined because no games played
         ratio = "undefined";
         status = Status.waiting;
@@ -37,12 +41,14 @@ public class Player {
      * @param won number of games won
      * @param lost number of games lost
      */
-    public Player(String name, int games, int won, int lost) {
+    public Player(String name, int games, int won, int lost, int piecesTaken, int piecesLost) {
         assert(name != null);
         this.name = name;
         this.games = games;
         this.won = won;
         this.lost = lost;
+        this.piecesTaken = piecesTaken;
+        this.piecesLost = piecesLost;
         ratio = Float.toString((float)won/games);
         status = Status.waiting;
         recentlyInGame = false;
@@ -105,6 +111,38 @@ public class Player {
         games++;
         lost++;
         ratio = Float.toString((float)won/games);
+    }
+
+    /**
+     * Add to the total number of pieces taken by the player
+     * @param num number to add to piecesTaken
+     */
+    public void addPiecesTaken(int num) {
+        piecesTaken += num;
+    }
+
+    /**
+     * Returns the number of pieces taken by the player
+     * @return piecesTaken
+     */
+    public int getPiecesTaken() {
+        return piecesTaken;
+    }
+
+    /**
+     * Add to the total number of pieces lost by the player
+     * @param num number to add to piecesLost
+     */
+    public void addPiecesLost(int num) {
+        piecesLost += num;
+    }
+
+    /**
+     * Returns the number of pieces lost by the player
+     * @return piecesLost
+     */
+    public int getPiecesLost() {
+        return piecesLost;
     }
 
     /**

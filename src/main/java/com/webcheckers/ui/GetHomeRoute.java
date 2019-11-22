@@ -32,9 +32,13 @@ public class GetHomeRoute implements Route {
     static final String WON_ATTR = "won";
     static final String LOST_ATTR = "lost";
     static final String RATIO_ATTR = "ratio";
+    static final String TAKEN_PIECES_ATTR = "piecesTaken";
+    static final String LOST_PIECES_ATTR = "piecesLost";
     static final String GAMESBOARD_ATTR = "gamesBoard";
     static final String WONBOARD_ATTR = "wonBoard";
     static final String LOSTBOARD_ATTR = "lostBoard";
+    static final String PIECES_TAKEN_ATTR = "piecesTakenBoard";
+    static final String PIECES_LOST_ATTR = "piecesLostBoard";
 
     public static final String VIEW_NAME = "home.ftl";
     private static final Message WELCOME_MSG = Message.info("Welcome to the world of online Checkers.");
@@ -160,6 +164,8 @@ public class GetHomeRoute implements Route {
             TreeSet<Player> gamesBoard = leaderboard.getGamesBoard();
             TreeSet<Player> wonBoard = leaderboard.getWonBoard();
             TreeSet<Player> lostBoard = leaderboard.getLostBoard();
+            TreeSet<Player> piecesTakenBoard = leaderboard.getPiecesTakenBoard();
+            TreeSet<Player> piecesLostBoard = leaderboard.getPiecesLostBoard();
 
             /*if (gameCenter.isInMatch(player)) {
                 System.out.println(player.getName() + " is in a match!");
@@ -188,12 +194,16 @@ public class GetHomeRoute implements Route {
             vm.put(WON_ATTR, player.getWon());
             vm.put(LOST_ATTR, player.getLost());
             vm.put(RATIO_ATTR, player.getRatio());
+            vm.put(TAKEN_PIECES_ATTR, player.getPiecesTaken());
+            vm.put(LOST_PIECES_ATTR, player.getPiecesLost());
             vm.put(CURRENT_USERNAME_KEY, httpSession.attribute(CURRENT_USERNAME_KEY));
             players.remove(player);
             vm.put(PLAYERS_ATTR, players);
             vm.put(GAMESBOARD_ATTR, gamesBoard);
             vm.put(WONBOARD_ATTR, wonBoard);
             vm.put(LOSTBOARD_ATTR, lostBoard);
+            vm.put(PIECES_TAKEN_ATTR, piecesTakenBoard);
+            vm.put(PIECES_LOST_ATTR, piecesLostBoard);
         } else {
             // only show the number of players online if you are not signed in
             vm.put(NUM_PLAYERS_ATTR, playerServices.getPlayerList().size());

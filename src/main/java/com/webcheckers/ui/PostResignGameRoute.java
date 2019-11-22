@@ -76,6 +76,16 @@ public class PostResignGameRoute implements Route {
         currentPlayer.changeRecentlyInGame(true);
         // guard so that their records won't be modified more than once in case of mandatory refreshes
         if (currentPlayer.getRecordsModified() == false) {
+            int piecesTaken, piecesLost;
+            if (currentPlayer.equals(currentMatch.getRedPlayer())) {
+                piecesTaken = 12 - currentMatch.getWhitePieces().size();
+                piecesLost = 12 - currentMatch.getRedPieces().size();
+            } else {
+                piecesTaken = 12 - currentMatch.getRedPieces().size();
+                piecesLost = 12 - currentMatch.getWhitePieces().size();
+            }
+            currentPlayer.addPiecesTaken(piecesTaken);
+            currentPlayer.addPiecesLost(piecesLost);
             currentPlayer.addLost();
             csvutility.editPlayerRecords(currentPlayer);
             currentPlayer.setRecordsModified(true);

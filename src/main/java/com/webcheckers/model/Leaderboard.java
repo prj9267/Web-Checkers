@@ -1,17 +1,14 @@
 package com.webcheckers.model;
 
-import com.opencsv.CSVReader;
-
-import java.io.FileReader;
 import java.util.*;
-
-import static com.webcheckers.ui.WebServer.csvFile;
 
 public class Leaderboard {
     private ArrayList<Player> list;
     private TreeSet<Player> gamesBoard;
     private TreeSet<Player> wonBoard;
     private TreeSet<Player> lostBoard;
+    private TreeSet<Player> piecesTakenBoard;
+    private TreeSet<Player> piecesLostBoard;
     private CSVutility csvutility;
 
     public Leaderboard() {
@@ -47,6 +44,26 @@ public class Leaderboard {
                 }
             }
         });
+        piecesTakenBoard = new TreeSet<>(new Comparator<Player>() {
+            @Override
+            public int compare(Player o1, Player o2) {
+                if (o1.getPiecesTaken() > o2.getPiecesTaken()) {
+                    return -1;
+                } else {
+                    return 1;
+                }
+            }
+        });
+        piecesLostBoard = new TreeSet<>(new Comparator<Player>() {
+            @Override
+            public int compare(Player o1, Player o2) {
+                if (o1.getPiecesLost() > o2.getPiecesLost()) {
+                    return -1;
+                } else {
+                    return 1;
+                }
+            }
+        });
     }
 
     /**
@@ -74,6 +91,22 @@ public class Leaderboard {
     }
 
     /**
+     * Return the pieces taken leaderboard (ranks by number of opponent pieces taken)
+     * @return piecesTakenBaoard leaderboard
+     */
+    public TreeSet<Player> getPiecesTakenBoard() {
+        return piecesTakenBoard;
+    }
+
+    /**
+     * Return the pieces lost leaderboard (ranks by number of pieces lost)
+     * @return piecesLostBoard leaderboard
+     */
+    public TreeSet<Player> getPiecesLostBoard() {
+        return piecesLostBoard;
+    }
+
+    /**
      * Updates the boards.
      */
     public synchronized void updateAllBoards() {
@@ -82,6 +115,8 @@ public class Leaderboard {
             gamesBoard.add(player);
             wonBoard.add(player);
             lostBoard.add(player);
+            piecesTakenBoard.add(player);
+            piecesLostBoard.add(player);
         }
     }
 }

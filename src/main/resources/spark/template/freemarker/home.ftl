@@ -35,6 +35,8 @@
                     <p>Games Won: ${won}</p><br>
                     <p>Games Lost: ${lost}</p><br>
                     <p>W/L Ratio: ${ratio}</p><br>
+                    <p>Opponent Pieces Taken: ${piecesTaken}</p><br>
+                    <p>Friendly Pieces Lost: ${piecesLost}</p>
                 </div>
 
                 <div class="stats" id="leaderboard">
@@ -64,6 +66,24 @@
                             </div>
                         </#list>
                     </#if>
+                    <br>
+                    <#if piecesTakenBoard??>
+                        <#list piecesTakenBoard as player>
+                            <div class="display">
+                                <p id="name_display">Name: ${player.name}</p>
+                                <p>Opponent Pieces Taken: ${player.piecesTaken}</p>
+                            </div>
+                        </#list>
+                    </#if>
+                    <br>
+                    <#if piecesLostBoard??>
+                        <#list piecesLostBoard as player>
+                            <div class="display">
+                                <p id="name_display">Name: ${player.name}</p>
+                                <p>Friendly Pieces Lost: ${player.piecesLost}</p>
+                            </div>
+                        </#list>
+                    </#if>
                 </div>
 
                 <div class="body">
@@ -76,6 +96,8 @@
                         </form>
                     </#if>
                 </div>
+
+
             </#if>
     </body>
 </html>
