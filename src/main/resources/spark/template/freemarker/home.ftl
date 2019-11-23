@@ -52,13 +52,13 @@
                     <div id="board-display">
                         <#if leaderboard??>
                             <#list leaderboard as player>
-                                <div class="display">
-                                    <p id="name_display">Name: ${player.name}</p>
-                                    <p>Number of Games Played: ${player.games}</p>
-                                    <p>Number of Wins: ${player.won}</p>
-                                    <p>Number of Losses: ${player.lost}</p>
-                                    <p>Opponent Pieces Taken: ${player.piecesTaken}</p>
-                                    <p>Friendly Pieces Lost: ${player.piecesLost}</p>
+                                <div class="display-board">
+                                    <p id="name_display" class="display">Name: ${player.name}</p>
+                                    <p id="games_display" class="display">Number of Games Played: ${player.games}</p>
+                                    <p id="won_display" class="display">Number of Wins: ${player.won}</p>
+                                    <p id="lost_display" class="display">Number of Losses: ${player.lost}</p>
+                                    <p id="piecesTaken_display" class="display">Opponent Pieces Taken: ${player.piecesTaken}</p>
+                                    <p id="piecesLost_display" class="display">Friendly Pieces Lost: ${player.piecesLost}</p>
                                 </div>
                             </#list>
                         </#if>

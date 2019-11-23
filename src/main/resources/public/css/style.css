@@ -104,11 +104,7 @@ div.stats>p {
   margin-block-end: 0;
 }
 
-#name_display {
-  padding-right: 50px;
-}
-
-.display {
+.display-board {
   display: flex;
   flex-direction: row;
 }
@@ -121,8 +117,43 @@ div.stats>p {
 }
 
 #board-display {
+  background-color: white;
+  color: black;
+  padding: 0 10px 0 10px;
   max-height: 600px;
   overflow-y: scroll;
+}
+
+.display {
+  margin-right: 10px;
+  padding: 0px;
+}
+
+#name_display {
+  width: 100px;
+  display: flex;
+  flex-wrap: wrap;
+}
+
+#games_display {
+  width: 120px;
+}
+
+#won_display {
+  width: 120px;
+}
+
+#lost_display {
+  width: 120px;
+  margin-right: 0;
+}
+
+#piecesTaken_display {
+  width: 120px;
+}
+
+#piecesLost_ display {
+  max-width: 120px;
 }
 
 ::-webkit-scrollbar {

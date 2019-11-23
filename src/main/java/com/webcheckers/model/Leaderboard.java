@@ -144,4 +144,48 @@ public class Leaderboard {
             piecesLostBoard.add(player);
         }
     }
+
+    // TODO test
+    public ArrayList<String> getNamesOnly(TreeSet<Player> board) {
+        ArrayList<String> names = new ArrayList<>();
+        for (Player player: board) {
+            names.add(player.getName());
+        }
+        return names;
+    }
+    public ArrayList<Integer> getGamesOnly(TreeSet<Player> board) {
+        ArrayList<Integer> games = new ArrayList<>();
+        for (Player player: board) {
+            games.add(player.getGames());
+        }
+        return games;
+    }
+    public ArrayList<Integer> getWonOnly(TreeSet<Player> board) {
+        ArrayList<Integer> won = new ArrayList<>();
+        for (Player player: board) {
+            won.add(player.getWon());
+        }
+        return won;
+    }
+    public ArrayList<Integer> getLostOnly(TreeSet<Player> board) {
+        ArrayList<Integer> lost = new ArrayList<>();
+        for (Player player: board) {
+            lost.add(player.getLost());
+        }
+        return lost;
+    }
+    public ArrayList<Integer> getPiecesTakenOnly(TreeSet<Player> board) {
+        ArrayList<Integer> piecesTaken = new ArrayList<>();
+        for (Player player: board) {
+            piecesTaken.add(player.getPiecesTaken());
+        }
+        return piecesTaken;
+    }
+    public ArrayList<Integer> getPiecsLostOnly(TreeSet<Player> board) {
+        ArrayList<Integer> piecesLost = new ArrayList<>();
+        for (Player player: board) {
+            piecesLost.add(player.getPiecesLost());
+        }
+        return piecesLost;
+    }
 }
