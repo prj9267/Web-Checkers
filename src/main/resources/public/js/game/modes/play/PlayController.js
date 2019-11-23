@@ -30,16 +30,13 @@ define(function(require){
   // The "Game Over" singular state
   const GameOverState = require('./GameOverState');
 
-
-  const WaitingForHelpValidationState = require('./WaitingForHelpValidationState');
-
   //
   // Constructor
   //
 
   /**
    * Constructor function.
-   * 
+   *
    * @param {GameView} view
    *    The Game view object.
    * @param {BoardController} boardController
@@ -55,7 +52,7 @@ define(function(require){
     this.$activePiece = null;
     this._boardController = boardController;
     this._gameState = gameState;
-    
+
     // Add the State Pattern mixin
     StatePatternMixin.call(this);
     // create states and a lookup map
@@ -81,14 +78,9 @@ define(function(require){
     this.addStateDefinition(PlayModeConstants.GAME_OVER,
         new GameOverState(this, gameState));
 
-    this.addStateDefinition(PlayModeConstants.WAITING_FOR_HELP_VALIDATION,
-        new WaitingForHelpValidationState(this));
-    
     // Add the Controls toolbar mixin
     ControlsToolbarMixin.call(this);
     // create mode control buttons
-    this.addButton(PlayModeConstants.HELP_BUTTON_ID, 'Help', false,
-        PlayModeConstants.HELP_BUTTON_TOOLTIP, this.requestHelp);
     this.addButton(PlayModeConstants.BACKUP_BUTTON_ID, 'Backup', false,
         PlayModeConstants.BACKUP_BUTTON_TOOLTIP, this.backupMove);
     this.addButton(PlayModeConstants.SUBMIT_BUTTON_ID, 'Submit turn', false,
@@ -118,7 +110,7 @@ define(function(require){
       // initialize the Board for game play
       boardController.initializeDragAndDrop(gameState);
     };
-    
+
     /**
      * Display a message to the Game View.
      * Delegate to the GameView component.
@@ -140,14 +132,6 @@ define(function(require){
   PlayController.prototype.requestMove = function requestMove() {
     this._delegateStateMessage('requestMove', arguments);
   };
-
-  /**
-     * Display all the possible moves or remove all the possible moves
-     * This message has state-specific behavior.
-     */
-    PlayController.prototype.requestHelp = function requestHelp() {
-      this._delegateStateMessage('requestHelp', arguments);
-    };
 
   /**
    * Backup a single move.  This message has state-specific behavior.

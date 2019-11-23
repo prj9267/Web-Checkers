@@ -1,6 +1,6 @@
 /**
  * This module exports the CheckingMyTurnState class constructor.
- * 
+ *
  * This component is an concrete implementation of a state
  * for the Game view; this state represents the state in which
  * the view makes the Ajax call to the server to check whether
@@ -15,7 +15,7 @@ define(function (require) {
 
   /**
    * Constructor function.
-   * 
+   *
    * @param {PlayController} controller
    *    The Play mode controller object.
    */
@@ -68,5 +68,5 @@ define(function (require) {
 
   // export class constructor
   return CheckingMyTurnState;
-  
+
 });

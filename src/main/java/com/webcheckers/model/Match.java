@@ -30,6 +30,9 @@ public class Match {
     private ArrayList<Move> moves = new ArrayList<>();
     private boolean hasNextJump = false;
     private Piece.Type currentType = Piece.Type.SINGLE;
+    private ArrayList<Position> possibleMoves = new ArrayList<>();
+    private ArrayList<Position> possibleJumps = new ArrayList<>();
+    private boolean possibleJump = false;
 
     /**
      * Create a new match between 2 players.
@@ -174,10 +177,6 @@ public class Match {
         modeOptions.put("gameOverMessage", loser.getName() + " has resigned.");
     }
 
-    public boolean hasNextJump(){
-        return hasNextJump;
-    }
-
     public void typeSingle() { this.currentType = Piece.Type.SINGLE; }
 
     public ArrayList<Move> getMoves(){ return this.moves; }
@@ -312,7 +311,79 @@ public class Match {
         return false;
     }
 
-    /**
+    public void addPossibleMove(Position pos){
+        if (! possibleMoves.contains(pos)) {
+            possibleMoves.add(pos);
+        }
+    }
+
+    public void addPossibleJump(Position pos) {
+        if (! possibleJumps.contains(pos)) {
+            possibleJumps.add(pos);
+        }
+    }
+
+    public void possibleMoves() {
+        possibleMoves = new ArrayList<>();
+        possibleJumps = new ArrayList<>();
+        possibleJump = false;
+        ArrayList<Position> pieces;
+        BoardView board;
+        if (activeColor == Piece.Color.RED){
+            pieces = redPieces;
+            board = redBoardView;
+        }
+        else {
+            pieces = whitePieces;
+            board = whiteBoardView;
+        }
+
+        for (int i = 0; i < pieces.size(); i++){
+            Position piece = pieces.get(i);
+            int row = piece.getRow();
+            int col = piece.getCell();
+            Piece.Type type = board.getSpace(row, col).getPiece().getType();
+            if (topLeftJump(board, piece)) {
+                possibleJump = true;
+                addPossibleJump(piece);
+            }
+            if (topRightJump(board, piece)) {
+                possibleJump = true;
+                addPossibleJump(piece);
+            }
+            if (botLeftJump(board, piece)) {
+                possibleJump = true;
+                addPossibleJump(piece);
+            }
+            if (botRightJump(board, piece)) {
+                possibleJump = true;
+                addPossibleJump(piece);
+            }
+            // only waste time check move if there is no possible jump
+            if (! possibleJump) {
+                // move top left
+                if (board.getSpace(row - 1, col - 1).getPiece() == null) {
+                    addPossibleMove(new Position(row - 1, col - 1));
+                }
+                // move top right
+                else if (board.getSpace(row - 1, col + 1).getPiece() == null) {
+                    addPossibleMove(new Position(row - 1, col + 1));
+                }
+                if (type == Piece.Type.KING) {
+                    // move bot left
+                    if (board.getSpace(row + 1, col - 1).getPiece() == null) {
+                        addPossibleMove(new Position(row + 1, col - 1));
+                    }
+                    // move bot right
+                    else if (board.getSpace(row + 1, col + 1).getPiece() == null) {
+                        addPossibleMove(new Position(row + 1, col - 1));
+                    }
+                }
+            }
+        }
+    }
+
+   /**
      * After validating the move, move the piece
      * @param move the move made
      */
