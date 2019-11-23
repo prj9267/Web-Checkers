@@ -49,21 +49,21 @@
                             <input type="submit" name="boardButton" value="Pieces Lost Rankings"></input>
                         </form>
                     </div>
-
-                    <#if leaderboard??>
-                        <#list leaderboard as player>
-                            <div class="display">
-                                <p id="name_display">Name: ${player.name}</p>
-                                <p>Number of Games Played: ${player.games}</p>
-                                <p>Number of Wins: ${player.won}</p>
-                                <p>Number of Losses: ${player.lost}</p>
-                                <p>Opponent Pieces Taken: ${player.piecesTaken}</p>
-                                <p>Friendly Pieces Lost: ${player.piecesLost}</p>
-                            </div>
-                        </#list>
-                    </#if>
+                    <div id="board-display">
+                        <#if leaderboard??>
+                            <#list leaderboard as player>
+                                <div class="display">
+                                    <p id="name_display">Name: ${player.name}</p>
+                                    <p>Number of Games Played: ${player.games}</p>
+                                    <p>Number of Wins: ${player.won}</p>
+                                    <p>Number of Losses: ${player.lost}</p>
+                                    <p>Opponent Pieces Taken: ${player.piecesTaken}</p>
+                                    <p>Friendly Pieces Lost: ${player.piecesLost}</p>
+                                </div>
+                            </#list>
+                        </#if>
+                    </div>
                 </div>
-
 
                 <div class="body">
                     <#if players??>

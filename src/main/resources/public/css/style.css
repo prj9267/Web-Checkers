@@ -114,10 +114,20 @@ div.stats>p {
 }
 
 #leaderboard-state {
-  display: flex;
-  flex-direction: row;
-  flex-wrap: nowrap;
-  justify-content: space-between;
+  display: flex !important;
+  flex-direction: row !important;
+  flex-wrap: nowrap !important;
+  justify-content: space-between !important;
+}
+
+#board-display {
+  max-height: 600px;
+  overflow-y: scroll;
+}
+
+::-webkit-scrollbar {
+    width: 0px;  /* Remove scrollbar space */
+    background: transparent;  /* Optional: just make scrollbar invisible */
 }
 
 #leaderboard-state>p {
