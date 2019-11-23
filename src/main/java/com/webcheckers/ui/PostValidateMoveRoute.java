@@ -237,16 +237,15 @@ public class PostValidateMoveRoute implements Route {
             // get the information of the current user
             String currentPlayerName = httpSession.attribute(GetHomeRoute.CURRENT_USERNAME_KEY);
             Player currentPlayer = playerServices.getPlayer(currentPlayerName);
+            Match currentMatch = gameCenter.getMatch(currentPlayer);
 
             //check if the help button is clicked
-            if (currentPlayer.getHelp()){
+            if (currentMatch.getHelp()){
                 return gson.toJson(Message.error("You must click help again in order to make a move."));
             }
 
             Move move = gson.fromJson(request.queryParams(ACTION_DATA), Move.class);
 
-            // Get the information from the match
-            Match currentMatch = gameCenter.getMatch(currentPlayer);
             Message message = currentMatch.validateMove(currentPlayer, move);
             return gson.toJson(message);
 

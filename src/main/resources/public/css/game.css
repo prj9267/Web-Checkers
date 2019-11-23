@@ -119,6 +119,9 @@ table#game-board td > div[data-type="SINGLE"][data-color="WHITE"] {
 table#game-board td > div[data-type="KING"][data-color="WHITE"] {
   background-image: url("../img/king-piece-white.svg");
 }
+table#game-board td > div[data-type="SINGLE"][data-color="HELP"] {
+  background-image: url("../img/single-piece-help.svg");
+}
 table#game-board td.pending {
   animation: background-fades;
   animation-duration: 3s;

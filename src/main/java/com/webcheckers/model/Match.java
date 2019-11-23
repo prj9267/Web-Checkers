@@ -33,6 +33,7 @@ public class Match {
     private ArrayList<Position> possibleMoves = new ArrayList<>();
     private ArrayList<Position> possibleJumps = new ArrayList<>();
     private boolean possibleJump = false;
+    private boolean help = false;
 
     /**
      * Create a new match between 2 players.
@@ -179,6 +180,10 @@ public class Match {
 
     public void typeSingle() { this.currentType = Piece.Type.SINGLE; }
 
+    public boolean getHelp() {
+        return help;
+    }
+
     public ArrayList<Move> getMoves(){ return this.moves; }
 
     public void pushMove(Move move) { this.moves.add(move); }
@@ -323,6 +328,16 @@ public class Match {
         }
     }
 
+    public boolean isEmpty(BoardView board, int row, int col){
+        Space target = board.getSpace(row, col);
+        if (target != null) {
+            if (target.getPiece() == null) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public void possibleMoves() {
         possibleMoves = new ArrayList<>();
         possibleJumps = new ArrayList<>();
@@ -362,25 +377,89 @@ public class Match {
             // only waste time check move if there is no possible jump
             if (! possibleJump) {
                 // move top left
-                if (board.getSpace(row - 1, col - 1).getPiece() == null) {
+                if (isEmpty(board, row - 1, col - 1)) {
                     addPossibleMove(new Position(row - 1, col - 1));
                 }
                 // move top right
-                else if (board.getSpace(row - 1, col + 1).getPiece() == null) {
+                else if (isEmpty(board, row - 1, col + 1)) {
                     addPossibleMove(new Position(row - 1, col + 1));
                 }
                 if (type == Piece.Type.KING) {
                     // move bot left
-                    if (board.getSpace(row + 1, col - 1).getPiece() == null) {
+                    if (isEmpty(board, row + 1, col - 1)) {
                         addPossibleMove(new Position(row + 1, col - 1));
                     }
                     // move bot right
-                    else if (board.getSpace(row + 1, col + 1).getPiece() == null) {
+                    else if (isEmpty(board, row + 1, col + 1)) {
                         addPossibleMove(new Position(row + 1, col - 1));
                     }
                 }
             }
         }
+    }
+
+    public void activateHelp(){
+        System.out.println("activating help");
+        BoardView board;
+        Piece piece;
+        Space space;
+        Position pos;
+        possibleMoves();
+        if (activeColor == Piece.Color.RED) {
+            board = redBoardView;
+        }
+        else {
+            board = whiteBoardView;
+        }
+        if (possibleJumps.size() == 0) {
+            for (int i = 0; i < possibleMoves.size(); i++) {
+                pos = possibleMoves.get(i);
+                piece = new Piece(Piece.Type.SINGLE, Piece.Color.HELP);
+                space = board.getSpace(pos.getRow(), pos.getCell());
+                space.setPiece(piece);
+                space.changeValid(false);
+            }
+        }
+        else {
+            for (int i = 0; i < possibleJumps.size(); i++) {
+                pos = possibleJumps.get(i);
+                piece = new Piece(Piece.Type.SINGLE, Piece.Color.HELP);
+                space = board.getSpace(pos.getRow(), pos.getCell());
+                space.setPiece(piece);
+                space.changeValid(false);
+            }
+        }
+        help = true;
+    }
+
+    public void deactivateHelp(){
+        System.out.println("deactivating help");
+        BoardView board;
+        Position pos;
+        Space space;
+        if (activeColor == Piece.Color.RED) {
+            board = redBoardView;
+        }
+        else {
+            board = whiteBoardView;
+        }
+        if (possibleJumps.size() == 0) {
+            for (int i = 0; i < possibleMoves.size(); i++) {
+                pos = possibleMoves.get(i);
+                space = board.getSpace(pos.getRow(), pos.getCell());
+                space.setPiece(null);
+                space.changeValid(true);
+            }
+        }
+        else {
+            for (int i = 0; i < possibleJumps.size(); i++) {
+                pos = possibleJumps.get(i);
+                space = board.getSpace(pos.getRow(), pos.getCell());
+                space.setPiece(null);
+                space.changeValid(true);
+            }
+        }
+        help = false;
     }
 
    /**

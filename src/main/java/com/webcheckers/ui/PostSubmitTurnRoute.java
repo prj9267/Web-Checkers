@@ -66,6 +66,10 @@ public class PostSubmitTurnRoute implements Route {
             // Get the information from the match
             Match currentMatch = gameCenter.getMatch(currentPlayer);
 
+            if (currentMatch.getHelp()) {
+                return gson.toJson(Message.error("You cannot submit a turn if you clicked help."));
+            }
+
             // If you can still jump
             BoardView currentBoardView;
             if (currentMatch.getActiveColor() == Piece.Color.RED){

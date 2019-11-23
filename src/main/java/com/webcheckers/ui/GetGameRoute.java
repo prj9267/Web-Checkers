@@ -95,15 +95,22 @@ public class GetGameRoute implements Route {
                 httpSession.attribute("help", false);
             }
 
+            if (currentMatch.getCurrentPlayer().equals(currentPlayer)) {
+                vm.put("PLAYING", true);
+            }
+
             if (request.queryParams("help") != null) {
-                if (httpSession.attribute("help")) {
-                    httpSession.attribute("help", false);
+                if (request.queryParams("help").equals("help")) {
+                    System.out.println("requesting for help");
+                    currentMatch.possibleMoves();
+                    currentMatch.activateHelp();
+                    vm.put("HELP", 0); // 0 is a filler
                 }
-                else{
-                    httpSession.attribute("help", true);
+                else {
+                    System.out.println("removing help");
+                    currentMatch.deactivateHelp();
                 }
             }
-            vm.put("HELP", httpSession.attribute("help"));
 
             // save it to session
             httpSession.attribute(MATCH_ATTR, currentMatch);
