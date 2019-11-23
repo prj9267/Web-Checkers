@@ -377,11 +377,11 @@ public class Match {
         // remove the piece that was jumped over for the pieces array
         int deadY = 7 - (start.getRow() - yDiff);
         int deadX = 7 - (start.getCell() - xDiff);
-        Location oppLocation = new Location(deadY, deadX);
+        Position oppLocation = new Position(deadY, deadX);
         oppPieces.remove(oppLocation);
 
-        System.out.println("opp y: " + Integer.toString(7 - (start.getRow() - yDiff)));
-        System.out.println("opp x: " + Integer.toString(7 - (start.getCell() - xDiff)));
+        /*System.out.println("opp y: " + Integer.toString(7 - (start.getRow() - yDiff)));
+        System.out.println("opp x: " + Integer.toString(7 - (start.getCell() - xDiff)));*/
 
         if (end.getRow() == 0){ // means the piece become a king
             myEnd.getPiece().setType(Piece.Type.KING);
@@ -418,6 +418,12 @@ public class Match {
             Piece piece = currentBoardView.getSpace(row, col).getPiece();
             currentType = piece.getType();
         }
+        else {
+            Move temp = this.popMove();
+            if (! temp.getStart().equals(start)) {
+                this.pushMove(temp);
+            }
+        }
 
         boolean isKing = (currentType == Piece.Type.KING);
 
@@ -431,8 +437,8 @@ public class Match {
             Move previousMove = this.popMove();
             Position previousStart = previousMove.getStart();
             Position previousEnd = previousMove.getEnd();
-            System.out.println("previous y: " + previousEnd.getRow());
-            System.out.println("previous x: " + previousEnd.getCell());
+            /*System.out.println("previous y: " + previousEnd.getRow());
+            System.out.println("previous x: " + previousEnd.getCell());*/
 
             // you cannot jump if you just moved
             if (previousStart.getRow() - previousEnd.getRow() == 1 ||
@@ -487,6 +493,7 @@ public class Match {
             // dealing with move
             if (row - end.getRow() == 1 ||
                     row - end.getRow() == -1) {
+                System.out.println(pieces);
                 // you are not suppose to move if you can jump
                 if (optionToJump(currentBoardView, pieces))
                     message = PostValidateMoveRoute.JUMP_OPTION_ERROR;

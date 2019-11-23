@@ -89,6 +89,7 @@ public class PostSubmitTurnRoute implements Route {
                     }
                 }
                 currentMatch.emptyMoves();
+                System.out.println("size of moves should be: " + currentMatch.getMoves().size());
 
                 //alternate turns
                 currentMatch.changeActiveColor();
