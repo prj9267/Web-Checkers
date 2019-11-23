@@ -142,6 +142,8 @@ public class CSVutility {
             FileReader fileReader = new FileReader(csvFile);
             CSVReader csvReader = new CSVReader(fileReader);
             String[] nextRecord;
+            // grab the attributes of each player and add them to a list so that we can sort them and put
+            // them into a leaderboard via TreeSets
             while ((nextRecord = csvReader.readNext()) != null) {
                 String username = nextRecord[0];
                 int games = Integer.parseInt(nextRecord[1]);

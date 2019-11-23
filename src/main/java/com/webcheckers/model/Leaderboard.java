@@ -135,6 +135,7 @@ public class Leaderboard {
      */
     public synchronized void updateAllBoards() {
         list = csvutility.readPlayers();
+        // add them to TreeSets with custom comparators
         for (Player player : list) {
             gamesBoard.add(player);
             wonBoard.add(player);

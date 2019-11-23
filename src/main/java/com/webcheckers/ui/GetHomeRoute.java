@@ -34,11 +34,6 @@ public class GetHomeRoute implements Route {
     static final String RATIO_ATTR = "ratio";
     static final String TAKEN_PIECES_ATTR = "piecesTaken";
     static final String LOST_PIECES_ATTR = "piecesLost";
-    static final String GAMESBOARD_ATTR = "gamesBoard";
-    static final String WONBOARD_ATTR = "wonBoard";
-    static final String LOSTBOARD_ATTR = "lostBoard";
-    static final String PIECES_TAKEN_ATTR = "piecesTakenBoard";
-    static final String PIECES_LOST_ATTR = "piecesLostBoard";
     static final String LEADERBOARD_ATTR = "leaderboard";
 
     public static final String VIEW_NAME = "home.ftl";
@@ -48,10 +43,8 @@ public class GetHomeRoute implements Route {
     public static final String CURRENT_USERNAME_KEY = "currentPlayer";
     public static final String PLAYERSERVICES_KEY = "playerServices";
     public static final String TIMEOUT_SESSION_KEY = "timeoutWatchDog";
-
     private static final Logger LOG = Logger.getLogger(GetHomeRoute.class.getName());
 
-    // Attribute
     private final GameCenter gameCenter;
     private final PlayerServices playerServices;
     private final TemplateEngine templateEngine;
@@ -168,17 +161,6 @@ public class GetHomeRoute implements Route {
             TreeSet<Player> piecesTakenBoard = leaderboard.getPiecesTakenBoard();
             TreeSet<Player> piecesLostBoard = leaderboard.getPiecesLostBoard();
 
-            /*if (gameCenter.isInMatch(player)) {
-                System.out.println(player.getName() + " is in a match!");
-            } else {
-                System.out.println(player.getName() + " is not in a match!");
-            }
-            if (gameCenter.getMatch(player) != null) {
-                System.out.println(player.getName() + " has a match!");
-            } else {
-                System.out.println(player.getName() + " doesn't have a match!");
-            }*/
-
             // redirect the challenged player to the game
             if (player.getStatus() == Player.Status.challenged ||
                 player.getStatus() == Player.Status.ingame){
@@ -202,8 +184,6 @@ public class GetHomeRoute implements Route {
             } else if (boardButton.equals("Total Pieces Lost Rankings")) {
                 leaderboard.changeState(Leaderboard.boardState.piecesLost);
             }
-            System.out.println("boardButton is: " + boardButton);
-            System.out.println("state is: " + leaderboard.getState());
 
             vm.put(MESSAGE_ATTR, SIGNIN_MSG);
             if (httpSession.attribute("message") != null)
@@ -218,7 +198,7 @@ public class GetHomeRoute implements Route {
             vm.put(CURRENT_USERNAME_KEY, httpSession.attribute(CURRENT_USERNAME_KEY));
             players.remove(player);
             vm.put(PLAYERS_ATTR, players);
-     
+            // get the state so that we can display the right leaderboard later on
             Leaderboard.boardState boardState = leaderboard.getState();
             if (boardState.equals(Leaderboard.boardState.games)) {
                 vm.put(LEADERBOARD_ATTR, gamesBoard);
