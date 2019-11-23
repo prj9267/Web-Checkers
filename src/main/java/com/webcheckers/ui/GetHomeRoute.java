@@ -173,15 +173,20 @@ public class GetHomeRoute implements Route {
             String boardButton = request.queryParams("boardButton");
             if (boardButton == null) {
                 // do nothing
-            } else if (boardButton.equals("Number of Games Rankings")) {
+            } else if (boardButton.equals("Games Rankings")) {
+                //System.out.println("changed to games");
                 leaderboard.changeState(Leaderboard.boardState.games);
             } else if (boardButton.equals("Victory Rankings")) {
+                //System.out.println("changed to won");
                 leaderboard.changeState(Leaderboard.boardState.won);
             } else if (boardButton.equals("Loss Rankings")) {
+                //System.out.println("changed to loss");
                 leaderboard.changeState(Leaderboard.boardState.lost);
-            } else if (boardButton.equals("Total Pieces Taken Rankings")) {
+            } else if (boardButton.equals("Pieces Taken Rankings")) {
+                //System.out.println("changed to PiecesTaken");
                 leaderboard.changeState(Leaderboard.boardState.piecesTaken);
-            } else if (boardButton.equals("Total Pieces Lost Rankings")) {
+            } else if (boardButton.equals("Pieces Lost Rankings")) {
+                //System.out.println("changed to piecesLost");
                 leaderboard.changeState(Leaderboard.boardState.piecesLost);
             }
 
