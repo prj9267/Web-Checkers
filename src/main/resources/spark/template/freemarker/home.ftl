@@ -42,11 +42,11 @@
                 <div class="stats" id="leaderboard">
                     <div id="leaderboard-state">
                         <form action"./">
-                            <input type="submit" name="boardButton" value="Number of Games Rankings"></input>
+                            <input type="submit" name="boardButton" value="Games Rankings"></input>
                             <input type="submit" name="boardButton" value="Victory Rankings"></input>
                             <input type="submit" name="boardButton" value="Loss Rankings"></input>
-                            <input type="submit" name="boardButton" value="Total Pieces Taken Rankings"></input>
-                            <input type="submit" name="boardButton" value="Total Pieces Lost Rankings"></input>
+                            <input type="submit" name="boardButton" value="Pieces Taken Rankings"></input>
+                            <input type="submit" name="boardButton" value="Pieces Lost Rankings"></input>
                         </form>
                     </div>
 

@@ -113,6 +113,12 @@ div.stats>p {
   flex-direction: row;
 }
 
+#leaderboard-state {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+}
+
 div.page div.footer {
   background: #eee;
   color: #888;

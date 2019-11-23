@@ -65,6 +65,7 @@ public class CSVutility {
             csvWriter.writeNext(stats);
             csvWriter.flush();
             csvWriter.close();
+            System.out.println("Added a new player to csv file.");
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -94,7 +95,7 @@ public class CSVutility {
                 for (String stat : nextRecord) {
                     if (stat.equals(username)) {
                         found = true;
-                    } else {
+                    } else if (!found) {
                         break;
                     }
                     if (found) {
@@ -113,6 +114,12 @@ public class CSVutility {
                         i++;
                     }
                 }
+                /*System.out.println(username);
+                System.out.println(Integer.toString(games));
+                System.out.println(Integer.toString(won));
+                System.out.println(Integer.toString(lost));
+                System.out.println(Integer.toString(piecesTaken));
+                System.out.println(Integer.toString(piecesLost));*/
                 if (found)
                     break;
             }
