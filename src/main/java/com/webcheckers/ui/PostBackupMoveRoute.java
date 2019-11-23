@@ -207,15 +207,14 @@ public class PostBackupMoveRoute implements Route {
             Player currentPlayer = playerServices.getPlayer(currentPlayerName);
             Match currentMatch = gameCenter.getMatch(currentPlayer);
 
+            System.out.println("before pop");
+            System.out.println(currentMatch.getMoves());
             Move previousMove = currentMatch.popMove();
+            System.out.println("after pop");
+            System.out.println(currentMatch.getMoves());
             if (previousMove.getEnd().getRow() == 0) {
                 currentMatch.typeSingle();
             }
-
-            /*if (yDiff == 1 || yDiff == -1)
-                updateMove(currentPlayer, previousMove);
-            else
-                updateJump(currentPlayer, previousMove);*/
 
             message = Message.info("Backup Successful");
             return gson.toJson(message);

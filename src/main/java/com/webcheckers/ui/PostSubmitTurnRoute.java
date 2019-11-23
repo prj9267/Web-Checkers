@@ -3,10 +3,7 @@ package com.webcheckers.ui;
 import com.google.gson.Gson;
 import com.webcheckers.appl.GameCenter;
 import com.webcheckers.appl.PlayerServices;
-import com.webcheckers.model.Match;
-import com.webcheckers.model.Move;
-import com.webcheckers.model.Player;
-import com.webcheckers.model.Position;
+import com.webcheckers.model.*;
 import com.webcheckers.util.Message;
 import spark.*;
 
@@ -70,11 +67,28 @@ public class PostSubmitTurnRoute implements Route {
             Match currentMatch = gameCenter.getMatch(currentPlayer);
 
             // If you can still jump
-            if (httpSession.attribute("hasNextJump") != null){
+            BoardView currentBoardView;
+            if (currentMatch.getActiveColor() == Piece.Color.RED){
+                currentBoardView = currentMatch.getRedBoardView();
+            }
+            else {
+                currentBoardView = currentMatch.getWhiteBoardView();
+            }
+
+            Move mostRecentMove = currentMatch.popMove();
+            currentMatch.pushMove(mostRecentMove);
+            int diffY = Math.abs(mostRecentMove.getStart().getRow() - mostRecentMove.getEnd().getRow());
+            Boolean hasNextJump = false;
+            if (diffY == 2) {
+                Position end = mostRecentMove.getEnd();
+                hasNextJump = currentMatch.checkFourDirections(currentBoardView, end);
+                System.out.println("from position: " + end);
+                System.out.println("there is next jump: " + hasNextJump);
+            }
+            if (hasNextJump) {
                 message = Message.error("There is still available jump");
                 return gson.toJson(message);
             }
-
             else {
                 ArrayList<Move> moves = currentMatch.getMoves();
                 Move move;

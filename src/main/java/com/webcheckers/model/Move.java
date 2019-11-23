@@ -1,6 +1,8 @@
 package com.webcheckers.model;
 
 
+import org.eclipse.jetty.util.annotation.ManagedObject;
+
 public class Move {
     private Position start;
     private Position end;
@@ -31,5 +33,10 @@ public class Move {
                     ((Move)o).getEnd().equals(this.getEnd());
         }
         return false;
+    }
+
+    @Override
+    public String toString(){
+        return "Start: " + this.getStart() + " End: " + this.getEnd();
     }
 }
