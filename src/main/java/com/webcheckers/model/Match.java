@@ -391,7 +391,7 @@ public class Match {
                     }
                     // move bot right
                     else if (isEmpty(board, row + 1, col + 1)) {
-                        addPossibleMove(new Position(row + 1, col - 1));
+                        addPossibleMove(new Position(row + 1, col + 1));
                     }
                 }
             }
@@ -405,12 +405,26 @@ public class Match {
         Space space;
         Position pos;
         possibleMoves();
+
+        ArrayList<Position> pieces;
         if (activeColor == Piece.Color.RED) {
             board = redBoardView;
+            pieces = redPieces;
         }
         else {
             board = whiteBoardView;
+            pieces = whitePieces;
         }
+
+        for (int i = 0; i < pieces.size(); i++)
+            System.out.println(pieces.get(i));
+        if (possibleJump) {
+            System.out.println(possibleJumps);
+        }
+        else {
+            System.out.println(possibleMoves);
+        }
+
         if (possibleJumps.size() == 0) {
             for (int i = 0; i < possibleMoves.size(); i++) {
                 pos = possibleMoves.get(i);

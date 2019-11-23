@@ -16,8 +16,8 @@ import static spark.Spark.halt;
 
 public class PostCheckTurnRoute implements Route {
     // Values used in the view-model map for rendering the game view.
-    public static final Message isYourTurn = Message.info("It is your turn");
-    public static final Message notYourTurn = Message.error("It is not your turn yet");
+    public static final Message isYourTurn = Message.info("true");
+    public static final Message notYourTurn = Message.error("false");
 
 
     private boolean isMyTurn = false;
