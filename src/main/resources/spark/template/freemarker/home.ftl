@@ -40,51 +40,30 @@
                 </div>
 
                 <div class="stats" id="leaderboard">
-                    <#if gamesBoard??>
-                        <#list gamesBoard as player>
+                    <div id="leaderboard-state">
+                        <form action"./">
+                            <input type="submit" name="boardButton" value="Number of Games Rankings"></input>
+                            <input type="submit" name="boardButton" value="Victory Rankings"></input>
+                            <input type="submit" name="boardButton" value="Loss Rankings"></input>
+                            <input type="submit" name="boardButton" value="Total Pieces Taken Rankings"></input>
+                            <input type="submit" name="boardButton" value="Total Pieces Lost Rankings"></input>
+                        </form>
+                    </div>
+
+                    <#if leaderboard??>
+                        <#list leaderboard as player>
                             <div class="display">
                                 <p id="name_display">Name: ${player.name}</p>
-                                <p>Games Played: ${player.games}</p>
-                            </div>
-                        </#list>
-                    </#if>
-                    <br>
-                    <#if wonBoard??>
-                        <#list wonBoard as player>
-                            <div class="display">
-                                <p id="name_display">Name: ${player.name}</p>
-                                <p>Games Won: ${player.won}</p>
-                            </div>
-                        </#list>
-                    </#if>
-                    <br>
-                    <#if lostBoard??>
-                        <#list lostBoard as player>
-                            <div class="display">
-                                <p id="name_display">Name: ${player.name}</p>
-                                <p>Games Lost: ${player.lost}</p>
-                            </div>
-                        </#list>
-                    </#if>
-                    <br>
-                    <#if piecesTakenBoard??>
-                        <#list piecesTakenBoard as player>
-                            <div class="display">
-                                <p id="name_display">Name: ${player.name}</p>
+                                <p>Number of Games Played: ${player.games}</p>
+                                <p>Number of Wins: ${player.won}</p>
+                                <p>Number of Losses: ${player.lost}</p>
                                 <p>Opponent Pieces Taken: ${player.piecesTaken}</p>
-                            </div>
-                        </#list>
-                    </#if>
-                    <br>
-                    <#if piecesLostBoard??>
-                        <#list piecesLostBoard as player>
-                            <div class="display">
-                                <p id="name_display">Name: ${player.name}</p>
                                 <p>Friendly Pieces Lost: ${player.piecesLost}</p>
                             </div>
                         </#list>
                     </#if>
                 </div>
+
 
                 <div class="body">
                     <#if players??>

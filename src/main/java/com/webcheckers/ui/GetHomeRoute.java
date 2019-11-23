@@ -39,6 +39,7 @@ public class GetHomeRoute implements Route {
     static final String LOSTBOARD_ATTR = "lostBoard";
     static final String PIECES_TAKEN_ATTR = "piecesTakenBoard";
     static final String PIECES_LOST_ATTR = "piecesLostBoard";
+    static final String LEADERBOARD_ATTR = "leaderboard";
 
     public static final String VIEW_NAME = "home.ftl";
     private static final Message WELCOME_MSG = Message.info("Welcome to the world of online Checkers.");
@@ -186,6 +187,24 @@ public class GetHomeRoute implements Route {
                 return null;
             }
 
+            // check what leaderboard should be displayed
+            String boardButton = request.queryParams("boardButton");
+            if (boardButton == null) {
+                // do nothing
+            } else if (boardButton.equals("Number of Games Rankings")) {
+                leaderboard.changeState(Leaderboard.boardState.games);
+            } else if (boardButton.equals("Victory Rankings")) {
+                leaderboard.changeState(Leaderboard.boardState.won);
+            } else if (boardButton.equals("Loss Rankings")) {
+                leaderboard.changeState(Leaderboard.boardState.lost);
+            } else if (boardButton.equals("Total Pieces Taken Rankings")) {
+                leaderboard.changeState(Leaderboard.boardState.piecesTaken);
+            } else if (boardButton.equals("Total Pieces Lost Rankings")) {
+                leaderboard.changeState(Leaderboard.boardState.piecesLost);
+            }
+            System.out.println("boardButton is: " + boardButton);
+            System.out.println("state is: " + leaderboard.getState());
+
             vm.put(MESSAGE_ATTR, SIGNIN_MSG);
             if (httpSession.attribute("message") != null)
                 vm.put(MESSAGE_ATTR, httpSession.attribute("message"));
@@ -199,11 +218,19 @@ public class GetHomeRoute implements Route {
             vm.put(CURRENT_USERNAME_KEY, httpSession.attribute(CURRENT_USERNAME_KEY));
             players.remove(player);
             vm.put(PLAYERS_ATTR, players);
-            vm.put(GAMESBOARD_ATTR, gamesBoard);
-            vm.put(WONBOARD_ATTR, wonBoard);
-            vm.put(LOSTBOARD_ATTR, lostBoard);
-            vm.put(PIECES_TAKEN_ATTR, piecesTakenBoard);
-            vm.put(PIECES_LOST_ATTR, piecesLostBoard);
+     
+            Leaderboard.boardState boardState = leaderboard.getState();
+            if (boardState.equals(Leaderboard.boardState.games)) {
+                vm.put(LEADERBOARD_ATTR, gamesBoard);
+            } else if (boardState.equals(Leaderboard.boardState.won)) {
+                vm.put(LEADERBOARD_ATTR, wonBoard);
+            } else if (boardState.equals(Leaderboard.boardState.lost)) {
+                vm.put (LEADERBOARD_ATTR, lostBoard);
+            } else if (boardState.equals(Leaderboard.boardState.piecesTaken)) {
+                vm.put(LEADERBOARD_ATTR, piecesTakenBoard);
+            } else if (boardState.equals(Leaderboard.boardState.piecesLost)) {
+                vm.put(LEADERBOARD_ATTR, piecesLostBoard);
+            }
         } else {
             // only show the number of players online if you are not signed in
             vm.put(NUM_PLAYERS_ATTR, playerServices.getPlayerList().size());

@@ -2,7 +2,6 @@ package com.webcheckers.model;
 
 import com.opencsv.CSVReader;
 import com.opencsv.CSVWriter;
-import com.webcheckers.appl.PlayerServices;
 
 import java.io.FileReader;
 import java.io.FileWriter;
@@ -21,7 +20,7 @@ public class CSVutility {
         try {
             FileReader fileReader = new FileReader(csvFile);
             CSVReader csvReader = new CSVReader(fileReader);
-
+            // read file
             List<String[]> lines = csvReader.readAll();
             int i = 0;
             String[] input = new String[6];
@@ -41,14 +40,11 @@ public class CSVutility {
                 }
                 i++;
             }
-
             csvReader.close();
-
+            // write to file
             FileWriter fileWriter = new FileWriter(csvFile);
             CSVWriter csvWriter = new CSVWriter(fileWriter);
-
             csvWriter.writeAll(lines);
-
             csvWriter.flush();
             csvWriter.close();
         } catch (Exception e) {
@@ -92,7 +88,6 @@ public class CSVutility {
             FileReader fileReader = new FileReader(csvFile);
             CSVReader csvReader = new CSVReader(fileReader);
             String[] nextRecord;
-
             // find the username, if found get the attributes games, won, lost
             while ((nextRecord = csvReader.readNext()) != null) {
                 int i = 0;
@@ -125,7 +120,6 @@ public class CSVutility {
         } catch (Exception e) {
             e.printStackTrace();
         }
-
         // if the player is not found in the csv file, add them to the csv file
         if (!found) {
             player = new Player(username);
@@ -155,7 +149,6 @@ public class CSVutility {
                 int lost = Integer.parseInt(nextRecord[3]);
                 int piecesTaken = Integer.parseInt(nextRecord[4]);
                 int piecesLost = Integer.parseInt(nextRecord[5]);
-
                 list.add(new Player(username, games, won, lost, piecesTaken, piecesLost));
             }
             csvReader.close();

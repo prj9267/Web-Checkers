@@ -10,10 +10,14 @@ public class Leaderboard {
     private TreeSet<Player> piecesTakenBoard;
     private TreeSet<Player> piecesLostBoard;
     private CSVutility csvutility;
+    public enum boardState {games, won, lost, piecesTaken, piecesLost}
+    private boardState state;
 
     public Leaderboard() {
         csvutility = new CSVutility();
         list = new ArrayList<>();
+        state = boardState.games;
+        // order by games played
         gamesBoard = new TreeSet<>(new Comparator<Player>() {
             @Override
             public int compare(Player o1, Player o2) {
@@ -24,6 +28,7 @@ public class Leaderboard {
                 }
             }
         });
+        // order by games won
         wonBoard = new TreeSet<>(new Comparator<Player>() {
             @Override
             public int compare(Player o1, Player o2) {
@@ -34,6 +39,7 @@ public class Leaderboard {
                 }
             }
         });
+        // order by games lost
         lostBoard = new TreeSet<>(new Comparator<Player>() {
             @Override
             public int compare(Player o1, Player o2) {
@@ -44,6 +50,7 @@ public class Leaderboard {
                 }
             }
         });
+        // order by opponent pieces taken
         piecesTakenBoard = new TreeSet<>(new Comparator<Player>() {
             @Override
             public int compare(Player o1, Player o2) {
@@ -54,6 +61,7 @@ public class Leaderboard {
                 }
             }
         });
+        // order by friendly pieces lost
         piecesLostBoard = new TreeSet<>(new Comparator<Player>() {
             @Override
             public int compare(Player o1, Player o2) {
@@ -64,6 +72,22 @@ public class Leaderboard {
                 }
             }
         });
+    }
+
+    /**
+     * Change the state of the leaderboard so that different order is displayed.
+     * @param state state of the leaderboard (games, won, lost, piecesTaken, piecesLost)
+     */
+    public void changeState(boardState state) {
+        this.state = state;
+    }
+
+    /**
+     * Get the state of the leaderboard so that different order is displayed.
+     * @return
+     */
+    public boardState getState() {
+        return state;
     }
 
     /**
