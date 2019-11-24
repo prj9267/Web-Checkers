@@ -91,11 +91,14 @@ div.page div.body {
 div.stats {
   padding: 10px 20px;
   background-color: #eb91b7;
-  color: green;
+  color: #1057FF;
 }
 
 div.stats>h1 {
   margin-bottom: 1em;
+  text-align: center;
+  font-size: 1.5em;
+  background-color:
 }
 
 div.stats>p {
@@ -116,12 +119,18 @@ div.stats>p {
   justify-content: space-between !important;
 }
 
+#rankings {
+  display: flex;
+  flex-direction: column;
+}
+
 #board-display {
   display: flex;
   flex-direction: row;
   background-color: white;
   color: black;
-  padding: 0 10px 0 10px;
+  padding: 0px 10px 0px 10px;
+  margin-top: 10px;
   max-height: 600px;
   overflow-y: scroll;
 }
@@ -129,6 +138,8 @@ div.stats>p {
 .display {
   margin-right: 10px;
   padding: 0px;
+  font-weight: bold;
+  font-family: Courier New;
 }
 
 .wrapper {
@@ -136,31 +147,46 @@ div.stats>p {
   flex-direction: column;
 }
 
-#name_display {
-  width: 100px;
+.label {
+  margin-right: 10px !important;
+  font-size: 1.1em;
+  min-height: 51px;
+  max-height: 51px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  text-align: center;
+  background-color: lightgrey;
+}
+
+#username-label {
+  height: 51px !important;
+}
+
+#piecesLost-label {
+  margin-right: 0 !important;
+}
+
+#name_display, #username-label {
+  width: 140px;
   display: flex;
   flex-wrap: wrap;
 }
 
-#games_display {
-  width: 120px;
+#games_display, #game-label {
+  width: 100px;
 }
 
-#won_display {
-  width: 120px;
+#won_display, #won-label {
+  width: 100px;
 }
 
-#lost_display {
-  width: 120px;
-  margin-right: 0;
+#lost_display, #lost-label {
+  width: 100px;
 }
 
-#piecesTaken_display {
-  width: 120px;
-}
-
-#piecesLost_ display {
-  max-width: 120px;
+#piecesTaken_display, #piecesTaken-label {
+  width: 100px;
 }
 
 ::-webkit-scrollbar {

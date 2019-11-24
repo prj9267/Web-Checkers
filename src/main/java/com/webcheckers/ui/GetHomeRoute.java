@@ -184,10 +184,15 @@ public class GetHomeRoute implements Route {
             // check what leaderboard should be displayed
             String boardButton = request.queryParams("boardButton");
             if (boardButton == null) {
-                // do nothing
+                // set to rank by number of games by default
+                namesOnly = leaderboard.getNamesOnly(gamesBoard);
+                gamesOnly = leaderboard.getGamesOnly(gamesBoard);
+                wonOnly = leaderboard.getWonOnly(gamesBoard);
+                lostOnly = leaderboard.getLostOnly(gamesBoard);
+                piecesTakenOnly = leaderboard.getPiecesTakenOnly(gamesBoard);
+                piecesLostOnly = leaderboard.getPiecesLostOnly(gamesBoard);
             } else if (boardButton.equals("Games Rankings")) {
                 //System.out.println("changed to games");
-                leaderboard.changeState(Leaderboard.boardState.games);
                 namesOnly = leaderboard.getNamesOnly(gamesBoard);
                 gamesOnly = leaderboard.getGamesOnly(gamesBoard);
                 wonOnly = leaderboard.getWonOnly(gamesBoard);
@@ -196,7 +201,6 @@ public class GetHomeRoute implements Route {
                 piecesLostOnly = leaderboard.getPiecesLostOnly(gamesBoard);
             } else if (boardButton.equals("Victory Rankings")) {
                 //System.out.println("changed to won");
-                leaderboard.changeState(Leaderboard.boardState.won);
                 namesOnly = leaderboard.getNamesOnly(wonBoard);
                 gamesOnly = leaderboard.getGamesOnly(wonBoard);
                 wonOnly = leaderboard.getWonOnly(wonBoard);
@@ -205,7 +209,6 @@ public class GetHomeRoute implements Route {
                 piecesLostOnly = leaderboard.getPiecesLostOnly(wonBoard);
             } else if (boardButton.equals("Loss Rankings")) {
                 //System.out.println("changed to loss");
-                leaderboard.changeState(Leaderboard.boardState.lost);
                 namesOnly = leaderboard.getNamesOnly(lostBoard);
                 gamesOnly = leaderboard.getGamesOnly(lostBoard);
                 wonOnly = leaderboard.getWonOnly(lostBoard);
@@ -214,7 +217,6 @@ public class GetHomeRoute implements Route {
                 piecesLostOnly = leaderboard.getPiecesLostOnly(lostBoard);
             } else if (boardButton.equals("Pieces Taken Rankings")) {
                 //System.out.println("changed to PiecesTaken");
-                leaderboard.changeState(Leaderboard.boardState.piecesTaken);
                 namesOnly = leaderboard.getNamesOnly(piecesTakenBoard);
                 gamesOnly = leaderboard.getGamesOnly(piecesTakenBoard);
                 wonOnly = leaderboard.getWonOnly(piecesTakenBoard);
@@ -223,7 +225,6 @@ public class GetHomeRoute implements Route {
                 piecesLostOnly = leaderboard.getPiecesLostOnly(piecesTakenBoard);
             } else if (boardButton.equals("Pieces Lost Rankings")) {
                 //System.out.println("changed to piecesLost");
-                leaderboard.changeState(Leaderboard.boardState.piecesLost);
                 namesOnly = leaderboard.getNamesOnly(piecesLostBoard);
                 gamesOnly = leaderboard.getGamesOnly(piecesLostBoard);
                 wonOnly = leaderboard.getWonOnly(piecesLostBoard);
@@ -245,27 +246,6 @@ public class GetHomeRoute implements Route {
             vm.put(CURRENT_USERNAME_KEY, httpSession.attribute(CURRENT_USERNAME_KEY));
             players.remove(player);
             vm.put(PLAYERS_ATTR, players);
-            // get the state so that we can display the right leaderboard later on
-            Leaderboard.boardState boardState = leaderboard.getState();
-            // TODO TEST
-            /*if (boardState.equals(Leaderboard.boardState.games)) {
-                //vm.put(LEADERBOARD_ATTR, gamesBoard);
-            } else if (boardState.equals(Leaderboard.boardState.won)) {
-                vm.put(LEADERBOARD_ATTR, wonBoard);
-            } else if (boardState.equals(Leaderboard.boardState.lost)) {
-                vm.put (LEADERBOARD_ATTR, lostBoard);
-            } else if (boardState.equals(Leaderboard.boardState.piecesTaken)) {
-                vm.put(LEADERBOARD_ATTR, piecesTakenBoard);
-            } else if (boardState.equals(Leaderboard.boardState.piecesLost)) {
-                vm.put(LEADERBOARD_ATTR, piecesLostBoard);
-            }*/
-            for (int i = 0; i < gamesOnly.size(); i++) {
-                System.out.println("name: " + namesOnly.get(i) + ", games: " + Integer.toString(gamesOnly.get(i))
-                        + ", won: " + Integer.toString(wonOnly.get(i)) + ", lost: " + Integer.toString(lostOnly.get(i))
-                        + ", piecesTaken: " + Integer.toString(piecesTakenOnly.get(i)) + ", piecesLost: " +
-                        Integer.toString(piecesLostOnly.get(i)));
-            }
-            System.out.println("END OF THE LINE HERE");
             vm.put(NAMES_ONLY_ATTR, namesOnly);
             vm.put(GAMES_ONLY_ATTR, gamesOnly);
             vm.put(WON_ONLY_ATTR, wonOnly);

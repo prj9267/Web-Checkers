@@ -10,13 +10,10 @@ public class Leaderboard {
     private TreeSet<Player> piecesTakenBoard;
     private TreeSet<Player> piecesLostBoard;
     private CSVutility csvutility;
-    public enum boardState {games, won, lost, piecesTaken, piecesLost}
-    private boardState state;
 
     public Leaderboard() {
         csvutility = new CSVutility();
         list = new ArrayList<>();
-        state = boardState.games;
         // order by games played
         gamesBoard = new TreeSet<>(new Comparator<Player>() {
             @Override
@@ -72,22 +69,6 @@ public class Leaderboard {
                 }
             }
         });
-    }
-
-    /**
-     * Change the state of the leaderboard so that different order is displayed.
-     * @param state state of the leaderboard (games, won, lost, piecesTaken, piecesLost)
-     */
-    public void changeState(boardState state) {
-        this.state = state;
-    }
-
-    /**
-     * Get the state of the leaderboard so that different order is displayed.
-     * @return
-     */
-    public boardState getState() {
-        return state;
     }
 
     /**
