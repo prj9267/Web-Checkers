@@ -180,6 +180,10 @@ public class Match {
 
     public void typeSingle() { this.currentType = Piece.Type.SINGLE; }
 
+    public boolean isGameOver(){
+        return isGameOver;
+    }
+
     public boolean getHelp() {
         return help;
     }
@@ -221,6 +225,16 @@ public class Match {
     }
 
     public boolean botLeftJump(BoardView board, Position pos) {
+        Space space = board.getSpace(pos.getRow(), pos.getCell());
+        Piece.Type type;
+        // need this so help can check all the pieces
+        if (space.getPiece() != null) {
+            type = space.getPiece().getType();
+            if (type != Piece.Type.KING) {
+                return false;
+            }
+        }
+        // this for possible multiple jump
         if (currentType != Piece.Type.KING) {
             return false;
         }
@@ -238,7 +252,17 @@ public class Match {
     }
 
     public boolean botRightJump(BoardView board, Position pos) {
-        if (currentType != Piece.Type.KING) {
+        Space space = board.getSpace(pos.getRow(), pos.getCell());
+        Piece.Type type;
+        // need this so help can check all the pieces
+        if (space.getPiece() != null) {
+            type = space.getPiece().getType();
+            if (type != Piece.Type.KING) {
+                return false;
+            }
+        }
+        // this for possible multiple jump
+        else if (currentType != Piece.Type.KING) {
             return false;
         }
         int row = pos.getRow();
@@ -256,26 +280,19 @@ public class Match {
 
     public boolean checkFourDirections(BoardView board, Position pos) {
         if (topLeftJump(board, pos)) {
-            System.out.println("has top left jump");
             return true;
         }
         else if (topRightJump(board, pos)) {
-            System.out.println("has top right jump");
             return true;
         }
         else if (botLeftJump(board, pos)) {
-            System.out.println("has bottom left jump");
             return true;
         }
         else if (botRightJump(board, pos)) {
-            System.out.println("has bottom right jump");
             return true;
         }
         else
             return false;
-
-        /*return topLeftJump(board, pos) || topRightJump(board, pos) ||
-                botLeftJump(board, pos) || botRightJump(board, pos);*/
     }
 
     /**
@@ -360,19 +377,19 @@ public class Match {
             Piece.Type type = board.getSpace(row, col).getPiece().getType();
             if (topLeftJump(board, piece)) {
                 possibleJump = true;
-                addPossibleJump(piece);
+                addPossibleJump(new Position(row - 2, col - 2));
             }
             if (topRightJump(board, piece)) {
                 possibleJump = true;
-                addPossibleJump(piece);
+                addPossibleJump(new Position(row - 2, col + 2));
             }
             if (botLeftJump(board, piece)) {
                 possibleJump = true;
-                addPossibleJump(piece);
+                addPossibleJump(new Position(row + 2, col - 2));
             }
             if (botRightJump(board, piece)) {
                 possibleJump = true;
-                addPossibleJump(piece);
+                addPossibleJump(new Position(row + 2, col + 2));
             }
             // only waste time check move if there is no possible jump
             if (! possibleJump) {
@@ -381,7 +398,7 @@ public class Match {
                     addPossibleMove(new Position(row - 1, col - 1));
                 }
                 // move top right
-                else if (isEmpty(board, row - 1, col + 1)) {
+                if (isEmpty(board, row - 1, col + 1)) {
                     addPossibleMove(new Position(row - 1, col + 1));
                 }
                 if (type == Piece.Type.KING) {
@@ -390,7 +407,7 @@ public class Match {
                         addPossibleMove(new Position(row + 1, col - 1));
                     }
                     // move bot right
-                    else if (isEmpty(board, row + 1, col + 1)) {
+                    if (isEmpty(board, row + 1, col + 1)) {
                         addPossibleMove(new Position(row + 1, col + 1));
                     }
                 }
@@ -399,35 +416,23 @@ public class Match {
     }
 
     public void activateHelp(){
-        System.out.println("activating help");
         BoardView board;
         Piece piece;
         Space space;
-        Position pos;
-        possibleMoves();
+        if (! help){
+            possibleMoves();
+        }
 
         ArrayList<Position> pieces;
         if (activeColor == Piece.Color.RED) {
             board = redBoardView;
-            pieces = redPieces;
         }
         else {
             board = whiteBoardView;
-            pieces = whitePieces;
         }
 
-        for (int i = 0; i < pieces.size(); i++)
-            System.out.println(pieces.get(i));
-        if (possibleJump) {
-            System.out.println(possibleJumps);
-        }
-        else {
-            System.out.println(possibleMoves);
-        }
-
-        if (possibleJumps.size() == 0) {
-            for (int i = 0; i < possibleMoves.size(); i++) {
-                pos = possibleMoves.get(i);
+        if (! possibleJump) {
+            for (Position pos : possibleMoves) {
                 piece = new Piece(Piece.Type.SINGLE, Piece.Color.HELP);
                 space = board.getSpace(pos.getRow(), pos.getCell());
                 space.setPiece(piece);
@@ -435,8 +440,7 @@ public class Match {
             }
         }
         else {
-            for (int i = 0; i < possibleJumps.size(); i++) {
-                pos = possibleJumps.get(i);
+            for (Position pos : possibleJumps) {
                 piece = new Piece(Piece.Type.SINGLE, Piece.Color.HELP);
                 space = board.getSpace(pos.getRow(), pos.getCell());
                 space.setPiece(piece);
@@ -447,9 +451,7 @@ public class Match {
     }
 
     public void deactivateHelp(){
-        System.out.println("deactivating help");
         BoardView board;
-        Position pos;
         Space space;
         if (activeColor == Piece.Color.RED) {
             board = redBoardView;
@@ -457,17 +459,15 @@ public class Match {
         else {
             board = whiteBoardView;
         }
-        if (possibleJumps.size() == 0) {
-            for (int i = 0; i < possibleMoves.size(); i++) {
-                pos = possibleMoves.get(i);
+        if (! possibleJump) {
+            for (Position pos : possibleMoves) {
                 space = board.getSpace(pos.getRow(), pos.getCell());
                 space.setPiece(null);
                 space.changeValid(true);
             }
         }
         else {
-            for (int i = 0; i < possibleJumps.size(); i++) {
-                pos = possibleJumps.get(i);
+            for (Position pos : possibleJumps) {
                 space = board.getSpace(pos.getRow(), pos.getCell());
                 space.setPiece(null);
                 space.changeValid(true);
@@ -561,8 +561,6 @@ public class Match {
         int xDiff = (start.getCell() - end.getCell()) / 2;
         int yDiff = (start.getRow() - end.getRow()) / 2;
 
-        System.out.println("jumped y: " + (start.getRow() - yDiff));
-        System.out.println("jumped x: " + (start.getCell() - xDiff));
         Space myKill = board.getSpace(start.getRow() - yDiff, start.getCell() - xDiff);
         this.getPiecesRemoved().push(myKill.getPiece());
         myKill.setPiece(null);
@@ -591,9 +589,6 @@ public class Match {
         int deadX = 7 - (start.getCell() - xDiff);
         Position oppLocation = new Position(deadY, deadX);
         oppPieces.remove(oppLocation);
-
-        /*System.out.println("opp y: " + Integer.toString(7 - (start.getRow() - yDiff)));
-        System.out.println("opp x: " + Integer.toString(7 - (start.getCell() - xDiff)));*/
 
         if (end.getRow() == 0){ // means the piece become a king
             myEnd.getPiece().setType(Piece.Type.KING);
@@ -641,12 +636,6 @@ public class Match {
         Message message;
         boolean isMove = false;
         boolean isJump = false;
-
-        System.out.println("pieces: ==============");
-        for (int i = 0; i < pieces.size(); i++) {
-            System.out.println(pieces.get(i));
-        }
-        System.out.println("======================");
 
         // dealing with multiple jump
         if (moves.size() != 0){
@@ -737,7 +726,10 @@ public class Match {
                     Space space = currentBoardView.getSpace(start.getRow() - (yDiff / 2),
                             start.getCell() - (xDiff / 2));
                     if (xDiff == 2 || xDiff == -2) { // can only jump left or right by two columns
-                        if (space.getPiece().getColor() != activeColor) {
+                        if (space.getPiece() == null) {
+                            message = PostValidateMoveRoute.EMPTY_JUMP_ERROR;
+                        }
+                        else if (space.getPiece().getColor() != activeColor) {
                             message = PostValidateMoveRoute.VALID_JUMP_MESSAGE; // valid jump
                             isJump = true;
                         }
@@ -766,8 +758,6 @@ public class Match {
                 currentType = Piece.Type.KING;
             }
             hasNextJump = checkFourDirections(currentBoardView, end);
-            System.out.println("from position: " + end);
-            System.out.println("there is next jump: " + hasNextJump);
         }
 
         return message;

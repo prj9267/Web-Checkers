@@ -27,6 +27,7 @@ public class PostValidateMoveRoute implements Route {
     public static final Message ADJACENT_JUMP_ERROR = Message.error("Your jump must be adjacent to you.");
     public static final Message FORWARD_JUMP_ERROR = Message.error("Normal piece can only jump forward.");
     public static final Message OPPONENT_JUMP_ERROR = Message.error("You can only jump over your opponent.");
+    public static final Message EMPTY_JUMP_ERROR = Message.error("You cannot jump over nothing.");
     // neither
     public static final Message MAX_ROW_MESSAGE = Message.error("The maximum number of rows you can move is 2");
     // multiple jump

@@ -95,19 +95,18 @@ public class GetGameRoute implements Route {
                 httpSession.attribute("help", false);
             }
 
-            if (currentMatch.getCurrentPlayer().equals(currentPlayer)) {
+            // only display the help button when it is your turn and the game is not ended
+            if (currentMatch.getCurrentPlayer().equals(currentPlayer) &&
+                    ! currentMatch.isGameOver() ) {
                 vm.put("PLAYING", true);
             }
 
             if (request.queryParams("help") != null) {
                 if (request.queryParams("help").equals("help")) {
-                    System.out.println("requesting for help");
-                    currentMatch.possibleMoves();
                     currentMatch.activateHelp();
                     vm.put("HELP", 0); // 0 is a filler
                 }
                 else {
-                    System.out.println("removing help");
                     currentMatch.deactivateHelp();
                 }
             }
