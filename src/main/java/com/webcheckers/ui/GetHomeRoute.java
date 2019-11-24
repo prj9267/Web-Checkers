@@ -189,42 +189,47 @@ public class GetHomeRoute implements Route {
                 //System.out.println("changed to games");
                 leaderboard.changeState(Leaderboard.boardState.games);
                 namesOnly = leaderboard.getNamesOnly(gamesBoard);
+                gamesOnly = leaderboard.getGamesOnly(gamesBoard);
                 wonOnly = leaderboard.getWonOnly(gamesBoard);
                 lostOnly = leaderboard.getLostOnly(gamesBoard);
                 piecesTakenOnly = leaderboard.getPiecesTakenOnly(gamesBoard);
-                piecesLostOnly = leaderboard.getPiecsLostOnly(gamesBoard);
+                piecesLostOnly = leaderboard.getPiecesLostOnly(gamesBoard);
             } else if (boardButton.equals("Victory Rankings")) {
                 //System.out.println("changed to won");
                 leaderboard.changeState(Leaderboard.boardState.won);
                 namesOnly = leaderboard.getNamesOnly(wonBoard);
+                gamesOnly = leaderboard.getGamesOnly(wonBoard);
                 wonOnly = leaderboard.getWonOnly(wonBoard);
                 lostOnly = leaderboard.getLostOnly(wonBoard);
                 piecesTakenOnly = leaderboard.getPiecesTakenOnly(wonBoard);
-                piecesLostOnly = leaderboard.getPiecsLostOnly(wonBoard);
+                piecesLostOnly = leaderboard.getPiecesLostOnly(wonBoard);
             } else if (boardButton.equals("Loss Rankings")) {
                 //System.out.println("changed to loss");
                 leaderboard.changeState(Leaderboard.boardState.lost);
                 namesOnly = leaderboard.getNamesOnly(lostBoard);
+                gamesOnly = leaderboard.getGamesOnly(lostBoard);
                 wonOnly = leaderboard.getWonOnly(lostBoard);
                 lostOnly = leaderboard.getLostOnly(lostBoard);
                 piecesTakenOnly = leaderboard.getPiecesTakenOnly(lostBoard);
-                piecesLostOnly = leaderboard.getPiecsLostOnly(lostBoard);
+                piecesLostOnly = leaderboard.getPiecesLostOnly(lostBoard);
             } else if (boardButton.equals("Pieces Taken Rankings")) {
                 //System.out.println("changed to PiecesTaken");
                 leaderboard.changeState(Leaderboard.boardState.piecesTaken);
                 namesOnly = leaderboard.getNamesOnly(piecesTakenBoard);
+                gamesOnly = leaderboard.getGamesOnly(piecesTakenBoard);
                 wonOnly = leaderboard.getWonOnly(piecesTakenBoard);
                 lostOnly = leaderboard.getLostOnly(piecesTakenBoard);
                 piecesTakenOnly = leaderboard.getPiecesTakenOnly(piecesTakenBoard);
-                piecesLostOnly = leaderboard.getPiecsLostOnly(piecesTakenBoard);
+                piecesLostOnly = leaderboard.getPiecesLostOnly(piecesTakenBoard);
             } else if (boardButton.equals("Pieces Lost Rankings")) {
                 //System.out.println("changed to piecesLost");
                 leaderboard.changeState(Leaderboard.boardState.piecesLost);
                 namesOnly = leaderboard.getNamesOnly(piecesLostBoard);
+                gamesOnly = leaderboard.getGamesOnly(piecesLostBoard);
                 wonOnly = leaderboard.getWonOnly(piecesLostBoard);
                 lostOnly = leaderboard.getLostOnly(piecesLostBoard);
                 piecesTakenOnly = leaderboard.getPiecesTakenOnly(piecesLostBoard);
-                piecesLostOnly = leaderboard.getPiecsLostOnly(piecesLostBoard);
+                piecesLostOnly = leaderboard.getPiecesLostOnly(piecesLostBoard);
             }
 
             vm.put(MESSAGE_ATTR, SIGNIN_MSG);
@@ -254,6 +259,13 @@ public class GetHomeRoute implements Route {
             } else if (boardState.equals(Leaderboard.boardState.piecesLost)) {
                 vm.put(LEADERBOARD_ATTR, piecesLostBoard);
             }*/
+            for (int i = 0; i < gamesOnly.size(); i++) {
+                System.out.println("name: " + namesOnly.get(i) + ", games: " + Integer.toString(gamesOnly.get(i))
+                        + ", won: " + Integer.toString(wonOnly.get(i)) + ", lost: " + Integer.toString(lostOnly.get(i))
+                        + ", piecesTaken: " + Integer.toString(piecesTakenOnly.get(i)) + ", piecesLost: " +
+                        Integer.toString(piecesLostOnly.get(i)));
+            }
+            System.out.println("END OF THE LINE HERE");
             vm.put(NAMES_ONLY_ATTR, namesOnly);
             vm.put(GAMES_ONLY_ATTR, gamesOnly);
             vm.put(WON_ONLY_ATTR, wonOnly);

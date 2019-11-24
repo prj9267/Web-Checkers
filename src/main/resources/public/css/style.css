@@ -117,6 +117,8 @@ div.stats>p {
 }
 
 #board-display {
+  display: flex;
+  flex-direction: row;
   background-color: white;
   color: black;
   padding: 0 10px 0 10px;
@@ -127,6 +129,11 @@ div.stats>p {
 .display {
   margin-right: 10px;
   padding: 0px;
+}
+
+.wrapper {
+  display: flex;
+  flex-direction: column;
 }
 
 #name_display {

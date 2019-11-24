@@ -181,7 +181,7 @@ public class Leaderboard {
         }
         return piecesTaken;
     }
-    public ArrayList<Integer> getPiecsLostOnly(TreeSet<Player> board) {
+    public ArrayList<Integer> getPiecesLostOnly(TreeSet<Player> board) {
         ArrayList<Integer> piecesLost = new ArrayList<>();
         for (Player player: board) {
             piecesLost.add(player.getPiecesLost());
