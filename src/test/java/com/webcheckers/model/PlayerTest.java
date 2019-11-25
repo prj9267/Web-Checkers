@@ -53,4 +53,20 @@ public class PlayerTest {
         player2.changeStatus(Player.Status.ingame);
         assertTrue(player2.isInGame(), "Player is not considered in game when they should be.");
     }
+
+    @Test
+    public void checkAddWon() {
+        Player player2 = new Player(name2);
+        player2.addWon();
+        player.addWon();
+        assertEquals(player.getWon(), player2.getWon(), "Win not added correctly");
+    }
+
+    @Test
+    public void checkAddLost() {
+        Player player2 = new Player(name2);
+        player2.addLost();
+        player.addLost();
+        assertEquals(player.getLost(), player2.getLost(), "Win not added correctly");
+    }
 }

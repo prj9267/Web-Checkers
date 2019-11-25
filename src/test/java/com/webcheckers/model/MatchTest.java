@@ -1,7 +1,10 @@
 package com.webcheckers.model;
 
+import com.webcheckers.ui.PostValidateMoveRoute;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
+
+import java.util.ArrayList;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -13,6 +16,8 @@ public class MatchTest {
     private Piece.Color activeColor = Piece.Color.RED;
     private Player winner = null;
     private Match match = new Match(redPlayer, whitePlayer);
+    private ArrayList<Move> moves = new ArrayList<>();
+
 
     @Test
     public void constructorNullArgRedPlayer(){
@@ -48,4 +53,19 @@ public class MatchTest {
     public void testWinner(){
         assertEquals(match.getWinner(), winner, "getWinner functions incorrectly.");
     }
+
+//    @Test
+//    public void testValidateMoveJump() {
+//        Piece piece = new Piece(Piece.Type.SINGLE, Piece.Color.RED);
+//        Move moveOne = new Move(new Position(0,0), new Position(1, 1));
+//
+//
+//        assertEquals(match.validateMove(moveOne), PostValidateMoveRoute.VALID_MOVE_MESSAGE,"Proper move broken");
+//    }
+
+//    @Test
+//    public void testPopMove() {
+//        moves.add(new Move(new Position(0,0), new Position(1,1)));
+//        assertEquals();
+//    }
 }
