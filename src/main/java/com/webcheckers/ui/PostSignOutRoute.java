@@ -51,10 +51,17 @@ public class PostSignOutRoute implements Route {
         final Map<String, Object> vm = new HashMap<>();
         final Session httpSession = request.session();
         String username = httpSession.attribute("currentPlayer");
-        Player player = new Player(username);
+        Player player = playerServices.getPlayer(username);
 
         if(httpSession.attribute("playerServices") != null){
             // remove the player from game center
+            if (player.getStatus() == Player.Status.challenged ||
+                    player.getStatus() == Player.Status.ingame) {
+                player.setSignOut(true);
+                response.redirect(WebServer.RESIGN_URL);
+                halt();
+                return null;
+            }
             playerServices.removePlayer(player);
 
             // aka as clearing the session

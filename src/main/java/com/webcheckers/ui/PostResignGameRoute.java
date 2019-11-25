@@ -14,6 +14,8 @@ import com.webcheckers.model.Player;
 import com.webcheckers.util.Message;
 import spark.*;
 
+import static spark.Spark.halt;
+
 public class PostResignGameRoute implements Route {
     private PlayerServices playerServices;
     private GameCenter gameCenter;
@@ -89,6 +91,17 @@ public class PostResignGameRoute implements Route {
             currentPlayer.addLost();
             csvutility.editPlayerRecords(currentPlayer);
             currentPlayer.setRecordsModified(true);
+        }
+
+        if (currentPlayer.getSignOut()) {
+            playerServices.removePlayer(currentPlayer);
+
+            // aka as clearing the session
+            httpSession.removeAttribute("playerServices");
+            httpSession.removeAttribute("currentPlayer");
+            response.redirect(WebServer.HOME_URL);
+            halt();
+            return null;
         }
         //redirect to home since that's the next page after ending a game by sending a message
         return gson.toJson(message);

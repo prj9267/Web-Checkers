@@ -14,6 +14,7 @@ public class Player {
     public Status status;
     private boolean recentlyInGame;
     private boolean recordsModified;
+    private boolean signOut = false;
 
     /**
      * Player constructor
@@ -55,7 +56,14 @@ public class Player {
         recordsModified = false;
     }
 
-    /**
+    public void setSignOut(Boolean boo){
+        signOut = boo;
+    }
+
+    public boolean getSignOut(){
+        return signOut;
+    }
+                           /**
      * Sets recordsEdited to True or False
      * @param recordsModified True or False
      */
