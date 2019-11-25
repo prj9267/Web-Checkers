@@ -1,13 +1,11 @@
 package com.webcheckers.ui;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 import java.util.logging.Logger;
 
 import com.webcheckers.appl.GameCenter;
 import com.webcheckers.appl.PlayerServices;
+import com.webcheckers.model.Leaderboard;
 import com.webcheckers.model.Match;
 import com.webcheckers.model.Player;
 import spark.*;
@@ -30,6 +28,19 @@ public class GetHomeRoute implements Route {
     static final String NUM_PLAYERS_ATTR = "numPlayers";
     static final String TITLE = "Welcome!";
     static final String CURRENT_PLAYER_ATTR = "currentPlayer";
+    static final String GAMES_ATTR = "games";
+    static final String WON_ATTR = "won";
+    static final String LOST_ATTR = "lost";
+    static final String RATIO_ATTR = "ratio";
+    static final String TAKEN_PIECES_ATTR = "piecesTaken";
+    static final String LOST_PIECES_ATTR = "piecesLost";
+    static final String LEADERBOARD_ATTR = "leaderboard";
+    static final String NAMES_ONLY_ATTR = "namesOnly";
+    static final String GAMES_ONLY_ATTR = "gamesOnly";
+    static final String WON_ONLY_ATTR = "wonOnly";
+    static final String LOST_ONLY_ATTR = "lostOnly";
+    static final String PIECES_TAKEN_ONLY_ATTR = "piecesTakenOnly";
+    static final String PIECES_LOST_ONLY_ATTR = "piecesLostOnly";
 
     public static final String VIEW_NAME = "home.ftl";
     private static final Message WELCOME_MSG = Message.info("Welcome to the world of online Checkers.");
@@ -38,10 +49,8 @@ public class GetHomeRoute implements Route {
     public static final String CURRENT_USERNAME_KEY = "currentPlayer";
     public static final String PLAYERSERVICES_KEY = "playerServices";
     public static final String TIMEOUT_SESSION_KEY = "timeoutWatchDog";
-
     private static final Logger LOG = Logger.getLogger(GetHomeRoute.class.getName());
 
-    // Attribute
     private final GameCenter gameCenter;
     private final PlayerServices playerServices;
     private final TemplateEngine templateEngine;
@@ -136,6 +145,10 @@ public class GetHomeRoute implements Route {
         if(httpSession.attribute(CURRENT_USERNAME_KEY) != null){
             Player player = playerServices.getPlayer(httpSession.attribute(CURRENT_USERNAME_KEY));
 
+            // set it to false so the next time they win or lose a game their records will be modified
+            if (player.getRecordsModified())
+                player.setRecordsModified(false);
+
             // if the player just recently left a match, delete them from the ingame list
             if (player.wasRecentlyInGame()) {
                 deletePlayerFromList(player);
@@ -145,17 +158,14 @@ public class GetHomeRoute implements Route {
             // since nothing about the match is needed, otherwise will crash the session still in the game screen
             deleteMatchIfPossible(player);
 
-            //TODO DEBUG STATEMENTS
-            if (gameCenter.isInMatch(player)) {
-                System.out.println(player.getName() + " is in a match!");
-            } else {
-                System.out.println(player.getName() + " is not in a match!");
-            }
-            if (gameCenter.getMatch(player) != null) {
-                System.out.println(player.getName() + " has a match!");
-            } else {
-                System.out.println(player.getName() + " doesn't have a match!");
-            }
+            // Grab leaderboards
+            Leaderboard leaderboard = new Leaderboard();
+            leaderboard.updateAllBoards();
+            TreeSet<Player> gamesBoard = leaderboard.getGamesBoard();
+            TreeSet<Player> wonBoard = leaderboard.getWonBoard();
+            TreeSet<Player> lostBoard = leaderboard.getLostBoard();
+            TreeSet<Player> piecesTakenBoard = leaderboard.getPiecesTakenBoard();
+            TreeSet<Player> piecesLostBoard = leaderboard.getPiecesLostBoard();
 
             // redirect the challenged player to the game
             if (player.getStatus() == Player.Status.challenged ||
@@ -165,15 +175,86 @@ public class GetHomeRoute implements Route {
                 return null;
             }
 
+            ArrayList<String> namesOnly = new ArrayList<>();
+            ArrayList<Integer> gamesOnly = new ArrayList<>();
+            ArrayList<Integer> wonOnly = new ArrayList<>();
+            ArrayList<Integer> lostOnly = new ArrayList<>();
+            ArrayList<Integer> piecesTakenOnly = new ArrayList<>();
+            ArrayList<Integer> piecesLostOnly = new ArrayList<>();
+            // check what leaderboard should be displayed
+            String boardButton = request.queryParams("boardButton");
+            if (boardButton == null) {
+                // set to rank by number of games by default
+                namesOnly = leaderboard.getNamesOnly(gamesBoard);
+                gamesOnly = leaderboard.getGamesOnly(gamesBoard);
+                wonOnly = leaderboard.getWonOnly(gamesBoard);
+                lostOnly = leaderboard.getLostOnly(gamesBoard);
+                piecesTakenOnly = leaderboard.getPiecesTakenOnly(gamesBoard);
+                piecesLostOnly = leaderboard.getPiecesLostOnly(gamesBoard);
+            } else if (boardButton.equals("Games Rankings")) {
+                //System.out.println("changed to games");
+                namesOnly = leaderboard.getNamesOnly(gamesBoard);
+                gamesOnly = leaderboard.getGamesOnly(gamesBoard);
+                wonOnly = leaderboard.getWonOnly(gamesBoard);
+                lostOnly = leaderboard.getLostOnly(gamesBoard);
+                piecesTakenOnly = leaderboard.getPiecesTakenOnly(gamesBoard);
+                piecesLostOnly = leaderboard.getPiecesLostOnly(gamesBoard);
+            } else if (boardButton.equals("Victory Rankings")) {
+                //System.out.println("changed to won");
+                namesOnly = leaderboard.getNamesOnly(wonBoard);
+                gamesOnly = leaderboard.getGamesOnly(wonBoard);
+                wonOnly = leaderboard.getWonOnly(wonBoard);
+                lostOnly = leaderboard.getLostOnly(wonBoard);
+                piecesTakenOnly = leaderboard.getPiecesTakenOnly(wonBoard);
+                piecesLostOnly = leaderboard.getPiecesLostOnly(wonBoard);
+            } else if (boardButton.equals("Loss Rankings")) {
+                //System.out.println("changed to loss");
+                namesOnly = leaderboard.getNamesOnly(lostBoard);
+                gamesOnly = leaderboard.getGamesOnly(lostBoard);
+                wonOnly = leaderboard.getWonOnly(lostBoard);
+                lostOnly = leaderboard.getLostOnly(lostBoard);
+                piecesTakenOnly = leaderboard.getPiecesTakenOnly(lostBoard);
+                piecesLostOnly = leaderboard.getPiecesLostOnly(lostBoard);
+            } else if (boardButton.equals("Pieces Taken Rankings")) {
+                //System.out.println("changed to PiecesTaken");
+                namesOnly = leaderboard.getNamesOnly(piecesTakenBoard);
+                gamesOnly = leaderboard.getGamesOnly(piecesTakenBoard);
+                wonOnly = leaderboard.getWonOnly(piecesTakenBoard);
+                lostOnly = leaderboard.getLostOnly(piecesTakenBoard);
+                piecesTakenOnly = leaderboard.getPiecesTakenOnly(piecesTakenBoard);
+                piecesLostOnly = leaderboard.getPiecesLostOnly(piecesTakenBoard);
+            } else if (boardButton.equals("Pieces Lost Rankings")) {
+                //System.out.println("changed to piecesLost");
+                namesOnly = leaderboard.getNamesOnly(piecesLostBoard);
+                gamesOnly = leaderboard.getGamesOnly(piecesLostBoard);
+                wonOnly = leaderboard.getWonOnly(piecesLostBoard);
+                lostOnly = leaderboard.getLostOnly(piecesLostBoard);
+                piecesTakenOnly = leaderboard.getPiecesTakenOnly(piecesLostBoard);
+                piecesLostOnly = leaderboard.getPiecesLostOnly(piecesLostBoard);
+            }
+
             vm.put(MESSAGE_ATTR, SIGNIN_MSG);
             if (httpSession.attribute("message") != null)
                 vm.put(MESSAGE_ATTR, httpSession.attribute("message"));
             httpSession.removeAttribute("message");
+            vm.put(GAMES_ATTR, player.getGames());
+            vm.put(WON_ATTR, player.getWon());
+            vm.put(LOST_ATTR, player.getLost());
+            vm.put(RATIO_ATTR, player.getRatio());
+            vm.put(TAKEN_PIECES_ATTR, player.getPiecesTaken());
+            vm.put(LOST_PIECES_ATTR, player.getPiecesLost());
             vm.put(CURRENT_USERNAME_KEY, httpSession.attribute(CURRENT_USERNAME_KEY));
             players.remove(player);
             vm.put(PLAYERS_ATTR, players);
+            vm.put(NAMES_ONLY_ATTR, namesOnly);
+            vm.put(GAMES_ONLY_ATTR, gamesOnly);
+            vm.put(WON_ONLY_ATTR, wonOnly);
+            vm.put(LOST_ONLY_ATTR, lostOnly);
+            vm.put(PIECES_TAKEN_ONLY_ATTR, piecesTakenOnly);
+            vm.put(PIECES_LOST_ONLY_ATTR, piecesLostOnly);
+            //TODO change home.ftl please
         } else {
-            // only show the number of players online if you are not signin
+            // only show the number of players online if you are not signed in
             vm.put(NUM_PLAYERS_ATTR, playerServices.getPlayerList().size());
             vm.put(MESSAGE_ATTR, WELCOME_MSG);
         }

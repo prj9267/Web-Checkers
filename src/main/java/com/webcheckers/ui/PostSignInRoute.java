@@ -1,9 +1,17 @@
 package com.webcheckers.ui;
 
+import com.opencsv.CSVReader;
+import com.opencsv.CSVWriter;
 import com.webcheckers.appl.PlayerServices;
+import com.webcheckers.model.CSVutility;
 import com.webcheckers.util.Message;
 import spark.*;
 
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -12,6 +20,7 @@ import java.util.logging.Logger;
 
 import com.webcheckers.model.Player;
 
+import static com.webcheckers.ui.WebServer.csvFile;
 import static spark.Spark.halt;
 
 public class PostSignInRoute implements Route {
@@ -29,6 +38,7 @@ public class PostSignInRoute implements Route {
 
     private final TemplateEngine templateEngine;
     private final PlayerServices playerServices;
+    private CSVutility csvutility;
 
     /**
      * Create the Spark Route (UI controller) to handle all {@code GET /} HTTP requests.
@@ -93,11 +103,12 @@ public class PostSignInRoute implements Route {
         else
             statCode = httpSession.attribute(STAT_CODE_ATTR);
 
-        Player player = new Player(username);
-
         if(httpSession.attribute(GetHomeRoute.PLAYERSERVICES_KEY) != null) {
             // Name is not taken and it is alphanumerical
             if (statCode == 0) {
+                csvutility = new CSVutility();
+
+                Player player = csvutility.findPlayer(username);
                 playerServices.addPlayer(player);
 
                 httpSession.attribute(GetHomeRoute.CURRENT_USERNAME_KEY, username);

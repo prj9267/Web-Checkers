@@ -1,19 +1,21 @@
 package com.webcheckers.ui;
 
 import com.google.gson.Gson;
+import com.opencsv.CSVReader;
+import com.opencsv.CSVWriter;
 import com.webcheckers.appl.GameCenter;
 import com.webcheckers.appl.PlayerServices;
-import com.webcheckers.model.BoardView;
-import com.webcheckers.model.Match;
-import com.webcheckers.model.Piece;
-import com.webcheckers.model.Player;
+import com.webcheckers.model.*;
 import com.webcheckers.util.Message;
 import spark.*;
 
+import java.io.FileReader;
+import java.io.FileWriter;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
+import static com.webcheckers.ui.WebServer.csvFile;
 import static spark.Spark.halt;
 
 public class GetGameRoute implements Route {
@@ -35,6 +37,7 @@ public class GetGameRoute implements Route {
     private final TemplateEngine templateEngine;
     private final GameCenter gameCenter;
     private final PlayerServices playerServices;
+    private final CSVutility csvutility;
 
     private Gson gson;
 
@@ -53,6 +56,7 @@ public class GetGameRoute implements Route {
         this.playerServices = playerServices;
         this.gameCenter = gameCenter;
         this.templateEngine = templateEngine;
+        this.csvutility = new CSVutility();
     }
 
     /**
@@ -151,9 +155,27 @@ public class GetGameRoute implements Route {
             viewMode currentViewMode = viewMode.PLAY;
             vm.put(VIEW_MODE_ATTR, currentViewMode);
 
+            // if game is in resigned state (opponent resigned)
             if (currentMatch.isGameResigned() == Match.STATE.resigned) {
                 // remove the player from the ingame list after exiting the game
                 currentPlayer.changeRecentlyInGame(true);
+                // guard so that their records won't be modified more than once in case of mandatory refreshes
+                if (currentPlayer.getRecordsModified() == false) {
+                    int piecesTaken, piecesLost;
+                    if (currentPlayer.equals(currentMatch.getRedPlayer())) {
+                        piecesTaken = 12 - currentMatch.getWhitePieces().size();
+                        piecesLost = 12 - currentMatch.getRedPieces().size();
+                    } else {
+                        piecesTaken = 12 - currentMatch.getRedPieces().size();
+                        piecesLost = 12 - currentMatch.getWhitePieces().size();
+                    }
+                    currentPlayer.addPiecesTaken(piecesTaken);
+                    currentPlayer.addPiecesLost(piecesLost);
+                    currentPlayer.addWon();
+                    csvutility.editPlayerRecords(currentPlayer);
+                    currentPlayer.setRecordsModified(true);
+                }
+
                 Gson gson = new Gson();
                 Map <String, Object> modeOptions = new HashMap<>(2);
                 modeOptions.put("isGameOver", true);
@@ -168,6 +190,25 @@ public class GetGameRoute implements Route {
             } else if (currentMatch.getRedPieces().size() == 0) {
                 // remove the player from the ingame list after exiting the game
                 currentPlayer.changeRecentlyInGame(true);
+                // guard so that their records won't be modified more than once in case of mandatory refreshes
+                if (currentPlayer.getRecordsModified() == false) {
+                    int piecesTaken, piecesLost;
+                    if (currentPlayer.equals(currentMatch.getRedPlayer())) {
+                        piecesTaken = 12 - currentMatch.getWhitePieces().size();
+                        piecesLost = 12 - currentMatch.getRedPieces().size();
+                        currentPlayer.addPiecesTaken(piecesTaken);
+                        currentPlayer.addPiecesLost(piecesLost);
+                        currentPlayer.addLost();
+                    } else {
+                        piecesTaken = 12 - currentMatch.getRedPieces().size();
+                        piecesLost = 12 - currentMatch.getWhitePieces().size();
+                        currentPlayer.addPiecesTaken(piecesTaken);
+                        currentPlayer.addPiecesLost(piecesLost);
+                        currentPlayer.addWon();
+                    }
+                    csvutility.editPlayerRecords(currentPlayer);
+                    currentPlayer.setRecordsModified(true);
+                }
                 Gson gson = new Gson();
                 Map <String, Object> modeOptions = new HashMap<>(2);
                 modeOptions.put("isGameOver", true);
@@ -179,6 +220,25 @@ public class GetGameRoute implements Route {
             } else if (currentMatch.getWhitePieces().size() == 0) {
                 // remove the player from the ingame list after exiting the game
                 currentPlayer.changeRecentlyInGame(true);
+                // guard so that their records won't be modified more than once in case of mandatory refreshes
+                if (currentPlayer.getRecordsModified() == false) {
+                    int piecesTaken, piecesLost;
+                    if (currentPlayer.equals(currentMatch.getRedPlayer())) {
+                        piecesTaken = 12 - currentMatch.getWhitePieces().size();
+                        piecesLost = 12 - currentMatch.getRedPieces().size();
+                        currentPlayer.addPiecesTaken(piecesTaken);
+                        currentPlayer.addPiecesLost(piecesLost);
+                        currentPlayer.addWon();
+                    } else {
+                        piecesTaken = 12 - currentMatch.getRedPieces().size();
+                        piecesLost = 12 - currentMatch.getWhitePieces().size();
+                        currentPlayer.addPiecesTaken(piecesTaken);
+                        currentPlayer.addPiecesLost(piecesLost);
+                        currentPlayer.addLost();
+                    }
+                    csvutility.editPlayerRecords(currentPlayer);
+                    currentPlayer.setRecordsModified(true);
+                }
                 Gson gson = new Gson();
                 Map <String, Object> modeOptions = new HashMap<>(2);
                 modeOptions.put("isGameOver", true);
@@ -186,7 +246,6 @@ public class GetGameRoute implements Route {
                 vm.put(MODE_OPTION_ATTR, gson.toJson(modeOptions));
                 currentPlayer.changeStatus(Player.Status.waiting);
             }
-
             return templateEngine.render(new ModelAndView(vm, VIEW_NAME));
         } else {
             response.redirect("/");

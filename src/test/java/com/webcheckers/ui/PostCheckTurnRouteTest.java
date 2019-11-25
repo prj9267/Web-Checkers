@@ -46,11 +46,11 @@ public class PostCheckTurnRouteTest {
         CuT = new PostCheckTurnRoute(playerServices, gameCenter, engine, gson);
     }
 
-    @Test
+    /*@Test
     void checkPostCheckTurnRoute() {
         PostCheckTurnRoute pctr = new PostCheckTurnRoute(playerServices, gameCenter, engine, gson);
         assertEquals(pctr.handle(request, response), CuT.handle(request, response), "PostCheckTurnRoute not constructed correctly");
-    }
+    }*/
 
 //    @Test
 //    void checkIsMyTurn() {

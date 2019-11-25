@@ -2,6 +2,8 @@ package com.webcheckers.ui;
 
 import static spark.Spark.*;
 
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Objects;
 import java.util.logging.Logger;
 
@@ -64,6 +66,10 @@ public class WebServer {
   public static final String SUBMIT_TURN_URL = "/submitTurn";
   public static final String BACKUP_URL = "/backupMove";
   public static final String RESIGN_URL = "/resignGame";
+
+  public static final Path currentRelativePath = Paths.get("");
+  public static final String s = currentRelativePath.toAbsolutePath().toString();
+  public static final String csvFile = s + "/src/main/resources/public/Statistics.csv";
 
   //
   // Attributes
