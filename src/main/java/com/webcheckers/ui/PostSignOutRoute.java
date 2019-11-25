@@ -1,12 +1,9 @@
 package com.webcheckers.ui;
 
-import com.webcheckers.appl.GameCenter;
 import com.webcheckers.appl.PlayerServices;
 import com.webcheckers.model.Player;
 import spark.*;
 
-import java.awt.*;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -36,6 +33,17 @@ public class PostSignOutRoute implements Route {
         LOG.config("PostSignOutRoute is initialized.");
     }
 
+    /**
+     * Render the WebCheckers Home page after signing out.
+     *
+     * @param request
+     *   the HTTP request
+     * @param response
+     *   the HTTP response
+     *
+     * @return
+     *   the rendered HTML for the Home page after being signed out.
+     */
     @Override
     public Object handle(Request request, Response response){
         LOG.finer("PostSignOutRoute is invoked.");

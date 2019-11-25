@@ -23,7 +23,7 @@ public class GetGameRoute implements Route {
     public static final String VIEW_NAME = "game.ftl";
     public static final String CURRENT_USER_ATTR = "currentUser";
     public static final String VIEW_MODE_ATTR = "viewMode";
-    public static final String MODE_OPTION_ATTR = "modeOption";
+    public static final String MODE_OPTION_ATTR = "modeOptionsAsJSON";
     public static final String RED_PLAYER_ATTR = "redPlayer";
     public static final String WHITE_PLAYER_ATTR = "whitePlayer";
     public static final String ACTIVE_COLOR_ATTR = "activeColor";
@@ -56,7 +56,15 @@ public class GetGameRoute implements Route {
     }
 
     /**
-     * {@inheritDoc}
+     * Render the WebCheckers Game page.
+     *
+     * @param request
+     *   the HTTP request
+     * @param response
+     *   the HTTP response
+     *
+     * @return
+     *   the rendered HTML for the Game page
      */
     @Override
     public Object handle(Request request, Response response){
@@ -101,11 +109,14 @@ public class GetGameRoute implements Route {
                 vm.put("PLAYING", true);
             }
 
+            // check if the help button is click
             if (request.queryParams("help") != null) {
+                // if it is asking for help
                 if (request.queryParams("help").equals("help")) {
                     currentMatch.activateHelp();
                     vm.put("HELP", 0); // 0 is a filler
                 }
+                // else it is asking for removing the help
                 else {
                     currentMatch.deactivateHelp();
                 }
@@ -152,7 +163,7 @@ public class GetGameRoute implements Route {
                 } else if (currentPlayer.equals(whitePlayer)) {
                     modeOptions.put("gameOverMessage", redPlayer.getName() + " has resigned. You won!");
                 }
-                vm.put("modeOptionsAsJSON", gson.toJson(modeOptions));
+                vm.put(MODE_OPTION_ATTR, gson.toJson(modeOptions));
                 currentPlayer.changeStatus(Player.Status.waiting);
             } else if (currentMatch.getRedPieces().size() == 0) {
                 // remove the player from the ingame list after exiting the game
@@ -161,7 +172,7 @@ public class GetGameRoute implements Route {
                 Map <String, Object> modeOptions = new HashMap<>(2);
                 modeOptions.put("isGameOver", true);
                 modeOptions.put("gameOverMessage", whitePlayer.getName() + " has captured all opponent pieces!");
-                vm.put("modeOptionsAsJSON", gson.toJson(modeOptions));
+                vm.put(MODE_OPTION_ATTR, gson.toJson(modeOptions));
                 //gameCenter.removePlayer(currentPlayer);
                 currentPlayer.changeStatus(Player.Status.waiting);
                 //gameCenter.removeMatch(currentMatch);
@@ -172,7 +183,7 @@ public class GetGameRoute implements Route {
                 Map <String, Object> modeOptions = new HashMap<>(2);
                 modeOptions.put("isGameOver", true);
                 modeOptions.put("gameOverMessage", redPlayer.getName() + " has captured all opponent pieces!");
-                vm.put("modeOptionsAsJSON", gson.toJson(modeOptions));
+                vm.put(MODE_OPTION_ATTR, gson.toJson(modeOptions));
                 currentPlayer.changeStatus(Player.Status.waiting);
             }
 

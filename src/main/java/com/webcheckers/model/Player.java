@@ -7,7 +7,6 @@ public class Player {
     public enum Status {waiting, challenged, ingame}
     public Status status;
     private boolean recentlyInGame;
-    private boolean help;
 
     /**
      * Player constructor
@@ -18,19 +17,25 @@ public class Player {
         this.name = name;
         status = Status.waiting;
         recentlyInGame = false;
-        help = false;
     }
 
+    /**
+     * change the state of recentlyInGame
+     */
     public void changeRecentlyInGame(boolean bool) {
         recentlyInGame = bool;
     }
 
+    /**
+     * check if the player was recently in game
+     * @return boolean
+     */
     public boolean wasRecentlyInGame() {
         return recentlyInGame;
     }
 
     /**
-     * CHecks if a username contains an invalid char
+     * Checks if a username contains an invalid char
      * @return  - false if username contains no invalid chars, true otherwise.
      */
     public Boolean containsInvalidCharacter() {
@@ -42,12 +47,16 @@ public class Player {
 
     /**
      * Name getter function
-     * @return  - the name
+     * @return the name
      */
     public String getName(){
         return name;
     }
 
+    /**
+     * Status getter function
+     * @return the status
+     */
     public Status getStatus() {
         return status;
     }
@@ -63,22 +72,12 @@ public class Player {
         return false;
     }
 
+    /**
+     * change the stats
+     * @param status status
+     */
     public void changeStatus(Status status) {
         this.status = status;
-    }
-
-    public boolean getHelp(){
-        return help;
-    }
-
-    public boolean changeHelp() {
-        if (help == true){
-            help = false;
-        }
-        else{
-            help = true;
-        }
-        return help;
     }
 
     /**

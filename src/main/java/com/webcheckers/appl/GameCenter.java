@@ -31,8 +31,6 @@ public class GameCenter {
      * @return                  - true if match has been added
      */
     public synchronized boolean addMatch(Player redPlayer, Player whitePlayer) {
-        String redPlayerName = redPlayer.getName();
-        String whitePlayerName = whitePlayer.getName();
         if(redPlayer.equals(whitePlayer) || redPlayer.isInGame() || whitePlayer.isInGame())
             return false;
         Match match = new Match(redPlayer, whitePlayer);
@@ -76,14 +74,6 @@ public class GameCenter {
         }
 
         return null;
-    }
-
-    /**
-     * Return the matchList
-     * @return      - matchList the list of matches
-     */
-    public ArrayList getMatchList() {
-        return matchList;
     }
 
     /**

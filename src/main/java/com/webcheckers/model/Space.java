@@ -20,12 +20,20 @@ public class Space {
         this.piece = piece;
     }
 
+    /**
+     * Constructor
+     * @param cellIdx the col number
+     */
     public Space(int cellIdx) {
         this.cellIdx = cellIdx;
         this.isValid = false;
         this.piece = null;
     }
 
+    /**
+     * Construcotr
+     * @param space the space
+     */
     public Space(Space space) {
         this.cellIdx = space.getCellIdx();
         this.isValid = space.isValid();

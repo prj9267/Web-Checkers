@@ -54,7 +54,6 @@ public class PostSignInRoute implements Route {
      *          2 if the username contains invalid characters
      *          3 if the username is already taken
      */
-
     public int verifyUsername(String username){
         // right now does not contains a list of players
         Player player = new Player(username);
@@ -97,6 +96,7 @@ public class PostSignInRoute implements Route {
         Player player = new Player(username);
 
         if(httpSession.attribute(GetHomeRoute.PLAYERSERVICES_KEY) != null) {
+            // Name is not taken and it is alphanumerical
             if (statCode == 0) {
                 playerServices.addPlayer(player);
 
@@ -107,14 +107,21 @@ public class PostSignInRoute implements Route {
                 response.redirect(WebServer.HOME_URL);
                 halt();
                 return null;
-            } else {
+            }
+            else {
                 vm.put(GetHomeRoute.TITLE_ATTR, TITLE);
-                if (statCode == 1)
+                // Empty name is not allowed
+                if (statCode == 1) {
                     vm.put(GetHomeRoute.MESSAGE_ATTR, EMPTY_MESSAGE);
-                else if (statCode == 2)
+                }
+                // Name contains invalid character
+                else if (statCode == 2) {
                     vm.put(GetHomeRoute.MESSAGE_ATTR, CONTAIN_MESSAGE);
-                else if (statCode == 3)
+                }
+                // Name is already taken
+                else if (statCode == 3) {
                     vm.put(GetHomeRoute.MESSAGE_ATTR, TAKEN_MESSAGE);
+                }
 
                 return templateEngine.render(new ModelAndView(vm, ERROR_FTL));
             }

@@ -51,73 +51,6 @@ public class BoardView implements Iterable {
         }
     }
 
-    public BoardView(Piece.Color currentPlayerColor, int stat){
-        if (stat == 1){
-            setNull();
-            if (currentPlayerColor == Piece.Color.RED)
-                test1Red();
-            else
-                test1White();
-        }
-    }
-
-    public void setNull(){
-        for (int i = 0; i < NUM_ROW; i++){
-            rows[i] = new Row(i);
-            Row row = rows[i];
-            for (int j = 0; j < NUM_COL; j++){
-                Space space = new Space(j);
-                space.changeValid(false);
-                if (((i % 2) == 0) && ((j % 2) == 1)) {
-                    space.changeValid(true);
-                }
-                else if (((i % 2) == 1) && ((j % 2) == 0)) {
-                    space.changeValid(true);
-                }
-                space.setPiece(null);
-                row.setCol(space);
-            }
-        }
-    }
-
-    public void test1Red(){
-        setNull();
-
-        Space space = new Space(4);
-        space.changeValid(false);
-        Piece piece = new Piece(Piece.Type.KING, Piece.Color.RED);
-        rows[5].setCol(space);
-
-        space = new Space(3);
-        space.changeValid(false);
-        piece = new Piece(Piece.Type.SINGLE, Piece.Color.WHITE);
-        rows[4].setCol(space);
-
-        space = new Space(1);
-        space.changeValid(false);
-        piece = new Piece(Piece.Type.SINGLE, Piece.Color.WHITE);
-        rows[6].setCol(space);
-    }
-
-    public void test1White(){
-        setNull();
-
-        Space space = new Space(7 - 4);
-        space.changeValid(false);
-        Piece piece = new Piece(Piece.Type.KING, Piece.Color.RED);
-        rows[7 - 5].setCol(space);
-
-        space = new Space(7 - 3);
-        space.changeValid(false);
-        piece = new Piece(Piece.Type.SINGLE, Piece.Color.WHITE);
-        rows[7 - 4].setCol(space);
-
-        space = new Space(7 - 1);
-        space.changeValid(false);
-        piece = new Piece(Piece.Type.SINGLE, Piece.Color.WHITE);
-        rows[7 - 6].setCol(space);
-    }
-
     /**
      * Getter function for the board object;
      * @return  - this board
@@ -157,15 +90,10 @@ public class BoardView implements Iterable {
         return rows[row];
     }
 
-    public void movePiece(int row, Space space){
-        rows[row].setCol(space);
-    }
-
-    public void removePiece(int row, int col){
-        Space empty = new Space(col);
-        rows[row].setCol(empty);
-    }
-
+    /**
+     * Override the iterator method
+     * @return return the Iterator of the board
+     */
     @Override
     public Iterator iterator() {
         return Arrays.asList(rows).iterator();

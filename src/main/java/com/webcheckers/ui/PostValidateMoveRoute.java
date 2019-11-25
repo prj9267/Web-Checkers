@@ -54,181 +54,17 @@ public class PostValidateMoveRoute implements Route {
 
     }
 
-    /*public boolean checkFourDirections(BoardView board, int row, int col,
-                                       Piece piece, Piece.Color color){
-        Space topLeft = board.getSpace(row - 1, col - 1);
-        Space topLeftJump = board.getSpace(row - 2, col - 2);
-        Space topRight = board.getSpace(row - 1, col + 1);
-        Space topRightJump = board.getSpace(row - 2, col + 2);
-        // case for normal piece
-        if (spaceForJump(topLeft, topLeftJump, color))
-            return true;
-        else if (spaceForJump(topRight, topRightJump, color))
-             return true;
-         // case for king piece
-        if (Piece.Type.KING == piece.getType()) {
-            Space bottomLeft = board.getSpace(row + 1, col - 1);
-            Space bottomLeftJump = board.getSpace(row + 2, col - 2);
-            Space bottomRight = board.getSpace(row + 1, col + 1);
-            Space bottomRightJump = board.getSpace(row + 2, col + 2);
-            if (spaceForJump(bottomLeft, bottomLeftJump, color))
-                return true;
-            else if (spaceForJump(bottomRight, bottomRightJump, color))
-                return true;
-        }
-        return false;
-    }
-
-    *//**
-     * Check if there is an option to jump. American rule states you have to jump
-     * if you can jump.
-     * @return boolean
-     *//*
-    public boolean optionToJump(BoardView board, ArrayList<Location> pieces, Piece.Color color){
-        for (int i = 0; i < pieces.size(); i++){
-            int row = pieces.get(i).getRow();
-            int col = pieces.get(i).getCol();
-            Space space = board.getSpace(row, col);
-            Piece piece = space.getPiece();
-
-            if (checkFourDirections(board, row, col, piece, color))
-                return true;
-        }
-        return false;
-    }
-
     /**
-     * Check if you can jump to target piece
-     * @param space space that will be jump over
-     * @param target space that will end up if can jump
-     * @param color color of the current player
-     * @return boolean
-     */
-    /*public boolean spaceForJump(Space space, Space target, Piece.Color color){
-        if (target != null && space != null){
-            // there is a space to jump to
-            // and there is space to jump over
-            if (space.getPiece() == null)
-                return false; // there is no opponent piece there
-            if (space.getPiece().getColor() != color && // not ally
-                target.getPiece() == null) { // that space is empty
-                return true; // there is option for a jump
-            }
-        }
-        return false;
-    }
-
-    /**
-     * After validating the move, move the piece
-     * @param board current player's board
-     * @param opp opponent player's board
-     * @param start start position
-     * @param end final position
-     *//*
-    public void moveForward(BoardView board, BoardView opp,
-                            Position start, Position end,
-                            ArrayList<Location> pieces){
-        // update the position of player's pieces
-        Location startLocation = new Location(start.getRow(), start.getCell());
-        Location endLocation = new Location(end.getRow(), end.getCell());
-        pieces.remove(startLocation);
-        pieces.add(endLocation);
-        // update current player's board
-        // remove the piece at the start position
-        Space myStart = board.getSpace(start.getRow(), start.getCell());
-        Piece myPiece = myStart.getPiece();
-        myStart.setPiece(null);
-        myStart.changeValid(true);
-        // adding a piece to the end position
-        Space myEnd = board.getSpace(end.getRow(), end.getCell());
-        myEnd.setPiece(myPiece);
-        myEnd.changeValid(false);
-
-        // updating opponent's board
-        // remove the piece at the start position
-        Space oppStart = opp.getSpace(7 - start.getRow(), 7 - start.getCell());
-        Piece oppPiece = oppStart.getPiece();
-        oppStart.setPiece(null);
-        oppStart.changeValid(true);
-        // adding a piece to the end position
-        Space oppEnd = opp.getSpace(7 - end.getRow(), 7 - end.getCell());
-        oppEnd.setPiece(oppPiece);
-        oppEnd.changeValid(false);
-
-        if (end.getRow() == 0){ // means the piece become a king
-            myEnd.getPiece().setType(Piece.Type.KING);
-            oppEnd.getPiece().setType(Piece.Type.KING);
-        }
-    }
-
-    /*
-     * After validating the jump, jump over
-     * @param board current player's board
-     * @param opp opponent's board
-     * @param start start position
-     * @param end final position
+     * Validate the most recent move.
+     *
+     * @param request
+     *   the HTTP request
+     * @param response
+     *   the HTTP response
+     *
      * @return
+     *   the message displayed after a move being made.
      */
-    /*public void jumpForward(BoardView board, BoardView opp,
-                            Position start, Position end,
-                            ArrayList<Location> pieces,
-                            ArrayList<Location> oppPieces,
-                            Match match){
-        // update the position of current player's pieces
-        Location startLocation = new Location(start.getRow(), start.getCell());
-        Location endLocation = new Location(end.getRow(), end.getCell());
-        pieces.remove(startLocation);
-        pieces.add(endLocation);
-        // update current player's board
-        // remove the piece at the start position
-        Space myStart = board.getSpace(start.getRow(), start.getCell());
-        Piece myPiece = myStart.getPiece();
-        myStart.setPiece(null);
-        myStart.changeValid(true);
-        // remove the piece that was jumped over
-        int xDiff = (start.getCell() - end.getCell()) / 2;
-        int yDiff = (start.getRow() - end.getRow()) / 2;
-
-        System.out.println("jumped y: " + (start.getRow() - yDiff));
-        System.out.println("jumped x: " + (start.getCell() - xDiff));
-        Space myKill = board.getSpace(start.getRow() - yDiff, start.getCell() - xDiff);
-        match.getPiecesRemoved().push(myKill.getPiece());
-        myKill.setPiece(null);
-        myKill.changeValid(true);
-        // adding a piece to the end position
-        Space myEnd = board.getSpace(end.getRow(), end.getCell());
-        myEnd.setPiece(myPiece);
-        myEnd.changeValid(false);
-
-        // updating opponent's board
-        // remove the piece at the start position
-        Space oppStart = opp.getSpace(7 - start.getRow(), 7 - start.getCell());
-        Piece oppPiece = oppStart.getPiece();
-        oppStart.setPiece(null);
-        oppStart.changeValid(true);
-        // remove the piece that was jumped over
-        Space oppKill = opp.getSpace(7 - (start.getRow() - yDiff), 7 - (start.getCell() - xDiff));
-        oppKill.setPiece(null);
-        oppKill.changeValid(true);
-        // adding a piece to the end position
-        Space oppEnd = opp.getSpace(7 - end.getRow(), 7 - end.getCell());
-        oppEnd.setPiece(oppPiece);
-        oppEnd.changeValid(false);
-        // remove the piece that was jumped over for the pieces array
-        int deadY = 7 - (start.getRow() - yDiff);
-        int deadX = 7 - (start.getCell() - xDiff);
-        Location oppLocation = new Location(deadY, deadX);
-        oppPieces.remove(oppLocation);
-
-        System.out.println("opp y: " + Integer.toString(7 - (start.getRow() - yDiff)));
-        System.out.println("opp x: " + Integer.toString(7 - (start.getCell() - xDiff)));
-
-        if (end.getRow() == 0){ // means the piece become a king
-            myEnd.getPiece().setType(Piece.Type.KING);
-            oppEnd.getPiece().setType(Piece.Type.KING);
-        }
-    }*/
-
     @Override
     public Object handle(Request request, Response response) {
         final Session httpSession = request.session();
@@ -247,7 +83,7 @@ public class PostValidateMoveRoute implements Route {
 
             Move move = gson.fromJson(request.queryParams(ACTION_DATA), Move.class);
 
-            Message message = currentMatch.validateMove(currentPlayer, move);
+            Message message = currentMatch.validateMove(move);
             return gson.toJson(message);
 
         }

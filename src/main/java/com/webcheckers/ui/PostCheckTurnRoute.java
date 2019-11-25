@@ -45,6 +45,14 @@ public class PostCheckTurnRoute implements Route {
         this.gson = gson;
     }
 
+    /**
+     * Check if it is the player's turn
+     * @param currentPlayer current player
+     * @param red red player
+     * @param white white player
+     * @param activeColor current active color
+     * @return
+     */
     public boolean isMyTurn(Player currentPlayer, Player red, Player white, Piece.Color activeColor){
         if (currentPlayer.equals(red) && activeColor == Piece.Color.RED ||
             currentPlayer.equals(white) && activeColor == Piece.Color.WHITE)

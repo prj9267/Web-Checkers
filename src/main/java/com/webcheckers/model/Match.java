@@ -1,6 +1,5 @@
 package com.webcheckers.model;
 
-import com.webcheckers.ui.GetGameRoute;
 import com.webcheckers.ui.PostValidateMoveRoute;
 import com.webcheckers.util.Message;
 
@@ -11,9 +10,8 @@ import java.util.Stack;
 import java.util.logging.Logger;
 
 public class Match {
+    // Attributes
     private static final Logger LOG = Logger.getLogger(Match.class.getName());
-    // to be implemented maybe here since game.ftl
-    //private Map<String, Object> modeOptionAsJSON = null;
     private BoardView redBoardView = new BoardView(Piece.Color.RED);
     private BoardView whiteBoardView = new BoardView(Piece.Color.WHITE);
     private Player redPlayer;
@@ -50,6 +48,11 @@ public class Match {
         this.modeOptions.put("gameOverMessage", null);
     }
 
+    /**
+     * Initialize all the pieces that the player has
+     * @param board the board
+     * @return an array list of positions
+     */
     public ArrayList<Position> initializePieces(BoardView board){ // remove the color
         ArrayList<Position> pieces = new ArrayList<>();
         for (int y = 5; y < BoardView.NUM_ROW; y++){ // change back to 5
@@ -105,6 +108,10 @@ public class Match {
         return whitePieces;
     }
 
+    /**
+     * Getter function for pieces removed
+     * @return pieces removed
+     */
     public Stack<Piece> getPiecesRemoved(){
         return piecesRemoved;
     }
@@ -129,10 +136,6 @@ public class Match {
         return whitePlayer;
     }
 
-    public Map<String, Object> getModeOptions() {
-        return modeOptions;
-    }
-
     /**
      * Getter function for red player's board view
      * @return red board view
@@ -153,6 +156,10 @@ public class Match {
         return winner;
     }
 
+    /**
+     * Set the winner and change the stats
+     * @param winner the winner
+     */
     public void setWinner(Player winner) {
         this.winner = winner;
         state = STATE.finished;
@@ -178,24 +185,56 @@ public class Match {
         modeOptions.put("gameOverMessage", loser.getName() + " has resigned.");
     }
 
+    /**
+     * Set the current type to SINGLE
+     */
     public void typeSingle() { this.currentType = Piece.Type.SINGLE; }
 
+    /**
+     * Check if the game ended or not
+     * @return boolean
+     */
     public boolean isGameOver(){
         return isGameOver;
     }
 
+    /**
+     * Getter function for the help
+     * @return boolean
+     */
     public boolean getHelp() {
         return help;
     }
 
+    /**
+     * Getter functions for the moves made
+     * @return an array list of moves made
+     */
     public ArrayList<Move> getMoves(){ return this.moves; }
 
+    /**
+     * Add the move to the array list of moves made as stack
+     * @param move the move made
+     */
     public void pushMove(Move move) { this.moves.add(move); }
 
+    /**
+     * Remove the move from the array list of moves made as stack
+     * @return the most recent move made
+     */
     public Move popMove() { return this.moves.remove(moves.size() - 1); }
 
+    /**
+     * Empty the array list of moves made
+     */
     public void emptyMoves() { this.moves = new ArrayList<>(); }
 
+    /**
+     * Check if there a top left jump
+     * @param board the board
+     * @param pos the starting position
+     * @return boolean
+     */
     public boolean topLeftJump(BoardView board, Position pos) {
         int row = pos.getRow();
         int col = pos.getCell();
@@ -210,6 +249,12 @@ public class Match {
                 spaceForJump(topLeft, topLeftJump, color);
     }
 
+    /**
+     * Check if there a top right jump
+     * @param board the board
+     * @param pos the starting position
+     * @return boolean
+     */
     public boolean topRightJump(BoardView board, Position pos) {
         int row = pos.getRow();
         int col = pos.getCell();
@@ -224,6 +269,12 @@ public class Match {
                 spaceForJump(topRight, topRightJump, color);
     }
 
+    /**
+     * Check if there a bottom left jump
+     * @param board the board
+     * @param pos the starting position
+     * @return boolean
+     */
     public boolean botLeftJump(BoardView board, Position pos) {
         Space space = board.getSpace(pos.getRow(), pos.getCell());
         Piece.Type type;
@@ -251,6 +302,12 @@ public class Match {
                 spaceForJump(bottomLeft, bottomLeftJump, color);
     }
 
+    /**
+     * Check if there a bottom right jump
+     * @param board the board
+     * @param pos the starting position
+     * @return boolean
+     */
     public boolean botRightJump(BoardView board, Position pos) {
         Space space = board.getSpace(pos.getRow(), pos.getCell());
         Piece.Type type;
@@ -278,6 +335,12 @@ public class Match {
                 spaceForJump(bottomRight, bottomRightJump, color);
     }
 
+    /**
+     * Check if there is available jump for this piece
+     * @param board the board
+     * @param pos the position of the piece
+     * @return boolean
+     */
     public boolean checkFourDirections(BoardView board, Position pos) {
         if (topLeftJump(board, pos)) {
             return true;
@@ -333,18 +396,33 @@ public class Match {
         return false;
     }
 
+    /**
+     * Add the move to the array list of possible moves
+     * @param pos the end position of the possible move
+     */
     public void addPossibleMove(Position pos){
         if (! possibleMoves.contains(pos)) {
             possibleMoves.add(pos);
         }
     }
 
+    /**
+     * Add the possible jump to the array list of possible jumps
+     * @param pos the end position of the possible jump
+     */
     public void addPossibleJump(Position pos) {
         if (! possibleJumps.contains(pos)) {
             possibleJumps.add(pos);
         }
     }
 
+    /**
+     * Check if the target position if empty
+     * @param board the board
+     * @param row the row
+     * @param col the col
+     * @return boolean
+     */
     public boolean isEmpty(BoardView board, int row, int col){
         Space target = board.getSpace(row, col);
         if (target != null) {
@@ -355,6 +433,10 @@ public class Match {
         return false;
     }
 
+    /**
+     * Check for possible moves/jumps. If there is, add
+     * them to the corresponding array list
+     */
     public void possibleMoves() {
         possibleMoves = new ArrayList<>();
         possibleJumps = new ArrayList<>();
@@ -415,15 +497,19 @@ public class Match {
         }
     }
 
+    /**
+     * Activate the help
+     */
     public void activateHelp(){
         BoardView board;
         Piece piece;
         Space space;
+        // only do the calculation if there was no help
         if (! help){
             possibleMoves();
         }
 
-        ArrayList<Position> pieces;
+        // get the board of the current player
         if (activeColor == Piece.Color.RED) {
             board = redBoardView;
         }
@@ -431,7 +517,9 @@ public class Match {
             board = whiteBoardView;
         }
 
+        // if there is only moves available
         if (! possibleJump) {
+            // display all possible moves
             for (Position pos : possibleMoves) {
                 piece = new Piece(Piece.Type.SINGLE, Piece.Color.HELP);
                 space = board.getSpace(pos.getRow(), pos.getCell());
@@ -439,7 +527,9 @@ public class Match {
                 space.changeValid(false);
             }
         }
+        // if there is even one possible jump
         else {
+            // display all the possible jumps
             for (Position pos : possibleJumps) {
                 piece = new Piece(Piece.Type.SINGLE, Piece.Color.HELP);
                 space = board.getSpace(pos.getRow(), pos.getCell());
@@ -450,23 +540,31 @@ public class Match {
         help = true;
     }
 
+    /**
+     * Deactivate the help
+     */
     public void deactivateHelp(){
         BoardView board;
         Space space;
+        // get the board for the current player
         if (activeColor == Piece.Color.RED) {
             board = redBoardView;
         }
         else {
             board = whiteBoardView;
         }
+        // if there is only possible moves
         if (! possibleJump) {
+            // display all the possible moves
             for (Position pos : possibleMoves) {
                 space = board.getSpace(pos.getRow(), pos.getCell());
                 space.setPiece(null);
                 space.changeValid(true);
             }
         }
+        // if there is even one possible jump
         else {
+            // display all the possible jumps
             for (Position pos : possibleJumps) {
                 space = board.getSpace(pos.getRow(), pos.getCell());
                 space.setPiece(null);
@@ -476,7 +574,7 @@ public class Match {
         help = false;
     }
 
-   /**
+    /**
      * After validating the move, move the piece
      * @param move the move made
      */
@@ -596,13 +694,16 @@ public class Match {
         }
     }
 
-    public Message validateMove(Player currentPlayer, Move move){
+    /**
+     * Validate the move
+     * @param move
+     * @return
+     */
+    public Message validateMove(Move move){
         // get different board from the match
         BoardView currentBoardView;
 
         ArrayList<Position> pieces;
-        ArrayList<Position> oppPieces;
-        Piece.Color color;
         // set the information accordingly
         if (activeColor == Piece.Color.RED){
             currentBoardView = redBoardView;
@@ -617,10 +718,12 @@ public class Match {
         Position end = move.getEnd();
         int row = start.getRow();
         int col = start.getCell();
+        // if there is no moves being made
         if (moves.size() == 0) {
             Piece piece = currentBoardView.getSpace(row, col).getPiece();
             currentType = piece.getType();
         }
+        // check if the web page get refreshed or not
         else {
             Move temp = this.popMove();
             if (! temp.getEnd().equals(start)) {
@@ -762,5 +865,4 @@ public class Match {
 
         return message;
     }
-
 }

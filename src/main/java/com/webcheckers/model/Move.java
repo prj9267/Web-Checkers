@@ -1,17 +1,24 @@
 package com.webcheckers.model;
 
-
-import org.eclipse.jetty.util.annotation.ManagedObject;
-
 public class Move {
+    // private attributes
     private Position start;
     private Position end;
 
+    /**
+     * Constructor
+     * @param start start position
+     * @param end end position
+     */
     public Move(Position start, Position end){
         this.start = start;
         this.end = end;
     }
 
+    /**
+     * Constructor
+     * @param move string representation from JSON
+     */
     public Move(String move){
         String replace = move.replaceAll("[\\D]", "");
         this.start = new Position(replace.indexOf(0), replace.indexOf(1));
@@ -26,6 +33,11 @@ public class Move {
         return end;
     }
 
+    /**
+     * Override the equals method
+     * @param o the object that is compared to (should be class Move)
+     * @return boolean
+     */
     @Override
     public boolean equals(Object o){
         if(o instanceof Move){
@@ -35,6 +47,10 @@ public class Move {
         return false;
     }
 
+    /**
+     * Override the toString method
+     * @return a string representation of this class
+     */
     @Override
     public String toString(){
         return "Start: " + this.getStart() + " End: " + this.getEnd();

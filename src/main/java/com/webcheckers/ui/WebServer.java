@@ -64,7 +64,6 @@ public class WebServer {
   public static final String SUBMIT_TURN_URL = "/submitTurn";
   public static final String BACKUP_URL = "/backupMove";
   public static final String RESIGN_URL = "/resignGame";
-  public static final String HELP_URL = "/requestHelp";
 
   //
   // Attributes
@@ -169,7 +168,6 @@ public class WebServer {
     post(SUBMIT_TURN_URL, new PostSubmitTurnRoute(playerServices,gameCenter,templateEngine, gson));
     post(BACKUP_URL, new PostBackupMoveRoute(playerServices,gameCenter,templateEngine, gson));
     post(RESIGN_URL, new PostResignGameRoute(playerServices, gameCenter, templateEngine, gson));
-    post(HELP_URL, new PostRequestHelpRoute(playerServices, gameCenter, templateEngine, gson));
     //
     LOG.config("WebServer is initialized.");
   }

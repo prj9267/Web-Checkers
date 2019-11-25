@@ -1,7 +1,6 @@
 package com.webcheckers.appl;
 
 import com.webcheckers.model.Player;
-import com.webcheckers.ui.PlayersList;
 
 import java.util.ArrayList;
 
@@ -26,16 +25,6 @@ public class PlayerServices {
     public void endSession() {
         //match = null;
     }
-
-    /**
-     * Creates a new match between players.
-     * @param player1   - the user
-     * @param player2   - the opponent
-     * @return          - the created match
-     */
-    /*public Match getMatch(String player1, String player2){
-        return gameCenter.getMatch(player1, player2);
-    }*/
 
     /**
      * Add a new player to the player list
@@ -75,14 +64,6 @@ public class PlayerServices {
         }
         return null;
     }
-
-    /*public Player getPlayerWithHash(int hash) {
-        for (Player player : playerList) {
-            if (player.getHash() == hash)
-                return player;
-        }
-        return null;
-    }*/
 
     /**
      * Gets the number of players

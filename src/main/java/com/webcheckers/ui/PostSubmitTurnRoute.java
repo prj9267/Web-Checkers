@@ -83,19 +83,22 @@ public class PostSubmitTurnRoute implements Route {
             currentMatch.pushMove(mostRecentMove);
             int diffY = Math.abs(mostRecentMove.getStart().getRow() - mostRecentMove.getEnd().getRow());
             Boolean hasNextJump = false;
+            // if it was a jump
             if (diffY == 2) {
+                // check to see if there is another jump
                 Position end = mostRecentMove.getEnd();
                 hasNextJump = currentMatch.checkFourDirections(currentBoardView, end);
-                System.out.println("from position: " + end);
-                System.out.println("there is next jump: " + hasNextJump);
             }
+            // if there is another jump after a jump
             if (hasNextJump) {
                 message = Message.error("There is still available jump");
                 return gson.toJson(message);
             }
+            // regular move / no more jump
             else {
                 ArrayList<Move> moves = currentMatch.getMoves();
                 Move move;
+                // perform all the moves
                 for (int i = 0; i < moves.size(); i++){
                     move = moves.get(i);
                     int dif = Math.abs(move.getStart().getRow() - move.getEnd().getRow());
@@ -106,8 +109,8 @@ public class PostSubmitTurnRoute implements Route {
                         currentMatch.move(move);
                     }
                 }
+                // reset the moves to nothing
                 currentMatch.emptyMoves();
-                System.out.println("size of moves should be: " + currentMatch.getMoves().size());
 
                 //alternate turns
                 currentMatch.changeActiveColor();
